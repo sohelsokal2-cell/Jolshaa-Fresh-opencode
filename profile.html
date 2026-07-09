@@ -470,17 +470,345 @@
     .friend-name { font-family: var(--font-bn); font-size: 11px; font-weight: 600; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .friend-mutual { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); margin-top: 2px; }
 
-    /* ===================== RIGHT PLACEHOLDER ===================== */
-    .profile-right {
-      flex: 1; min-width: 0;
-      background: var(--card-bg); border-radius: var(--radius-lg);
-      border: 2px dashed var(--border); padding: 40px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 400px; text-align: center;
+    /* ===================== RIGHT CONTENT AREA ===================== */
+    .profile-right { flex: 1; min-width: 0; display: flex; gap: 16px; align-items: flex-start; }
+    .profile-feed-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+    .profile-support-col { width: 282px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ---- Completion Card ---- */
+    .completion-card {
+      background: linear-gradient(135deg, var(--teal-xpale) 0%, #fffdf8 100%);
+      border: 1.5px solid rgba(27,107,90,0.2); border-radius: var(--radius-lg);
+      padding: 16px 18px; position: relative; box-shadow: var(--shadow-xs);
     }
-    .placeholder-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.4; }
-    .placeholder-bn { font-family: var(--font-bn); font-size: 18px; color: var(--text-light); font-weight: 500; }
-    .placeholder-en { font-family: var(--font-en); font-size: 12px; color: var(--text-xlight); margin-top: 5px; }
+    .completion-dismiss {
+      position: absolute; top: 12px; right: 12px;
+      width: 26px; height: 26px; border-radius: 8px; border: none;
+      background: rgba(0,0,0,0.06); color: var(--text-light); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .completion-dismiss:hover { background: rgba(0,0,0,0.12); color: var(--text-dark); }
+    .completion-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .completion-emoji { font-size: 22px; }
+    .completion-title-bn { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .completion-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .completion-bar-wrap { height: 7px; background: rgba(27,107,90,0.12); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+    .completion-bar-fill {
+      height: 100%; width: 60%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-light));
+      box-shadow: 0 0 6px rgba(27,107,90,0.3);
+      animation: barGrow 1s ease 0.3s both;
+    }
+    @keyframes barGrow { from{width:0} to{width:60%} }
+    .completion-pct { font-family: var(--font-en); font-size: 11px; font-weight: 700; color: var(--teal); margin-bottom: 10px; }
+    .completion-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .completion-chip {
+      display: flex; align-items: center; gap: 5px; padding: 5px 11px;
+      background: var(--card-bg); border: 1.5px solid var(--teal); border-radius: 50px;
+      font-family: var(--font-bn); font-size: 12px; color: var(--teal); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .completion-chip:hover { background: var(--teal); color: white; transform: translateY(-1px); }
+
+    /* ---- Filter Row ---- */
+    .filter-row {
+      background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-xs); padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .filter-left { display: flex; align-items: center; gap: 8px; }
+    .filter-btn {
+      display: flex; align-items: center; gap: 6px; padding: 7px 13px;
+      border: 1.5px solid var(--border); border-radius: 10px; background: var(--off-white);
+      color: var(--text-mid); font-family: var(--font-bn); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .view-toggle { display: flex; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .view-toggle-btn {
+      padding: 6px 11px; border: none; background: transparent; cursor: pointer;
+      color: var(--text-light); transition: all 0.15s; display: flex; align-items: center;
+    }
+    .view-toggle-btn.active { background: var(--teal); color: white; }
+    .view-toggle-btn:hover:not(.active) { background: var(--off-white); color: var(--text-dark); }
+    .manage-posts-btn {
+      display: flex; align-items: center; gap: 6px; padding: 7px 13px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--card-bg); color: var(--text-mid);
+      font-family: var(--font-bn); font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .manage-posts-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-pale); }
+    .filter-right { display: flex; align-items: center; gap: 8px; }
+
+    /* ---- Post Cards ---- */
+    .post-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      overflow: hidden; transition: box-shadow 0.2s;
+    }
+    .post-card:hover { box-shadow: var(--shadow-md); }
+    .post-card.pinned {
+      border: 1.5px solid rgba(27,107,90,0.25);
+      background: linear-gradient(180deg, rgba(27,107,90,0.025) 0%, var(--card-bg) 60px);
+    }
+    .pinned-badge {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 14px; background: var(--teal-pale);
+      border-bottom: 1px solid rgba(27,107,90,0.12);
+    }
+    .pinned-badge-text-bn { font-family: var(--font-bn); font-size: 11px; color: var(--teal); font-weight: 600; }
+    .pinned-badge-text-en { font-family: var(--font-en); font-size: 9px; color: rgba(27,107,90,0.7); }
+
+    .post-header { display: flex; align-items: center; gap: 10px; padding: 13px 14px 8px; }
+    .post-av {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--teal-light), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: white;
+    }
+    .post-meta { flex: 1; }
+    .post-author { font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .post-time-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .post-time { font-family: var(--font-en); font-size: 11px; color: var(--text-xlight); }
+    .post-audience {
+      display: flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 6px;
+      background: var(--off-white); border: 1px solid var(--border);
+      font-family: var(--font-en); font-size: 9px; color: var(--text-light);
+    }
+    .post-options-btn {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: transparent; cursor: pointer; color: var(--text-light);
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .post-options-btn:hover { background: var(--off-white); color: var(--text-dark); }
+
+    .post-body { padding: 0 14px 10px; }
+    .post-text-bn { font-family: var(--font-bn); font-size: 14px; line-height: 1.6; color: var(--text-dark); margin-bottom: 10px; }
+
+    /* Image post */
+    .post-image-block {
+      margin: 0; border-radius: 0; overflow: hidden; cursor: pointer;
+      transition: opacity 0.2s; position: relative;
+    }
+    .post-image-block:hover { opacity: 0.93; }
+    .post-img {
+      width: 100%; max-height: 340px; object-fit: cover; display: block;
+    }
+    .post-img-fallback {
+      width: 100%; height: 260px;
+      display: flex; align-items: center; justify-content: center; font-size: 50px;
+    }
+    .pi-1 { background: linear-gradient(135deg, #fde68a 0%, #f97316 50%, #1B6B5A 100%); }
+    .pi-2 { background: linear-gradient(160deg, #0d1a12, #1a3828, #d4a04a); }
+
+    /* Video post */
+    .post-video-block {
+      position: relative; cursor: pointer; overflow: hidden;
+      border-radius: 0; transition: all 0.2s;
+    }
+    .post-video-thumb {
+      width: 100%; height: 280px; object-fit: cover; display: block;
+      background: linear-gradient(160deg, #0d1a12 0%, #1a3010 40%, #2d1a00 100%);
+      display: flex; align-items: center; justify-content: center; font-size: 60px;
+    }
+    .post-video-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
+    }
+    .post-video-play {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.18); backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .post-video-block:hover .post-video-play { background: rgba(27,107,90,0.6); border-color: rgba(27,107,90,0.8); transform: translate(-50%,-50%) scale(1.08); }
+    .post-video-meta {
+      position: absolute; bottom: 10px; left: 12px; right: 12px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+    }
+    .post-video-views {
+      display: flex; align-items: center; gap: 5px; padding: 3px 9px;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+      border-radius: 20px; font-family: var(--font-en); font-size: 11px;
+      font-weight: 600; color: white;
+    }
+    .post-video-duration {
+      padding: 3px 8px; background: rgba(0,0,0,0.6); border-radius: 6px;
+      font-family: var(--font-en); font-size: 11px; font-weight: 700; color: white;
+    }
+
+    /* Post stats + reaction bar */
+    .post-stats-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-top: 1px solid var(--border-light);
+    }
+    .post-stat-left { display: flex; align-items: center; gap: 4px; }
+    .post-stat-emoji { font-size: 14px; }
+    .post-stat-count { font-family: var(--font-en); font-size: 12px; color: var(--text-light); }
+    .post-stat-right { display: flex; align-items: center; gap: 10px; }
+    .post-stat-item { font-family: var(--font-en); font-size: 12px; color: var(--text-light); cursor: pointer; }
+    .post-stat-item:hover { color: var(--teal); text-decoration: underline; }
+
+    .post-reaction-bar {
+      display: flex; align-items: center; padding: 4px 8px 10px;
+      gap: 0; border-top: 1px solid var(--border-light);
+    }
+    .reaction-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 4px; border-radius: 10px; border: none; background: transparent;
+      cursor: pointer; transition: all 0.18s; color: var(--text-light);
+    }
+    .reaction-btn:hover { background: var(--off-white); color: var(--teal); }
+    .reaction-btn.liked { color: var(--coral); }
+    .reaction-btn.liked:hover { color: var(--coral); }
+    .reaction-btn-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; }
+
+    /* ---- Create Post Compact ---- */
+    .create-post-compact {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-xs); padding: 12px 14px;
+    }
+    .create-compact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .create-compact-av {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--teal-light), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+    }
+    .create-compact-input {
+      flex: 1; padding: 9px 16px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--off-white);
+      font-family: var(--font-bn); font-size: 13px; color: var(--text-dark);
+      outline: none; cursor: pointer; transition: all 0.2s;
+    }
+    .create-compact-input:focus { border-color: var(--teal); background: white; }
+    .create-compact-input::placeholder { color: var(--text-light); }
+    .create-compact-actions {
+      display: flex; align-items: center; gap: 4px; padding-top: 8px;
+      border-top: 1px solid var(--border-light);
+    }
+    .create-action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 6px; border-radius: 9px; border: none; background: transparent;
+      cursor: pointer; font-family: var(--font-bn); font-size: 12px; font-weight: 500;
+      color: var(--text-mid); transition: all 0.15s;
+    }
+    .create-action-btn:hover { background: var(--off-white); color: var(--teal); }
+
+    /* ---- Support Panels ---- */
+    .support-panel {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      overflow: hidden; transition: box-shadow 0.2s;
+    }
+    .support-panel:hover { box-shadow: var(--shadow-md); }
+    .support-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 16px 8px;
+    }
+    .sp-title { display: flex; flex-direction: column; }
+    .sp-title-bn { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .sp-title-en { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .sp-see-all { font-family: var(--font-en); font-size: 11px; color: var(--teal); text-decoration: none; cursor: pointer; transition: color 0.15s; }
+    .sp-see-all:hover { color: var(--teal-light); }
+
+    /* About panel */
+    .about-section-label {
+      font-family: var(--font-en); font-size: 9px; font-weight: 700;
+      color: var(--text-xlight); text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 4px 16px 6px;
+    }
+    .about-entry {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 9px 16px; border-top: 1px solid var(--border-light);
+      transition: background 0.15s; cursor: pointer;
+    }
+    .about-entry:hover { background: var(--off-white); }
+    .about-entry-icon {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .aei-teal { background: var(--teal-pale); }
+    .aei-gold { background: var(--gold-pale); }
+    .aei-blue { background: #eff6ff; }
+    .about-entry-text { flex: 1; min-width: 0; }
+    .ae-title { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--text-dark); }
+    .ae-sub { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .ae-date { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); margin-top: 1px; }
+
+    /* Contact info */
+    .contact-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+      border-top: 1px solid var(--border-light); transition: background 0.15s; cursor: pointer;
+    }
+    .contact-item:hover { background: var(--off-white); }
+    .contact-link { font-family: var(--font-en); font-size: 11px; color: var(--teal); text-decoration: none; }
+
+    /* Reels mini grid */
+    .reels-mini-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 3px;
+      padding: 0 0 14px;
+    }
+    .reels-mini-thumb {
+      position: relative; aspect-ratio: 9/13; overflow: hidden;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .reels-mini-thumb:hover { opacity: 0.85; }
+    .rmt-bg { width: 100%; height: 100%; }
+    .rmt-1 { background: linear-gradient(160deg,#1a3828,#d4a04a); }
+    .rmt-2 { background: linear-gradient(160deg,#2d1a00,#f97316); }
+    .rmt-3 { background: linear-gradient(160deg,#0d2218,#2a9678); }
+    .rmt-4 { background: linear-gradient(160deg,#1a0d28,#8b5cf6); }
+    .rmt-5 { background: linear-gradient(160deg,#1a0d0d,#dc2626); }
+    .rmt-6 { background: linear-gradient(160deg,#0d1a28,#06b6d4); }
+    .rmt-play {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rmt-count {
+      position: absolute; bottom: 4px; left: 4px;
+      font-family: var(--font-en); font-size: 9px; font-weight: 700; color: white;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .rmt-emoji { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-60%); font-size: 22px; }
+
+    /* Friends mini panel */
+    .friends-mini-search {
+      padding: 0 12px 10px;
+    }
+    .fms-inner { position: relative; }
+    .fms-inner input {
+      width: 100%; padding: 7px 12px 7px 32px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--off-white);
+      font-family: var(--font-en); font-size: 12px; color: var(--text-dark);
+      outline: none; transition: all 0.2s;
+    }
+    .fms-inner input:focus { border-color: var(--teal); background: white; }
+    .fms-inner input::placeholder { color: var(--text-light); font-size: 11px; }
+    .fms-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+    .friends-mini-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 6px;
+      padding: 0 12px 14px;
+    }
+    .fmg-card {
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      border: 1px solid var(--border-light); transition: all 0.2s;
+    }
+    .fmg-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: rgba(27,107,90,0.2); }
+    .fmg-photo { width: 100%; aspect-ratio: 1; }
+    .fmg-ph-inner {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white;
+    }
+    .fmg-name { font-family: var(--font-bn); font-size: 10px; font-weight: 600; color: var(--text-dark); padding: 5px 5px 2px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .fmg-mutual { font-family: var(--font-en); font-size: 8px; color: var(--text-xlight); text-align: center; padding-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -983,12 +1311,352 @@
     </aside><!-- /profile-left -->
 
 
-    <!-- ========================= RIGHT PLACEHOLDER (Part 2) ========================= -->
-    <div class="profile-right" aria-label="Profile feed — Part 2 coming soon">
-      <div class="placeholder-icon">📝</div>
-      <div class="placeholder-bn">পোস্ট ফিড — পার্ট ২-এ আসছে</div>
-      <div class="placeholder-en">Post feed content · Coming in Part 2</div>
-    </div>
+    <!-- ========================= RIGHT CONTENT (Part 2) ========================= -->
+    <div class="profile-right">
+
+      <!-- ===== MAIN FEED COLUMN ===== -->
+      <div class="profile-feed-col">
+
+        <!-- Profile Completion Card -->
+        <div class="completion-card" id="completionCard" aria-label="Profile completion prompt">
+          <button class="completion-dismiss" onclick="document.getElementById('completionCard').style.display='none'" aria-label="বন্ধ করুন / Dismiss">✕</button>
+          <div class="completion-header">
+            <span class="completion-emoji">🌟</span>
+            <div>
+              <div class="completion-title-bn">তোমার প্রোফাইল ৬০% সম্পূর্ণ</div>
+              <div class="completion-title-en">Your profile is 60% complete — keep going!</div>
+            </div>
+          </div>
+          <div class="completion-pct">60% · ৬০%</div>
+          <div class="completion-bar-wrap"><div class="completion-bar-fill"></div></div>
+          <div class="completion-chips">
+            <button class="completion-chip" aria-label="প্রোফাইল ছবি যোগ করুন">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              প্রোফাইল ছবি
+            </button>
+            <button class="completion-chip" aria-label="কর্মস্থল যোগ করুন">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              কর্মস্থল
+            </button>
+            <button class="completion-chip" aria-label="শিক্ষা যোগ করুন">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              শিক্ষা
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Row -->
+        <div class="filter-row" role="toolbar" aria-label="Post filter controls">
+          <div class="filter-left">
+            <button class="filter-btn" aria-label="ফিল্টার / Filters">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round" stroke-width="3"/></svg>
+              <span style="font-family:var(--font-bn);">ফিল্টার</span>
+              <span style="font-family:var(--font-en);font-size:9px;color:var(--text-xlight);">Filters</span>
+            </button>
+            <div class="view-toggle" aria-label="View toggle">
+              <button class="view-toggle-btn active" id="gridViewBtn" onclick="setView('grid')" aria-label="গ্রিড ভিউ / Grid view" aria-pressed="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+              <button class="view-toggle-btn" id="listViewBtn" onclick="setView('list')" aria-label="লিস্ট ভিউ / List view" aria-pressed="false">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="manage-posts-btn" aria-label="পোস্ট পরিচালনা / Manage posts">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="5" width="6" height="6" rx="1"/><rect x="3" y="13" width="6" height="6" rx="1"/><line x1="13" y1="8" x2="21" y2="8"/><line x1="13" y1="16" x2="21" y2="16"/></svg>
+            <span style="font-family:var(--font-bn);">পোস্ট পরিচালনা</span>
+            <span style="font-family:var(--font-en);font-size:9px;opacity:0.7;">Manage Posts</span>
+          </button>
+        </div>
+
+        <!-- PINNED POST -->
+        <article class="post-card pinned" aria-label="Pinned post">
+          <div class="pinned-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="pinned-badge-text-bn">📌 পিন করা পোস্ট</span>
+            <span class="pinned-badge-text-en">· Pinned Post</span>
+          </div>
+          <div class="post-header">
+            <div class="post-av">স</div>
+            <div class="post-meta">
+              <div class="post-author">Md Sohel</div>
+              <div class="post-time-row">
+                <span class="post-time">March 15, 2025</span>
+                <div class="post-audience">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10A15.3 15.3 0 018 12a15.3 15.3 0 014-10z"/></svg>
+                  Public
+                </div>
+              </div>
+            </div>
+            <button class="post-options-btn" aria-label="পোস্ট বিকল্প / Post options"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+          </div>
+          <div class="post-body">
+            <p class="post-text-bn">আমার জলশা যাত্রা শুরু হলো! 🎉 এই প্ল্যাটফর্মে সবাইকে স্বাগতম। বাংলাদেশের মানুষদের জন্য, বাংলাদেশের মানুষদের হাতে তৈরি।</p>
+          </div>
+          <div class="post-image-block">
+            <div class="post-img-fallback pi-1">🎊</div>
+          </div>
+          <div class="post-stats-row">
+            <div class="post-stat-left">
+              <span class="post-stat-emoji">❤️</span><span class="post-stat-emoji">😊</span><span class="post-stat-emoji">👏</span>
+              <span class="post-stat-count" style="margin-left:4px;">৩৪৬</span>
+            </div>
+            <div class="post-stat-right">
+              <span class="post-stat-item">৪৮ মন্তব্য · comments</span>
+              <span class="post-stat-item">২১ শেয়ার · shares</span>
+            </div>
+          </div>
+          <div class="post-reaction-bar">
+            <button class="reaction-btn liked" onclick="toggleLikeP1(this)" aria-label="পছন্দ করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#E85C4A" stroke="#E85C4A" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              <span class="reaction-btn-bn">পছন্দ · Like</span>
+            </button>
+            <button class="reaction-btn" aria-label="মন্তব্য করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+              <span class="reaction-btn-bn">মন্তব্য · Comment</span>
+            </button>
+            <button class="reaction-btn" aria-label="শেয়ার করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <span class="reaction-btn-bn">শেয়ার · Share</span>
+            </button>
+          </div>
+        </article>
+
+        <!-- CREATE POST COMPACT -->
+        <div class="create-post-compact" aria-label="Create new post">
+          <div class="create-compact-row">
+            <div class="create-compact-av">স</div>
+            <input class="create-compact-input" type="text" placeholder="কী মনে হচ্ছে, Sohel? / What's on your mind?" aria-label="Create post input" />
+          </div>
+          <div class="create-compact-actions">
+            <button class="create-action-btn" aria-label="ছবি/ভিডিও / Photo or Video">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>ছবি / ভিডিও</span>
+            </button>
+            <button class="create-action-btn" aria-label="রিলস / Reel">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/><rect x="19" y="3" width="2" height="18" rx="1"/></svg>
+              <span>রিলস</span>
+            </button>
+            <button class="create-action-btn" aria-label="অনুভূতি / Feeling">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              <span>অনুভূতি</span>
+            </button>
+            <button class="create-action-btn" style="flex:0;padding:8px 12px;background:linear-gradient(135deg,var(--teal),var(--teal-light));border-radius:9px;color:white;font-weight:700;" aria-label="পোস্ট করুন / Post">
+              <span style="font-family:var(--font-bn);">পোস্ট</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- POST 1: Text + Image -->
+        <article class="post-card" aria-label="Post 1: Text and image">
+          <div class="post-header">
+            <div class="post-av">স</div>
+            <div class="post-meta">
+              <div class="post-author">Md Sohel</div>
+              <div class="post-time-row">
+                <span class="post-time">2 hours ago · ২ ঘণ্টা আগে</span>
+                <div class="post-audience">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><path d="M3 21c0-4 3.6-6 6-6"/><path d="M16 21c0-4-3.6-6-6-6"/></svg>
+                  Friends
+                </div>
+              </div>
+            </div>
+            <button class="post-options-btn" aria-label="পোস্ট বিকল্প"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+          </div>
+          <div class="post-body">
+            <p class="post-text-bn">আজ মাগুরার নদীর ধারে সন্ধ্যাকাল কাটালাম। 🌅 এই সৌন্দর্য ভাষায় প্রকাশ করা কঠিন। আমার শহর, আমার গর্ব।</p>
+          </div>
+          <div class="post-image-block">
+            <img src="profile_cover_photo_1783610015722.png" class="post-img" alt="নদীর সন্ধ্যাকাল — Riverbank at dusk" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+            <div class="post-img-fallback pi-2" style="display:none;">🌅</div>
+          </div>
+          <div class="post-stats-row">
+            <div class="post-stat-left">
+              <span class="post-stat-emoji">❤️</span><span class="post-stat-emoji">😍</span>
+              <span class="post-stat-count" style="margin-left:4px;">৮৭</span>
+            </div>
+            <div class="post-stat-right">
+              <span class="post-stat-item">১২ মন্তব্য</span>
+              <span class="post-stat-item">৫ শেয়ার</span>
+            </div>
+          </div>
+          <div class="post-reaction-bar">
+            <button class="reaction-btn" onclick="this.classList.toggle('liked');this.querySelector('svg').setAttribute('fill',this.classList.contains('liked')?'#E85C4A':'none');this.querySelector('svg').setAttribute('stroke',this.classList.contains('liked')?'#E85C4A':'currentColor')" aria-label="পছন্দ করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              <span class="reaction-btn-bn">পছন্দ · Like</span>
+            </button>
+            <button class="reaction-btn" aria-label="মন্তব্য করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+              <span class="reaction-btn-bn">মন্তব্য · Comment</span>
+            </button>
+            <button class="reaction-btn" aria-label="শেয়ার করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <span class="reaction-btn-bn">শেয়ার · Share</span>
+            </button>
+          </div>
+        </article>
+
+        <!-- POST 2: Video -->
+        <article class="post-card" aria-label="Post 2: Video">
+          <div class="post-header">
+            <div class="post-av">স</div>
+            <div class="post-meta">
+              <div class="post-author">Md Sohel</div>
+              <div class="post-time-row">
+                <span class="post-time">Yesterday · গতকাল</span>
+                <div class="post-audience">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10A15.3 15.3 0 018 12a15.3 15.3 0 014-10z"/></svg>
+                  Public
+                </div>
+              </div>
+            </div>
+            <button class="post-options-btn" aria-label="পোস্ট বিকল্প"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+          </div>
+          <div class="post-body">
+            <p class="post-text-bn">মাগুরা বাজারে গেলাম আজ। ভিডিওতে দেখুন কত রকম শাকসবজি! 🥬🥕 আমাদের কৃষকদের পরিশ্রম সত্যিই অসাধারণ।</p>
+          </div>
+          <div class="post-video-block" tabindex="0" role="button" aria-label="ভিডিও চালু করুন / Play video">
+            <div class="post-video-thumb">🎬</div>
+            <div class="post-video-overlay"></div>
+            <div class="post-video-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <div class="post-video-meta">
+              <div class="post-video-views">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                ২,৪৩১ views
+              </div>
+              <div class="post-video-duration">2:14</div>
+            </div>
+          </div>
+          <div class="post-stats-row">
+            <div class="post-stat-left">
+              <span class="post-stat-emoji">👏</span><span class="post-stat-emoji">❤️</span>
+              <span class="post-stat-count" style="margin-left:4px;">১৫৩</span>
+            </div>
+            <div class="post-stat-right">
+              <span class="post-stat-item">৩২ মন্তব্য</span>
+              <span class="post-stat-item">১৮ শেয়ার</span>
+            </div>
+          </div>
+          <div class="post-reaction-bar">
+            <button class="reaction-btn" onclick="this.classList.toggle('liked');this.querySelector('svg').setAttribute('fill',this.classList.contains('liked')?'#E85C4A':'none');this.querySelector('svg').setAttribute('stroke',this.classList.contains('liked')?'#E85C4A':'currentColor')" aria-label="পছন্দ করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              <span class="reaction-btn-bn">পছন্দ · Like</span>
+            </button>
+            <button class="reaction-btn" aria-label="মন্তব্য করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+              <span class="reaction-btn-bn">মন্তব্য · Comment</span>
+            </button>
+            <button class="reaction-btn" aria-label="শেয়ার করুন">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <span class="reaction-btn-bn">শেয়ার · Share</span>
+            </button>
+          </div>
+        </article>
+
+      </div><!-- /profile-feed-col -->
+
+
+      <!-- ===== SUPPORT PANELS COLUMN ===== -->
+      <div class="profile-support-col">
+
+        <!-- ABOUT TAB PREVIEW -->
+        <div class="support-panel" aria-label="About tab preview">
+          <div class="support-panel-header">
+            <div class="sp-title">
+              <span class="sp-title-bn">সম্পর্কে</span>
+              <span class="sp-title-en">About</span>
+            </div>
+            <a href="#" class="sp-see-all">সম্পাদনা · Edit</a>
+          </div>
+
+          <div class="about-section-label">কর্মজীবন · Work History</div>
+          <div class="about-entry">
+            <div class="about-entry-icon aei-teal">💼</div>
+            <div class="about-entry-text">
+              <div class="ae-title">Content Creator</div>
+              <div class="ae-sub">Freelance Digital Media</div>
+              <div class="ae-date">Jan 2023 — বর্তমান · Present</div>
+            </div>
+          </div>
+          <div class="about-entry">
+            <div class="about-entry-icon aei-gold">🏢</div>
+            <div class="about-entry-text">
+              <div class="ae-title">Web Developer</div>
+              <div class="ae-sub">TechBD Solutions, Dhaka</div>
+              <div class="ae-date">Jun 2021 — Dec 2022</div>
+            </div>
+          </div>
+
+          <div class="about-section-label" style="margin-top:8px;">শিক্ষা · Education</div>
+          <div class="about-entry">
+            <div class="about-entry-icon aei-blue">🎓</div>
+            <div class="about-entry-text">
+              <div class="ae-title">BSc Computer Science</div>
+              <div class="ae-sub">Khulna University</div>
+              <div class="ae-date">2017 — 2021</div>
+            </div>
+          </div>
+
+          <div class="about-section-label" style="margin-top:8px;">যোগাযোগ · Contact</div>
+          <div class="contact-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10A15.3 15.3 0 018 12a15.3 15.3 0 014-10z"/></svg>
+            <a href="#" class="contact-link">sohel.dev.bd</a>
+          </div>
+          <div class="contact-item" style="margin-bottom:12px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.08 9.81 19.79 19.79 0 01.11 1.18 2 2 0 012.11 1h3a2 2 0 012 1.72 12 12 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12 12 0 002.81.7A2 2 0 0122 17l-.08-.08z"/></svg>
+            <a href="#" class="contact-link">@sohel.digital</a>
+          </div>
+        </div>
+
+        <!-- REELS TAB PREVIEW -->
+        <div class="support-panel" aria-label="Reels tab preview">
+          <div class="support-panel-header">
+            <div class="sp-title">
+              <span class="sp-title-bn">রিলস</span>
+              <span class="sp-title-en">Reels</span>
+            </div>
+            <a href="#" class="sp-see-all">সব দেখুন · See all</a>
+          </div>
+          <div class="reels-mini-grid">
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-1"></div><div class="rmt-emoji">🌅</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>২.৪K</div></div>
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-2"></div><div class="rmt-emoji">🍛</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>১.১K</div></div>
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-3"></div><div class="rmt-emoji">🌿</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>৮৭৬</div></div>
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-4"></div><div class="rmt-emoji">🎶</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>৩.৭K</div></div>
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-5"></div><div class="rmt-emoji">🚣</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>৫৪৩</div></div>
+            <div class="reels-mini-thumb"><div class="rmt-bg rmt-6"></div><div class="rmt-emoji">🌃</div><div class="rmt-play"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21"/></svg></div><div class="rmt-count"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>৯৩২</div></div>
+          </div>
+        </div>
+
+        <!-- FRIENDS TAB PREVIEW -->
+        <div class="support-panel" aria-label="Friends tab preview">
+          <div class="support-panel-header">
+            <div class="sp-title">
+              <span class="sp-title-bn">বন্ধু</span>
+              <span class="sp-title-en">Friends · ৮৯</span>
+            </div>
+            <a href="#" class="sp-see-all">সব দেখুন · See all</a>
+          </div>
+          <div class="friends-mini-search">
+            <div class="fms-inner">
+              <span class="fms-icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+              <input type="text" placeholder="বন্ধু খুঁজুন... / Search friends" aria-label="Search friends" />
+            </div>
+          </div>
+          <div class="friends-mini-grid">
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-1">র</div></div><div class="fmg-name">রাহেলা বেগম</div><div class="fmg-mutual">১২ mutual</div></div>
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-2">ক</div></div><div class="fmg-name">করিম উদ্দিন</div><div class="fmg-mutual">৮ mutual</div></div>
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-3">ত</div></div><div class="fmg-name">তানভীর</div><div class="fmg-mutual">৫ mutual</div></div>
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-4">স</div></div><div class="fmg-name">সামিয়া আক্তার</div><div class="fmg-mutual">১৫ mutual</div></div>
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-5">না</div></div><div class="fmg-name">নাবিলা</div><div class="fmg-mutual">৩ mutual</div></div>
+            <div class="fmg-card"><div class="fmg-photo"><div class="fmg-ph-inner fa-6">ফ</div></div><div class="fmg-name">ফারহান</div><div class="fmg-mutual">৭ mutual</div></div>
+          </div>
+        </div>
+
+      </div><!-- /profile-support-col -->
+
+    </div><!-- /profile-right -->
 
   </div><!-- /profile-content -->
 
@@ -1037,6 +1705,40 @@
       }, 2000);
     });
   }
+
+  // View toggle (grid / list)
+  function setView(mode) {
+    const gBtn = document.getElementById('gridViewBtn');
+    const lBtn = document.getElementById('listViewBtn');
+    if (mode === 'grid') {
+      gBtn.classList.add('active'); lBtn.classList.remove('active');
+      gBtn.setAttribute('aria-pressed','true'); lBtn.setAttribute('aria-pressed','false');
+    } else {
+      lBtn.classList.add('active'); gBtn.classList.remove('active');
+      lBtn.setAttribute('aria-pressed','true'); gBtn.setAttribute('aria-pressed','false');
+    }
+  }
+
+  // Pinned post like toggle
+  function toggleLikeP1(btn) {
+    btn.classList.toggle('liked');
+    const svg = btn.querySelector('svg');
+    if (btn.classList.contains('liked')) {
+      svg.setAttribute('fill','#E85C4A'); svg.setAttribute('stroke','#E85C4A');
+    } else {
+      svg.setAttribute('fill','none'); svg.setAttribute('stroke','#E85C4A');
+    }
+  }
+
+  // Completion chip click — fill chip and update bar
+  document.querySelectorAll('.completion-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      this.style.background = 'var(--teal)'; this.style.color = 'white';
+      this.style.borderColor = 'var(--teal)';
+      this.innerHTML = '✓ ' + this.textContent.trim();
+      this.disabled = true;
+    });
+  });
 
   // Profile av hover effect
   document.querySelector('.profile-av').addEventListener('click', () => {
