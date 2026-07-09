@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>জলশায় যোগ দাও — নতুন অ্যাকাউন্ট | Jolshaa</title>
+  <meta name="description" content="জলশায় যোগ দাও — তোমার পরিবার, বন্ধু আর কমিউনিটির সাথে নতুনভাবে সংযুক্ত হও।" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === RESET & ROOT === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:        #1B6B5A;
+      --teal-mid:    #217a68;
+      --teal-light:  #2a9678;
+      --teal-pale:   #E8F2EF;
+      --teal-xpale:  #f0f8f5;
+      --off-white:   #F7F3EC;
+      --warm-white:  #FDFAF5;
+      --gold:        #D4A04A;
+      --text-dark:   #1a1a1a;
+      --text-mid:    #4a4a4a;
+      --text-light:  #888;
+      --text-muted:  #aaa;
+      --border:      #e0dbd3;
+      --radius-input: 11px;
+      --radius-btn:   12px;
+      --radius-card:  20px;
+      --font-bn: 'Hind Siliguri', sans-serif;
+      --font-en: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-bn);
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 15% 10%,  rgba(27,107,90,0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 88% 80%,  rgba(212,160,74,0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 5%,   rgba(27,107,90,0.04) 0%, transparent 35%);
+    }
+
+    /* === PAGE SHELL === */
+    .page-shell {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 20px 48px;
+    }
+
+    /* === TOP BAR === */
+    .top-bar {
+      width: 100%; max-width: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0 0;
+    }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      padding: 7px 14px 7px 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      flex-shrink: 0;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--teal-xpale);
+      transform: translateX(-2px);
+    }
+    .back-btn svg { color: var(--teal); }
+    .back-btn span {
+      font-family: var(--font-bn);
+      font-size: 12.5px; font-weight: 500;
+      color: var(--teal);
+    }
+
+    .logo-lockup {
+      display: flex; align-items: center; gap: 9px;
+    }
+    .logo-badge-sm {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(27,107,90,0.3);
+      animation: shimmer 5s ease-in-out infinite;
+    }
+    .logo-badge-sm .j-mark {
+      font-family: var(--font-bn);
+      font-size: 18px; font-weight: 700;
+      color: white; line-height: 1;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .logo-wordmark-sm {
+      font-family: var(--font-en);
+      font-size: 17px; font-weight: 700;
+      color: var(--teal); letter-spacing: -0.3px;
+    }
+
+    .top-bar-spacer { width: 100px; flex-shrink: 0; }
+
+    /* === SIGNUP CARD === */
+    .signup-card {
+      width: 100%; max-width: 520px;
+      background: var(--warm-white);
+      border: 1px solid rgba(27,107,90,0.08);
+      border-radius: var(--radius-card);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.09), 0 2px 10px rgba(0,0,0,0.05);
+      padding: 36px 40px 32px;
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .signup-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-light), var(--gold));
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+    }
+
+    .deco-dots {
+      position: absolute;
+      top: 18px; right: 22px;
+      opacity: 0.07; pointer-events: none;
+    }
+
+    /* === HEADING === */
+    .heading-block {
+      margin-bottom: 26px;
+      animation: fadeSlideUp 0.5s ease both;
+    }
+    .heading-main {
+      font-family: var(--font-bn);
+      font-size: 27px; font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.01em;
+    }
+    .heading-sub {
+      font-family: var(--font-bn);
+      font-size: 13.5px; font-weight: 400;
+      color: var(--text-mid);
+      margin-top: 7px; line-height: 1.55;
+    }
+
+    /* === PROGRESS STRIP === */
+    .progress-strip {
+      display: flex; align-items: flex-start;
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s 0.07s ease both;
+    }
+    .progress-step {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 5px; flex: 1;
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 12px; font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .step-dot.active {
+      background: var(--teal); color: white;
+      box-shadow: 0 2px 10px rgba(27,107,90,0.35);
+    }
+    .step-dot.done {
+      background: var(--teal-pale); color: var(--teal);
+    }
+    .step-dot.idle {
+      background: #f0ece6; color: var(--text-light);
+      border: 1.5px solid var(--border);
+    }
+    .step-label {
+      font-family: var(--font-bn);
+      font-size: 10px; font-weight: 500;
+      color: var(--text-light); text-align: center;
+    }
+    .step-label.active { color: var(--teal); font-weight: 600; }
+
+    .progress-line {
+      flex: 1; height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 14px 6px 0;
+      transition: background 0.3s;
+    }
+    .progress-line.done { background: var(--teal-pale); }
+
+    /* === FORM === */
+    .signup-form { display: flex; flex-direction: column; gap: 22px; }
+
+    .form-section {
+      display: flex; flex-direction: column; gap: 13px;
+      animation: fadeSlideUp 0.5s ease both;
+    }
+    .form-section:nth-child(1) { animation-delay: 0.10s; }
+    .form-section:nth-child(2) { animation-delay: 0.16s; }
+    .form-section:nth-child(3) { animation-delay: 0.22s; }
+    .form-section:nth-child(4) { animation-delay: 0.28s; }
+    .form-section:nth-child(5) { animation-delay: 0.34s; }
+
+    .section-label {
+      font-family: var(--font-bn);
+      font-size: 10.5px; font-weight: 600;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-row { display: flex; gap: 12px; }
+    .field-row .field-group { flex: 1; }
+
+    .field-label {
+      font-family: var(--font-bn);
+      font-size: 13px; font-weight: 600;
+      color: var(--text-dark);
+    }
+    .required-dot { color: var(--teal); margin-left: 2px; }
+
+    .field-input,
+    .field-select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-input);
+      border: 1.5px solid var(--border);
+      background: white;
+      font-family: var(--font-bn);
+      font-size: 14.5px;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .field-input::placeholder {
+      color: var(--text-muted);
+      font-family: var(--font-bn);
+      font-size: 13px;
+    }
+    .field-input:focus,
+    .field-select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(27,107,90,0.09);
+    }
+    .field-input:hover:not(:focus),
+    .field-select:hover:not(:focus) {
+      border-color: rgba(27,107,90,0.28);
+    }
+    .field-input.valid  { border-color: var(--teal); background: rgba(232,242,239,0.25); }
+    .field-input.invalid { border-color: #E85C4A; box-shadow: 0 0 0 3px rgba(232,92,74,0.08); }
+
+    /* DOB dropdowns */
+    .dob-row { display: flex; gap: 10px; }
+
+    .dob-wrap        { position: relative; flex: 1; }
+    .dob-wrap.day    { flex: 0 0 88px; }
+    .dob-wrap.month  { flex: 1; }
+    .dob-wrap.year   { flex: 0 0 100px; }
+    .dob-wrap .field-select { padding-right: 34px; cursor: pointer; }
+    .dob-wrap::after {
+      content: '';
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; width: 10px; height: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%231B6B5A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-size: contain;
+    }
+
+    /* Gender select */
+    .gender-wrap { position: relative; }
+    .gender-wrap .field-select { padding-right: 34px; cursor: pointer; }
+    .gender-wrap::after {
+      content: '';
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; width: 10px; height: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%231B6B5A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-size: contain;
+    }
+
+    /* Password */
+    .password-wrap { position: relative; }
+    .password-wrap .field-input { padding-right: 46px; }
+    .pw-toggle {
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      border-radius: 6px; color: var(--text-light);
+      display: flex; align-items: center;
+      transition: color 0.2s, background 0.2s;
+    }
+    .pw-toggle:hover { color: var(--teal); background: var(--teal-xpale); }
+
+    /* Strength meter */
+    .strength-bar-wrap { display: flex; gap: 4px; margin-top: 7px; }
+    .strength-seg {
+      flex: 1; height: 3px; border-radius: 3px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .strength-seg.weak   { background: #E85C4A; }
+    .strength-seg.medium { background: var(--gold); }
+    .strength-seg.strong { background: var(--teal); }
+    .strength-label {
+      font-family: var(--font-bn);
+      font-size: 11px; color: var(--text-light);
+      margin-top: 4px; min-height: 15px;
+      transition: color 0.3s;
+    }
+    .strength-label.weak   { color: #E85C4A; }
+    .strength-label.medium { color: #c48b1a; }
+    .strength-label.strong { color: var(--teal); }
+
+    /* Field error */
+    .field-error {
+      font-family: var(--font-bn);
+      font-size: 11.5px; color: #E85C4A;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* Legal text */
+    .legal-text {
+      font-family: var(--font-bn);
+      font-size: 12px; line-height: 1.7;
+      color: var(--text-light);
+      background: var(--teal-xpale);
+      border: 1px solid rgba(27,107,90,0.1);
+      border-radius: 9px;
+      padding: 12px 14px;
+    }
+    .legal-text a {
+      color: var(--teal); font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(27,107,90,0.25);
+      transition: border-color 0.2s;
+    }
+    .legal-text a:hover { border-bottom-color: var(--teal); }
+
+    /* Primary button */
+    .btn-primary {
+      width: 100%;
+      padding: 15px 20px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+      color: white; border: none;
+      border-radius: var(--radius-btn);
+      cursor: pointer;
+      font-family: var(--font-bn);
+      font-size: 17px; font-weight: 700;
+      letter-spacing: 0.01em;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+      box-shadow: 0 4px 18px rgba(27,107,90,0.38);
+      margin-top: 4px;
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+      pointer-events: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(27,107,90,0.45);
+      background: linear-gradient(135deg, #1d7564, #25a07f);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.85; cursor: default; transform: none; }
+
+    /* Submit nudge */
+    .submit-nudge {
+      display: flex; align-items: center; gap: 6px;
+      justify-content: center;
+      font-family: var(--font-bn);
+      font-size: 11.5px; color: var(--text-light);
+      margin-top: 10px; text-align: center;
+    }
+    .nudge-icon { font-size: 13px; }
+
+    /* Login link row */
+    .login-link-row {
+      text-align: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      animation: fadeSlideUp 0.5s 0.4s ease both;
+    }
+    .login-link-label {
+      font-family: var(--font-bn);
+      font-size: 13px; color: var(--text-mid);
+    }
+    .login-link {
+      font-family: var(--font-bn);
+      font-size: 13px; font-weight: 700;
+      color: var(--teal); text-decoration: none;
+      margin-left: 4px; padding: 2px 5px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+    .login-link:hover { background: var(--teal-pale); }
+
+    /* === FOOTER === */
+    .page-footer {
+      width: 100%; max-width: 520px;
+      margin-top: 20px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      animation: fadeSlideUp 0.5s 0.45s ease both;
+    }
+    .lang-selector {
+      display: flex; align-items: center;
+      gap: 5px; flex-wrap: wrap; justify-content: center;
+    }
+    .lang-item {
+      font-family: var(--font-en); font-size: 11px;
+      color: var(--text-light); cursor: pointer;
+      padding: 2px 7px; border-radius: 4px;
+      border: none; background: transparent;
+      transition: color 0.2s, background 0.2s;
+    }
+    .lang-item:hover { color: var(--teal); background: var(--teal-xpale); }
+    .lang-item.active { color: var(--teal); font-weight: 600; }
+    .lang-dot { color: var(--border); font-size: 7px; }
+    .footer-copy {
+      font-family: var(--font-en);
+      font-size: 10.5px; color: var(--text-muted); text-align: center;
+    }
+
+    /* === ANIMATIONS === */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%,100% { box-shadow: 0 4px 14px rgba(27,107,90,0.3); }
+      50%      { box-shadow: 0 6px 22px rgba(27,107,90,0.45); }
+    }
+
+    /* === MOBILE === */
+    @media (max-width: 580px) {
+      .signup-card { padding: 26px 20px 22px; border-radius: 16px; }
+      .top-bar { padding-top: 16px; }
+      .top-bar-spacer { width: 60px; }
+      .heading-main { font-size: 22px; }
+      .field-row { flex-direction: column; gap: 12px; }
+      .dob-row { gap: 7px; }
+      .dob-wrap.day  { flex: 0 0 72px; }
+      .dob-wrap.year { flex: 0 0 85px; }
+      .back-btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-shell">
+
+  <!-- TOP BAR -->
+  <header class="top-bar" role="banner">
+    <a href="landing.html" class="back-btn" aria-label="লগইন পেজে ফিরে যাও">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      <span>ফিরে যাও</span>
+    </a>
+
+    <div class="logo-lockup" aria-label="জলশা লোগো">
+      <div class="logo-badge-sm" role="img" aria-label="জলশা ব্যাজ">
+        <span class="j-mark">জ</span>
+      </div>
+      <span class="logo-wordmark-sm">Jolshaa</span>
+    </div>
+
+    <div class="top-bar-spacer" aria-hidden="true"></div>
+  </header>
+
+  <!-- SIGNUP CARD -->
+  <main class="signup-card" role="main" id="signupMain">
+
+    <!-- Decorative dots -->
+    <svg class="deco-dots" width="80" height="80" viewBox="0 0 80 80" aria-hidden="true" fill="#1B6B5A">
+      <circle cx="8"  cy="8"  r="3"/>
+      <circle cx="24" cy="8"  r="3"/>
+      <circle cx="40" cy="8"  r="3"/>
+      <circle cx="56" cy="8"  r="3"/>
+      <circle cx="8"  cy="24" r="3"/>
+      <circle cx="24" cy="24" r="3"/>
+      <circle cx="40" cy="24" r="3"/>
+      <circle cx="8"  cy="40" r="3"/>
+      <circle cx="24" cy="40" r="3"/>
+    </svg>
+
+    <!-- Heading -->
+    <div class="heading-block">
+      <h1 class="heading-main">জলশায় যোগ দাও</h1>
+      <p class="heading-sub">তোমার প্রিয় মানুষদের সাথে প্রতিদিনের গল্প ভাগ করো — পরিবার, বন্ধু, আর তোমার নিজের কমিউনিটির সাথে।</p>
+    </div>
+
+    <!-- Progress strip -->
+    <nav class="progress-strip" aria-label="নিবন্ধন অগ্রগতি" role="navigation">
+      <div class="progress-step">
+        <div class="step-dot active" id="dot1" aria-current="step">১</div>
+        <span class="step-label active" id="lbl1">ব্যক্তিগত</span>
+      </div>
+      <div class="progress-line" id="line1" aria-hidden="true"></div>
+      <div class="progress-step">
+        <div class="step-dot idle" id="dot2">২</div>
+        <span class="step-label" id="lbl2">যোগাযোগ</span>
+      </div>
+      <div class="progress-line" id="line2" aria-hidden="true"></div>
+      <div class="progress-step">
+        <div class="step-dot idle" id="dot3">৩</div>
+        <span class="step-label" id="lbl3">নিরাপত্তা</span>
+      </div>
+    </nav>
+
+    <!-- FORM -->
+    <form class="signup-form" id="signupForm" onsubmit="return handleSubmit(event);" novalidate>
+
+      <!-- SECTION 1 : নাম -->
+      <section class="form-section" aria-labelledby="sec-name">
+        <span class="section-label" id="sec-name">নাম</span>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="firstName">
+              নামের প্রথম অংশ<span class="required-dot" aria-label="প্রয়োজনীয়">•</span>
+            </label>
+            <input
+              id="firstName" name="firstName"
+              class="field-input" type="text"
+              placeholder="যেমন: সুমাইয়া"
+              autocomplete="given-name" required
+            />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="lastName">
+              পদবী<span class="required-dot" aria-label="প্রয়োজনীয়">•</span>
+            </label>
+            <input
+              id="lastName" name="lastName"
+              class="field-input" type="text"
+              placeholder="যেমন: আক্তার"
+              autocomplete="family-name" required
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2 : জন্মতারিখ ও লিঙ্গ -->
+      <section class="form-section" aria-labelledby="sec-dob">
+        <span class="section-label" id="sec-dob">জন্মতারিখ ও পরিচয়</span>
+
+        <div class="field-group">
+          <label class="field-label" for="dobDay">
+            জন্মতারিখ<span class="required-dot" aria-label="প্রয়োজনীয়">•</span>
+          </label>
+          <div class="dob-row" role="group" aria-label="জন্মতারিখ">
+            <div class="dob-wrap day">
+              <select class="field-select" id="dobDay" name="dobDay" required>
+                <option value="" disabled selected>দিন</option>
+              </select>
+            </div>
+            <div class="dob-wrap month">
+              <select class="field-select" id="dobMonth" name="dobMonth" required>
+                <option value=""  disabled selected>মাস</option>
+                <option value="1">জানুয়ারি</option>
+                <option value="2">ফেব্রুয়ারি</option>
+                <option value="3">মার্চ</option>
+                <option value="4">এপ্রিল</option>
+                <option value="5">মে</option>
+                <option value="6">জুন</option>
+                <option value="7">জুলাই</option>
+                <option value="8">আগস্ট</option>
+                <option value="9">সেপ্টেম্বর</option>
+                <option value="10">অক্টোবর</option>
+                <option value="11">নভেম্বর</option>
+                <option value="12">ডিসেম্বর</option>
+              </select>
+            </div>
+            <div class="dob-wrap year">
+              <select class="field-select" id="dobYear" name="dobYear" required>
+                <option value="" disabled selected>বছর</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="gender">লিঙ্গ</label>
+          <div class="gender-wrap">
+            <select class="field-select" id="gender" name="gender">
+              <option value="" disabled selected>তোমার লিঙ্গ নির্বাচন করো</option>
+              <option value="male">পুরুষ</option>
+              <option value="female">মহিলা</option>
+              <option value="other">অন্যান্য</option>
+              <option value="prefer_not">বলতে চাই না</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3 : যোগাযোগ -->
+      <section class="form-section" aria-labelledby="sec-contact">
+        <span class="section-label" id="sec-contact">যোগাযোগ</span>
+
+        <div class="field-group">
+          <label class="field-label" for="contactInfo">
+            মোবাইল নম্বর বা ইমেইল<span class="required-dot" aria-label="প্রয়োজনীয়">•</span>
+          </label>
+          <input
+            id="contactInfo" name="contactInfo"
+            class="field-input" type="text"
+            placeholder="017XXXXXXXX অথবা name@email.com"
+            autocomplete="username" required
+          />
+          <span class="field-error" id="contactError" role="alert">সঠিক মোবাইল নম্বর বা ইমেইল লিখো</span>
+        </div>
+      </section>
+
+      <!-- SECTION 4 : নিরাপত্তা -->
+      <section class="form-section" aria-labelledby="sec-security">
+        <span class="section-label" id="sec-security">নিরাপত্তা</span>
+
+        <div class="field-group">
+          <label class="field-label" for="password">
+            পাসওয়ার্ড<span class="required-dot" aria-label="প্রয়োজনীয়">•</span>
+          </label>
+          <div class="password-wrap">
+            <input
+              id="password" name="password"
+              class="field-input" type="password"
+              placeholder="কমপক্ষে ৮টি অক্ষর"
+              autocomplete="new-password" required minlength="8"
+            />
+            <button
+              type="button" class="pw-toggle"
+              id="pwToggle"
+              aria-label="পাসওয়ার্ড দেখাও"
+              onclick="togglePassword()"
+            >
+              <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div class="strength-bar-wrap" id="strengthBars" aria-hidden="true">
+            <div class="strength-seg" id="seg1"></div>
+            <div class="strength-seg" id="seg2"></div>
+            <div class="strength-seg" id="seg3"></div>
+            <div class="strength-seg" id="seg4"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel" aria-live="polite"></div>
+          <span class="field-error" id="passwordError" role="alert">পাসওয়ার্ড কমপক্ষে ৮টি অক্ষর হতে হবে</span>
+        </div>
+
+        <!-- Legal text -->
+        <p class="legal-text">
+          "যোগ দাও" বোতামে চাপ দিলে তুমি জলশার
+          <a href="#" aria-label="শর্তাবলী পড়ো">শর্তাবলী</a>
+          এবং
+          <a href="#" aria-label="গোপনীয়তা নীতি পড়ো">গোপনীয়তা নীতি</a>
+          -তে রাজি হচ্ছ বলে ধরা হবে। তোমার তথ্য আমাদের কাছে নিরাপদ।
+        </p>
+      </section>
+
+      <!-- Submit area -->
+      <div class="form-section" style="gap:0; animation-delay:0.38s">
+        <button type="submit" class="btn-primary" id="submitBtn">
+          যোগ দাও
+        </button>
+        <p class="submit-nudge">
+          <span class="nudge-icon">✦</span>
+          মাত্র এক মিনিটেই তৈরি হয়ে যাবে তোমার জলশা অ্যাকাউন্ট
+        </p>
+      </div>
+
+      <!-- Login link -->
+      <div class="login-link-row">
+        <span class="login-link-label">ইতিমধ্যে অ্যাকাউন্ট আছে?</span>
+        <a href="landing.html" class="login-link">লগ ইন করো →</a>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="page-footer" role="contentinfo">
+    <nav class="lang-selector" aria-label="ভাষা নির্বাচন">
+      <button class="lang-item active" aria-pressed="true"  onclick="selectLang(this)">বাংলা</button>
+      <span class="lang-dot" aria-hidden="true">●</span>
+      <button class="lang-item" aria-pressed="false" onclick="selectLang(this)">English</button>
+      <span class="lang-dot" aria-hidden="true">●</span>
+      <button class="lang-item" aria-pressed="false" onclick="selectLang(this)">हिन्दी</button>
+      <span class="lang-dot" aria-hidden="true">●</span>
+      <button class="lang-item" aria-pressed="false" onclick="selectLang(this)">اردو</button>
+      <span class="lang-dot" aria-hidden="true">●</span>
+      <button class="lang-item" aria-pressed="false" onclick="selectLang(this)">中文</button>
+    </nav>
+    <p class="footer-copy">© ২০২৬ জলশা &middot; Jolshaa — All rights reserved</p>
+  </footer>
+
+</div>
+
+<script>
+  /* --- Populate DOB dropdowns --- */
+  (function() {
+    var dayEl  = document.getElementById('dobDay');
+    var yearEl = document.getElementById('dobYear');
+    for (var d = 1; d <= 31; d++) {
+      var o = document.createElement('option');
+      o.value = d; o.textContent = d;
+      dayEl.appendChild(o);
+    }
+    var now = new Date().getFullYear();
+    for (var y = now - 5; y >= now - 100; y--) {
+      var oy = document.createElement('option');
+      oy.value = y; oy.textContent = y;
+      yearEl.appendChild(oy);
+    }
+  })();
+
+  /* --- Password toggle --- */
+  function togglePassword() {
+    var inp  = document.getElementById('password');
+    var eO   = document.getElementById('eyeOpen');
+    var eC   = document.getElementById('eyeClosed');
+    var isP  = inp.type === 'password';
+    inp.type          = isP ? 'text'    : 'password';
+    eO.style.display  = isP ? 'none'   : 'block';
+    eC.style.display  = isP ? 'block'  : 'none';
+    document.getElementById('pwToggle').setAttribute(
+      'aria-label', isP ? 'পাসওয়ার্ড লুকাও' : 'পাসওয়ার্ড দেখাও'
+    );
+  }
+
+  /* --- Strength meter --- */
+  document.getElementById('password').addEventListener('input', function() {
+    var pw   = this.value;
+    var segs = ['seg1','seg2','seg3','seg4'].map(function(id) {
+      return document.getElementById(id);
+    });
+    var lbl = document.getElementById('strengthLabel');
+
+    segs.forEach(function(s) { s.className = 'strength-seg'; });
+    lbl.className   = 'strength-label';
+    lbl.textContent = '';
+    if (!pw.length) return;
+
+    var score = 0;
+    if (pw.length >= 8)                          score++;
+    if (/[A-Z]/.test(pw) || /[\u0980-\u09FF]/.test(pw)) score++;
+    if (/[0-9]/.test(pw))                         score++;
+    if (/[^A-Za-z0-9\u0980-\u09FF]/.test(pw))   score++;
+
+    var cls    = ['','weak','medium','medium','strong'][score] || 'weak';
+    var labels = ['','দুর্বল','মাঝারি','ভালো','শক্তিশালী'];
+    var level  = Math.max(1, score);
+
+    for (var i = 0; i < level; i++) segs[i].className = 'strength-seg ' + cls;
+    lbl.className   = 'strength-label ' + cls;
+    lbl.textContent = labels[score] ? 'পাসওয়ার্ড শক্তি: ' + labels[score] : '';
+  });
+
+  /* --- Contact validation on blur --- */
+  document.getElementById('contactInfo').addEventListener('blur', function() {
+    var v    = this.value.trim();
+    var err  = document.getElementById('contactError');
+    var ph   = /^(\+?880|0)1[0-9]{9}$/.test(v.replace(/\s/g,''));
+    var em   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    if (!v) {
+      this.classList.remove('valid','invalid'); err.classList.remove('show');
+    } else if (ph || em) {
+      this.classList.add('valid'); this.classList.remove('invalid'); err.classList.remove('show');
+    } else {
+      this.classList.add('invalid'); this.classList.remove('valid'); err.classList.add('show');
+    }
+  });
+  document.getElementById('contactInfo').addEventListener('focus', function() {
+    document.getElementById('contactError').classList.remove('show');
+    this.classList.remove('invalid');
+  });
+
+  /* --- Progress indicator --- */
+  var progressMap = {
+    firstName:1, lastName:1,
+    dobDay:2, dobMonth:2, dobYear:2, gender:2,
+    contactInfo:2,
+    password:3
+  };
+  Object.keys(progressMap).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('focus', function() { updateProgress(progressMap[id]); });
+  });
+  function updateProgress(step) {
+    for (var i = 1; i <= 3; i++) {
+      var dot = document.getElementById('dot' + i);
+      var lbl = document.getElementById('lbl' + i);
+      if (i < step) {
+        dot.className = 'step-dot done'; lbl.className = 'step-label';
+      } else if (i === step) {
+        dot.className = 'step-dot active'; lbl.className = 'step-label active';
+        dot.setAttribute('aria-current','step');
+      } else {
+        dot.className = 'step-dot idle'; lbl.className = 'step-label';
+        dot.removeAttribute('aria-current');
+      }
+    }
+    for (var j = 1; j <= 2; j++) {
+      document.getElementById('line' + j).className =
+        j < step ? 'progress-line done' : 'progress-line';
+    }
+  }
+
+  /* --- Name field validation on blur --- */
+  ['firstName','lastName'].forEach(function(id) {
+    document.getElementById(id).addEventListener('blur', function() {
+      if (this.value.trim()) { this.classList.add('valid'); this.classList.remove('invalid'); }
+      else { this.classList.remove('valid'); }
+    });
+  });
+
+  /* --- Submit handler --- */
+  function handleSubmit(e) {
+    e.preventDefault();
+    var pw   = document.getElementById('password').value;
+    var cv   = document.getElementById('contactInfo').value.trim();
+    var valid = true;
+
+    if (pw.length < 8) {
+      document.getElementById('password').classList.add('invalid');
+      document.getElementById('passwordError').classList.add('show');
+      valid = false;
+    } else {
+      document.getElementById('password').classList.remove('invalid');
+      document.getElementById('passwordError').classList.remove('show');
+    }
+
+    var ph = /^(\+?880|0)1[0-9]{9}$/.test(cv.replace(/\s/g,''));
+    var em = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cv);
+    if (!cv || (!ph && !em)) {
+      document.getElementById('contactInfo').classList.add('invalid');
+      document.getElementById('contactError').classList.add('show');
+      valid = false;
+    }
+
+    if (!valid) return false;
+
+    var btn = document.getElementById('submitBtn');
+    btn.textContent = '✓ হয়ে গেছে!';
+    btn.style.background = 'linear-gradient(135deg, #15553F, #1B6B5A)';
+    btn.disabled = true;
+    return false;
+  }
+
+  /* --- Language selector --- */
+  function selectLang(el) {
+    document.querySelectorAll('.lang-item').forEach(function(b) {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed','false');
+    });
+    el.classList.add('active');
+    el.setAttribute('aria-pressed','true');
+  }
+</script>
+
+</body>
+</html>
