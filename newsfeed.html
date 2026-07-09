@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>নিউজ ফিড — জলশা | Jolshaa News Feed</title>
+  <meta name="description" content="জলশা নিউজ ফিড — আপনার মানুষদের আপডেট দেখুন। Jolshaa News Feed." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1B6B5A;
+      --teal-hover: #165a4b;
+      --teal-light: #2a9678;
+      --teal-pale:  #E8F2EF;
+      --teal-xpale: #f2faf7;
+      --off-white:  #F5F0E8;
+      --warm-white: #FDFAF5;
+      --card-bg:    #FFFFFF;
+      --coral:      #E85C4A;
+      --coral-pale: #fef3f1;
+      --coral-dark: #c94030;
+      --gold:       #D4A04A;
+      --fact-green: #15803d;
+      --fact-green-bg: #f0fdf4;
+      --fact-red:   #dc2626;
+      --fact-red-bg: #fef2f2;
+      --fact-amber: #b45309;
+      --fact-amber-bg: #fffbeb;
+      --fact-grey:  #6b7280;
+      --text-dark:  #1a1a1a;
+      --text-mid:   #4a4a4a;
+      --text-light: #888;
+      --text-xlight:#aaa;
+      --border:     #E8E2DA;
+      --border-light: #F0EBE3;
+      --shadow-sm:  0 1px 6px rgba(0,0,0,0.07);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.09);
+      --shadow-lg:  0 8px 32px rgba(0,0,0,0.12);
+      --radius-sm:  10px;
+      --radius-md:  14px;
+      --radius-lg:  18px;
+      --font-bn:    'Hind Siliguri', sans-serif;
+      --font-en:    'Inter', sans-serif;
+      --nav-h:      58px;
+      --sidebar-l:  275px;
+      --sidebar-r:  310px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-bn);
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===================== SCROLLBAR ===================== */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0c8be; border-radius: 4px; }
+
+    /* ===================== NAVBAR ===================== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+
+    /* Logo */
+    .nav-logo {
+      display: flex; align-items: center; gap: 9px; text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28);
+      flex-shrink: 0;
+    }
+    .nav-logo-badge span {
+      font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1;
+    }
+    .nav-wordmark {
+      font-family: var(--font-en); font-size: 18px; font-weight: 700;
+      color: var(--teal); letter-spacing: -0.3px;
+    }
+
+    /* Search */
+    .nav-search {
+      flex: 1; max-width: 280px; position: relative; margin-left: 4px;
+    }
+    .nav-search input {
+      width: 100%; padding: 9px 16px 9px 38px;
+      border-radius: 50px; border: 1.5px solid var(--border);
+      background: var(--off-white); font-family: var(--font-bn); font-size: 14px;
+      color: var(--text-dark); outline: none; transition: all 0.2s;
+    }
+    .nav-search input:focus {
+      border-color: var(--teal); background: white;
+      box-shadow: 0 0 0 3px rgba(27,107,90,0.1);
+    }
+    .nav-search input::placeholder { color: var(--text-light); font-family: var(--font-en); font-size: 13px; }
+    .nav-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-light); pointer-events: none;
+    }
+
+    /* Nav center icons */
+    .nav-center {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .nav-icon-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 46px; border-radius: var(--radius-sm);
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-light); transition: all 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); }
+    .nav-icon-btn.active::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 3px; background: var(--teal); border-radius: 2px 2px 0 0;
+    }
+    .nav-badge {
+      position: absolute; top: 5px; right: 7px;
+      background: var(--coral); color: white;
+      font-family: var(--font-en); font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid white;
+    }
+
+    /* Sahajjo Chai navbar button */
+    .nav-sahajjo {
+      position: relative; display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px; border-radius: 50px;
+      background: var(--coral); color: white;
+      border: none; cursor: pointer; flex-shrink: 0;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      box-shadow: 0 3px 12px rgba(232,92,74,0.35);
+      transition: all 0.2s;
+      animation: sahajjoPulse 3s ease-in-out infinite;
+    }
+    .nav-sahajjo:hover {
+      background: var(--coral-dark); transform: translateY(-1px);
+      box-shadow: 0 5px 16px rgba(232,92,74,0.45);
+    }
+    .nav-sahajjo-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: white;
+      animation: dotPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes sahajjoPulse {
+      0%,100% { box-shadow: 0 3px 12px rgba(232,92,74,0.35); }
+      50% { box-shadow: 0 3px 18px rgba(232,92,74,0.55); }
+    }
+    @keyframes dotPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* Nav right: profile */
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      cursor: pointer; border: 2px solid var(--teal-pale);
+      transition: all 0.2s;
+    }
+    .nav-avatar:hover { border-color: var(--teal); }
+
+    /* ===================== PAGE BODY ===================== */
+    .page-body {
+      display: flex; padding-top: var(--nav-h); min-height: 100vh;
+    }
+
+    /* ===================== LEFT SIDEBAR ===================== */
+    .sidebar-left {
+      width: var(--sidebar-l); position: fixed;
+      top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 12px 10px 24px;
+      background: transparent;
+    }
+
+    /* Profile card */
+    .sb-profile-card {
+      display: flex; align-items: center; gap: 11px;
+      padding: 12px 14px; border-radius: var(--radius-md);
+      background: var(--card-bg); border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm); cursor: pointer; text-decoration: none;
+      transition: all 0.2s; margin-bottom: 6px;
+    }
+    .sb-profile-card:hover { background: var(--teal-xpale); border-color: var(--teal-pale); transform: translateX(3px); }
+    .sb-profile-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white;
+      flex-shrink: 0; border: 2px solid var(--teal-pale);
+    }
+    .sb-profile-name {
+      font-family: var(--font-bn); font-size: 15px; font-weight: 600; color: var(--text-dark);
+    }
+    .sb-profile-sub {
+      font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 1px;
+    }
+
+    /* Sidebar section label */
+    .sb-section-label {
+      font-family: var(--font-en); font-size: 11px; font-weight: 600;
+      color: var(--text-xlight); letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 14px 14px 6px;
+    }
+
+    /* Nav items group */
+    .sb-nav-group {
+      background: var(--card-bg); border: 1px solid var(--border-light);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: 6px;
+    }
+    .sb-nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; cursor: pointer; text-decoration: none;
+      transition: background 0.15s; border-bottom: 1px solid var(--border-light);
+    }
+    .sb-nav-item:last-child { border-bottom: none; }
+    .sb-nav-item:hover { background: var(--off-white); }
+    .sb-nav-item.active { background: var(--teal-xpale); }
+    .sb-nav-icon {
+      width: 34px; height: 34px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 16px; transition: transform 0.2s;
+    }
+    .sb-nav-item:hover .sb-nav-icon { transform: scale(1.08); }
+    .sb-nav-icon.teal-bg { background: var(--teal-pale); color: var(--teal); }
+    .sb-nav-icon.gold-bg { background: #fef8ed; color: var(--gold); }
+    .sb-nav-icon.purple-bg { background: #f5f0ff; color: #7c3aed; }
+    .sb-nav-icon.blue-bg { background: #eff6ff; color: #2563eb; }
+    .sb-nav-text-bn {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 500; color: var(--text-dark);
+    }
+    .sb-nav-text-en {
+      font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px;
+    }
+
+    /* Sahajjo Chai sidebar highlight */
+    .sb-sahajjo-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--coral-pale), #fff5f4);
+      border: 1.5px solid rgba(232,92,74,0.2);
+      box-shadow: 0 3px 10px rgba(232,92,74,0.1);
+      cursor: pointer; margin-bottom: 6px; transition: all 0.2s;
+    }
+    .sb-sahajjo-card:hover { transform: translateX(3px); box-shadow: 0 4px 14px rgba(232,92,74,0.18); }
+    .sb-sahajjo-icon {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      background: var(--coral); display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 2px 8px rgba(232,92,74,0.3);
+    }
+    .sb-sahajjo-title {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: var(--coral-dark);
+    }
+    .sb-sahajjo-sub {
+      font-family: var(--font-en); font-size: 10px; color: var(--coral); margin-top: 1px; font-weight: 500;
+    }
+
+    /* Sidebar secondary group */
+    .sb-secondary-group {
+      background: var(--card-bg); border: 1px solid var(--border-light);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: 6px;
+    }
+
+    /* ===================== CENTER FEED ===================== */
+    .feed-center {
+      margin-left: var(--sidebar-l); margin-right: var(--sidebar-r);
+      min-height: calc(100vh - var(--nav-h));
+      display: flex; justify-content: center; padding: 18px 16px 40px;
+    }
+    .feed-inner { width: 100%; max-width: 596px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ---- STORIES BAR ---- */
+    .stories-bar {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      padding: 14px 16px;
+    }
+    .stories-bar-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .stories-bar-title-bn { font-family: var(--font-bn); font-size: 14px; font-weight: 600; color: var(--text-dark); }
+    .stories-bar-title-en { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-left: 6px; }
+    .stories-see-all {
+      font-family: var(--font-en); font-size: 12px; color: var(--teal); font-weight: 500;
+      border: none; background: none; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .stories-see-all:hover { background: var(--teal-pale); }
+
+    .stories-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+    .stories-scroll::-webkit-scrollbar { height: 0; }
+
+    /* Story Card — rounded square, NOT circle */
+    .story-card {
+      position: relative; flex-shrink: 0; width: 76px; height: 110px;
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .story-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: var(--shadow-md); }
+
+    /* Freshness ring border */
+    .story-card.fresh   { outline: 2.5px solid var(--teal); outline-offset: 2px; }
+    .story-card.recent  { outline: 2.5px solid var(--gold); outline-offset: 2px; }
+    .story-card.older   { outline: 2.5px solid #c8c0b6; outline-offset: 2px; }
+
+    .story-bg {
+      width: 100%; height: 100%; object-fit: cover;
+      background: linear-gradient(145deg, #4ECDC4, var(--teal)); /* fallback */
+    }
+    .story-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+      padding: 6px 6px 7px;
+    }
+    .story-name {
+      font-family: var(--font-bn); font-size: 10px; font-weight: 600;
+      color: white; line-height: 1.2; display: block;
+    }
+    .story-freshness-dot {
+      position: absolute; top: 7px; right: 7px;
+      width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid white;
+    }
+    .fresh .story-freshness-dot { background: var(--teal); }
+    .recent .story-freshness-dot { background: var(--gold); }
+    .older .story-freshness-dot { background: #c8c0b6; }
+
+    /* Your Story card */
+    .story-card-yours {
+      flex-shrink: 0; width: 76px; height: 110px;
+      border-radius: 16px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+      background: var(--teal-xpale); border: 2px dashed var(--teal-pale);
+      transition: all 0.2s;
+    }
+    .story-card-yours:hover { background: var(--teal-pale); border-color: var(--teal); }
+    .story-add-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(27,107,90,0.3);
+    }
+    .story-yours-label-bn { font-family: var(--font-bn); font-size: 10px; font-weight: 600; color: var(--teal); text-align: center; line-height: 1.2; }
+    .story-yours-label-en { font-family: var(--font-en); font-size: 9px; color: var(--teal-light); text-align: center; }
+
+    /* Gradient story bgs */
+    .story-grad-1 { background: linear-gradient(145deg, #f97316, #dc2626); }
+    .story-grad-2 { background: linear-gradient(145deg, #8b5cf6, #6d28d9); }
+    .story-grad-3 { background: linear-gradient(145deg, #06b6d4, #0891b2); }
+    .story-grad-4 { background: linear-gradient(145deg, #10b981, #059669); }
+    .story-grad-5 { background: linear-gradient(145deg, #f59e0b, #d97706); }
+
+    /* ---- CREATE POST BOX ---- */
+    .create-post {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); padding: 14px 16px;
+    }
+    .create-post-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .create-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white;
+      border: 2px solid var(--teal-pale);
+    }
+    .create-input {
+      flex: 1; padding: 10px 18px; border-radius: 50px;
+      background: var(--off-white); border: 1.5px solid var(--border);
+      font-family: var(--font-bn); font-size: 14px; color: var(--text-mid);
+      cursor: pointer; text-align: left; outline: none;
+      transition: all 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .create-input:hover { border-color: var(--teal); background: white; }
+    .create-divider { height: 1px; background: var(--border-light); margin: 0 -4px 12px; }
+    .create-actions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .create-action-btn {
+      display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+      border-radius: 10px; border: none; background: transparent; cursor: pointer;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 500;
+      color: var(--text-mid); transition: background 0.15s;
+    }
+    .create-action-btn:hover { background: var(--off-white); }
+
+    /* Sahajjo Chai create button — DISTINCT */
+    .create-sahajjo {
+      display: flex; align-items: center; gap: 7px; padding: 8px 14px;
+      border-radius: 10px; border: 1.5px solid rgba(232,92,74,0.3);
+      background: var(--coral-pale); cursor: pointer;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 700;
+      color: var(--coral-dark); transition: all 0.2s; margin-left: auto;
+    }
+    .create-sahajjo:hover { background: var(--coral); color: white; border-color: var(--coral); }
+    .create-sahajjo:hover svg { color: white; }
+
+    /* ---- POST CARD ---- */
+    .post-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      overflow: hidden; transition: box-shadow 0.2s;
+    }
+    .post-card:hover { box-shadow: var(--shadow-md); }
+
+    .post-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 14px 16px 10px; gap: 10px;
+    }
+    .post-header-left { display: flex; gap: 10px; }
+    .post-avatar {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white;
+      border: 2px solid var(--border-light);
+    }
+    .post-avatar-1 { background: linear-gradient(135deg, #f97316, #dc2626); }
+    .post-avatar-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .post-avatar-3 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+    .post-meta-name {
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); cursor: pointer;
+    }
+    .post-meta-name:hover { color: var(--teal); }
+    .post-meta-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .post-meta-time {
+      font-family: var(--font-en); font-size: 11px; color: var(--text-light);
+    }
+    .post-meta-sep { color: var(--border); font-size: 10px; }
+    .post-meta-privacy {
+      display: flex; align-items: center; gap: 3px;
+      font-family: var(--font-en); font-size: 11px; color: var(--text-light);
+    }
+
+    /* Fact-check badge */
+    .fact-check-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 8px;
+      font-family: var(--font-bn); font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .fact-check-badge.amber {
+      background: var(--fact-amber-bg); color: var(--fact-amber);
+      border: 1px solid rgba(180,83,9,0.2);
+    }
+    .fact-check-badge.green {
+      background: var(--fact-green-bg); color: var(--fact-green);
+      border: 1px solid rgba(21,128,61,0.2);
+    }
+    .fact-check-badge.red {
+      background: var(--fact-red-bg); color: var(--fact-red);
+      border: 1px solid rgba(220,38,38,0.2);
+    }
+    .fact-check-badge:hover { filter: brightness(0.95); transform: scale(1.02); }
+    .fact-badge-label-bn { font-family: var(--font-bn); font-size: 11px; }
+    .fact-badge-label-en { font-family: var(--font-en); font-size: 9px; font-weight: 400; margin-top: 1px; }
+
+    .post-more-btn {
+      width: 34px; height: 34px; border-radius: 50%; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-light); transition: background 0.15s;
+    }
+    .post-more-btn:hover { background: var(--off-white); color: var(--text-mid); }
+
+    .post-text { padding: 0 16px 12px; font-family: var(--font-bn); font-size: 15px; line-height: 1.65; color: var(--text-dark); }
+    .post-text.large { font-size: 22px; line-height: 1.45; font-weight: 500; }
+
+    .post-media { width: 100%; max-height: 420px; object-fit: cover; display: block; }
+    .post-media-placeholder {
+      width: 100%; height: 280px; display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+    }
+
+    /* Reaction summary row */
+    .post-react-summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; border-bottom: 1px solid var(--border-light);
+    }
+    .post-react-emojis { display: flex; align-items: center; gap: 3px; }
+    .post-react-emoji-bubble {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; background: var(--off-white); border: 1.5px solid white;
+      margin-left: -5px;
+    }
+    .post-react-emoji-bubble:first-child { margin-left: 0; }
+    .post-react-count { font-family: var(--font-en); font-size: 12px; color: var(--text-light); margin-left: 6px; }
+    .post-comment-count { font-family: var(--font-en); font-size: 12px; color: var(--text-light); }
+
+    /* Reaction bar */
+    .post-reaction-bar {
+      display: flex; align-items: center; padding: 4px 8px; gap: 2px;
+    }
+    .react-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 6px; border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: background 0.15s; color: var(--text-mid);
+    }
+    .react-btn:hover { background: var(--off-white); }
+    .react-btn.reacted { color: var(--coral); }
+    .react-btn-label-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; }
+    .react-btn-label-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); }
+
+    /* Fact-check info box (expanded) */
+    .fact-check-info {
+      margin: 0 16px 12px; padding: 12px 14px;
+      border-radius: var(--radius-md); border: 1.5px solid rgba(180,83,9,0.2);
+      background: var(--fact-amber-bg);
+    }
+    .fact-check-info-title {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .fci-title-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--fact-amber); }
+    .fci-title-en { font-family: var(--font-en); font-size: 10px; color: var(--fact-amber); font-weight: 500; }
+    .fci-body { font-family: var(--font-bn); font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+    .fci-voters { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 6px; }
+
+    /* ===================== RIGHT SIDEBAR ===================== */
+    .sidebar-right {
+      width: var(--sidebar-r); position: fixed;
+      top: var(--nav-h); right: 0; bottom: 0;
+      overflow-y: auto; padding: 14px 12px 24px;
+    }
+
+    .widget {
+      background: var(--card-bg); border-radius: var(--radius-md);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      padding: 14px; margin-bottom: 10px;
+    }
+    .widget-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .widget-title-bn { font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .widget-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .widget-action {
+      font-family: var(--font-en); font-size: 11px; color: var(--teal); font-weight: 500;
+      border: none; background: none; cursor: pointer; padding: 3px 8px; border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .widget-action:hover { background: var(--teal-pale); }
+
+    /* Friend request item */
+    .friend-req-item {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .friend-req-item:last-child { margin-bottom: 0; }
+    .fr-avatar {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white;
+    }
+    .fr-avatar-1 { background: linear-gradient(135deg, #f97316, #ea580c); }
+    .fr-avatar-2 { background: linear-gradient(135deg, #06b6d4, #0e7490); }
+    .fr-name { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .fr-mutual { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .fr-actions { display: flex; gap: 6px; margin-top: 6px; }
+    .fr-accept {
+      padding: 5px 12px; border-radius: 7px; border: none;
+      background: var(--teal); color: white; font-family: var(--font-bn); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .fr-accept:hover { background: var(--teal-hover); }
+    .fr-delete {
+      padding: 5px 12px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--off-white);
+      font-family: var(--font-bn); font-size: 12px; color: var(--text-mid);
+      cursor: pointer; transition: background 0.15s;
+    }
+    .fr-delete:hover { background: var(--border); }
+
+    /* Birthday widget */
+    .birthday-item { display: flex; align-items: center; gap: 10px; }
+    .birthday-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: #fef3c7; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .birthday-text-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .birthday-text-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* People you may know */
+    .pymk-item {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .pymk-item:last-child { margin-bottom: 0; }
+    .pymk-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: white;
+    }
+    .pymk-avatar-1 { background: linear-gradient(135deg, #10b981, #059669); }
+    .pymk-avatar-2 { background: linear-gradient(135deg, #ec4899, #db2777); }
+    .pymk-avatar-3 { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .pymk-name { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .pymk-mutual { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .pymk-add-btn {
+      margin-left: auto; padding: 5px 11px; border-radius: 7px; flex-shrink: 0;
+      border: 1.5px solid var(--teal); background: transparent;
+      font-family: var(--font-bn); font-size: 12px; font-weight: 500;
+      color: var(--teal); cursor: pointer; transition: all 0.15s;
+    }
+    .pymk-add-btn:hover { background: var(--teal-pale); }
+
+    /* Trending */
+    .trending-item {
+      display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.1s;
+    }
+    .trending-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .trending-item:hover { background: var(--off-white); border-radius: 8px; }
+    .trending-rank { font-family: var(--font-en); font-size: 14px; font-weight: 700; color: var(--text-xlight); width: 20px; flex-shrink: 0; padding-top: 1px; }
+    .trending-topic-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .trending-count { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .trending-tag { font-family: var(--font-en); font-size: 9px; color: var(--teal); font-weight: 600; background: var(--teal-pale); padding: 1px 5px; border-radius: 4px; display: inline-block; margin-top: 3px; }
+
+    /* Online friends */
+    .online-friend {
+      display: flex; align-items: center; gap: 10px; padding: 7px 0;
+      cursor: pointer; transition: background 0.1s; border-radius: 8px;
+    }
+    .online-friend:hover { background: var(--off-white); }
+    .online-av-wrap { position: relative; flex-shrink: 0; }
+    .online-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: white;
+    }
+    .online-dot {
+      position: absolute; bottom: 1px; right: 1px;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #22c55e; border: 2px solid white;
+    }
+    .online-away .online-dot { background: var(--gold); }
+    .online-name { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .online-status { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Avatar colors for online friends */
+    .av-a { background: linear-gradient(135deg, #f97316, #dc2626); }
+    .av-b { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .av-c { background: linear-gradient(135deg, #10b981, #059669); }
+    .av-d { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .av-e { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+    /* Post image placeholder gradients */
+    .img-placeholder-1 { background: linear-gradient(135deg, #fde68a, #f97316); }
+    .img-placeholder-2 { background: linear-gradient(135deg, #bfdbfe, #60a5fa); }
+    .img-placeholder-3 { background: linear-gradient(135deg, #bbf7d0, #34d399); }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .post-card { animation: fadeIn 0.4s ease both; }
+    .post-card:nth-child(2) { animation-delay: 0.1s; }
+    .post-card:nth-child(3) { animation-delay: 0.2s; }
+
+    /* Utility */
+    .flex-center { display: flex; align-items: center; }
+    .text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  </style>
+</head>
+<body>
+
+<!-- ========================= NAVBAR ========================= -->
+<nav class="navbar">
+  <!-- Logo -->
+  <a href="#" class="nav-logo" aria-label="জলশা হোম — Jolshaa Home">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+
+  <!-- Search -->
+  <div class="nav-search">
+    <span class="nav-search-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" id="navSearch" placeholder="খুঁজুন... / Search..." aria-label="Search" />
+  </div>
+
+  <!-- Center nav icons -->
+  <div class="nav-center">
+    <!-- Home -->
+    <button class="nav-icon-btn active" title="হোম / Home" aria-label="Home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/>
+        <path d="M9 22V12h6v10"/>
+      </svg>
+    </button>
+    <!-- Groups -->
+    <button class="nav-icon-btn" title="গ্রুপ / Groups" aria-label="Groups">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="9" cy="7" r="3.5"/>
+        <circle cx="17" cy="9" r="2.5"/>
+        <path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        <path d="M19 21c0-2.5-1.5-4.5-4-5.5"/>
+      </svg>
+    </button>
+    <!-- Pages -->
+    <button class="nav-icon-btn" title="পেইজ / Pages" aria-label="Pages">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h10l4 4v14H4z"/>
+        <path d="M14 4v4h4"/>
+        <path d="M8 12h6M8 16h4"/>
+      </svg>
+    </button>
+    <!-- Messages -->
+    <button class="nav-icon-btn" title="বার্তা / Messages" aria-label="Messages">
+      <div class="nav-badge">5</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/>
+      </svg>
+    </button>
+    <!-- Notifications -->
+    <button class="nav-icon-btn" title="বিজ্ঞপ্তি / Notifications" aria-label="Notifications">
+      <div class="nav-badge">3</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        <path d="M8 8 Q12 5 16 8" stroke-width="1.5" opacity="0.4"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Sahajjo Chai — DISTINCT urgent button -->
+  <button class="nav-sahajjo" id="navSahajjoBtn" aria-label="সাহায্য চাই — Emergency Help Request">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span>সাহায্য চাই</span>
+  </button>
+
+  <!-- Right: profile -->
+  <div class="nav-right">
+    <div class="nav-avatar" title="আমার প্রোফাইল / My Profile" tabindex="0" role="button" aria-label="Profile menu">আ</div>
+  </div>
+</nav>
+
+
+<!-- ========================= PAGE BODY ========================= -->
+<div class="page-body">
+
+  <!-- ========================= LEFT SIDEBAR ========================= -->
+  <aside class="sidebar-left" aria-label="Left navigation sidebar">
+
+    <!-- Profile Card -->
+    <a href="#" class="sb-profile-card" aria-label="View my profile">
+      <div class="sb-profile-avatar">আ</div>
+      <div>
+        <div class="sb-profile-name">আমিনুল হক</div>
+        <div class="sb-profile-sub">View Profile / প্রোফাইল দেখুন</div>
+      </div>
+    </a>
+
+    <!-- Core Navigation -->
+    <div class="sb-section-label">মূল মেনু · Menu</div>
+    <div class="sb-nav-group">
+      <a href="#" class="sb-nav-item active">
+        <div class="sb-nav-icon teal-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">নিউজ ফিড</div>
+          <div class="sb-nav-text-en">News Feed</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon blue-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">বন্ধুরা</div>
+          <div class="sb-nav-text-en">Friends</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon teal-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">গ্রুপসমূহ</div>
+          <div class="sb-nav-text-en">Groups</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon blue-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 4h10l4 4v14H4z"/><path d="M14 4v4h4"/><path d="M8 11h6M8 15h4"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">পেইজ</div>
+          <div class="sb-nav-text-en">Pages</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon purple-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">রিলস ও শর্টস</div>
+          <div class="sb-nav-text-en">Reels &amp; Shorts</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Sahajjo Chai — HIGHLIGHTED -->
+    <div class="sb-sahajjo-card" role="button" tabindex="0" aria-label="সাহায্য চাই — Help requests near you">
+      <div class="sb-sahajjo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div>
+        <div class="sb-sahajjo-title">সাহায্য চাই</div>
+        <div class="sb-sahajjo-sub">Help requests near you</div>
+      </div>
+    </div>
+
+    <!-- Secondary items -->
+    <div class="sb-section-label">আরও · More</div>
+    <div class="sb-secondary-group">
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon gold-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">সেভ করা পোস্ট</div>
+          <div class="sb-nav-text-en">Saved Posts</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon teal-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M2 20c0-4 4.5-7 10-7s10 3 10 7"/><path d="M8 8 Q12 5 16 8"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">স্মৃতি / এই দিনে</div>
+          <div class="sb-nav-text-en">Memories / On this day</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item">
+        <div class="sb-nav-icon gold-bg">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">ক্রিয়েটর হাব</div>
+          <div class="sb-nav-text-en">Creator Hub</div>
+        </div>
+      </a>
+    </div>
+
+  </aside>
+
+
+  <!-- ========================= CENTER FEED ========================= -->
+  <main class="feed-center" aria-label="News Feed">
+    <div class="feed-inner">
+
+      <!-- ---- STORIES BAR ---- -->
+      <section class="stories-bar" aria-label="Stories — স্টোরি">
+        <div class="stories-bar-header">
+          <div>
+            <span class="stories-bar-title-bn">স্টোরি</span>
+            <span class="stories-bar-title-en">· Stories</span>
+          </div>
+          <button class="stories-see-all" aria-label="See all stories">See all</button>
+        </div>
+        <div class="stories-scroll" role="list">
+
+          <!-- Your Story -->
+          <div class="story-card-yours" role="listitem" tabindex="0" aria-label="আপনার স্টোরি যোগ করুন — Add your story">
+            <div class="story-add-circle">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div class="story-yours-label-bn">আপনার স্টোরি</div>
+            <div class="story-yours-label-en">Your Story</div>
+          </div>
+
+          <!-- Stories with freshness rings -->
+          <div class="story-card fresh" role="listitem" tabindex="0" aria-label="রাহেলা বেগমের স্টোরি — ১ ঘণ্টা আগে">
+            <div class="story-bg story-grad-1" style="height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">রাহেলা<br/>বেগম</span>
+            </div>
+          </div>
+
+          <div class="story-card fresh" role="listitem" tabindex="0" aria-label="করিম ভাইয়ের স্টোরি — ২ ঘণ্টা আগে">
+            <div class="story-bg story-grad-5" style="height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">করিম<br/>ভাই</span>
+            </div>
+          </div>
+
+          <div class="story-card recent" role="listitem" tabindex="0" aria-label="নিলুফারের স্টোরি — ৪ ঘণ্টা আগে">
+            <div class="story-bg story-grad-2" style="height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">নিলুফার</span>
+            </div>
+          </div>
+
+          <div class="story-card recent" role="listitem" tabindex="0" aria-label="তানভীর আহমেদের স্টোরি — ৫ ঘণ্টা আগে">
+            <div class="story-bg story-grad-3" style="height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">তানভীর<br/>আহমেদ</span>
+            </div>
+          </div>
+
+          <div class="story-card older" role="listitem" tabindex="0" aria-label="ফারহানের স্টোরি — ৮ ঘণ্টা আগে">
+            <div class="story-bg story-grad-4" style="height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">ফারহান</span>
+            </div>
+          </div>
+
+          <div class="story-card older" role="listitem" tabindex="0" aria-label="সুমাইয়ার স্টোরি — ১০ ঘণ্টা আগে">
+            <div class="story-bg" style="background:linear-gradient(145deg,#f472b6,#9333ea);height:100%"></div>
+            <span class="story-freshness-dot"></span>
+            <div class="story-overlay">
+              <span class="story-name">সুমাইয়া</span>
+            </div>
+          </div>
+        </div>
+        <!-- Ring legend -->
+        <div style="display:flex;gap:14px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-light);">
+          <div style="display:flex;align-items:center;gap:5px;font-family:var(--font-en);font-size:10px;color:var(--text-light);">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Fresh · তাজা
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-family:var(--font-en);font-size:10px;color:var(--text-light);">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--gold);display:inline-block;"></span> Recent · সাম্প্রতিক
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;font-family:var(--font-en);font-size:10px;color:var(--text-light);">
+            <span style="width:8px;height:8px;border-radius:50%;background:#c8c0b6;display:inline-block;"></span> Older · পুরনো
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ---- CREATE POST BOX ---- -->
+      <section class="create-post" aria-label="Create a post — পোস্ট লিখুন">
+        <div class="create-post-top">
+          <div class="create-avatar" aria-hidden="true">আ</div>
+          <button class="create-input" id="createPostInput" aria-label="What's on your mind? — কী মনে হচ্ছে?">
+            কী মনে হচ্ছে, আমিনুল? · What's on your mind?
+          </button>
+        </div>
+        <div class="create-divider"></div>
+        <div class="create-actions">
+          <!-- Photo/Video -->
+          <button class="create-action-btn" aria-label="ছবি বা ভিডিও যোগ করুন — Add Photo/Video">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>ছবি/ভিডিও <span style="font-family:var(--font-en);font-size:10px;color:var(--text-light);display:block;margin-top:1px;">Photo/Video</span></span>
+          </button>
+          <!-- Feeling -->
+          <button class="create-action-btn" aria-label="অনুভূতি বা কার্যকলাপ — Feeling/Activity">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            <span>অনুভূতি <span style="font-family:var(--font-en);font-size:10px;color:var(--text-light);display:block;margin-top:1px;">Feeling</span></span>
+          </button>
+          <!-- Location -->
+          <button class="create-action-btn" aria-label="অবস্থান যোগ করুন — Add Location">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>লোকেশন <span style="font-family:var(--font-en);font-size:10px;color:var(--text-light);display:block;margin-top:1px;">Location</span></span>
+          </button>
+
+          <!-- Sahajjo Chai in create post — VISUALLY DISTINCT -->
+          <button class="create-sahajjo" id="createSahajjoBtn" aria-label="সাহায্য চাই — Request emergency help">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>🆘 সাহায্য চাই <span style="font-family:var(--font-en);font-size:9px;font-weight:400;display:block;margin-top:1px;">Request Help</span></span>
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ====== POST 1: Normal post with community photo ====== -->
+      <article class="post-card" aria-label="Post by রহিম আহমেদ">
+        <div class="post-header">
+          <div class="post-header-left">
+            <div class="post-avatar post-avatar-1" aria-hidden="true">র</div>
+            <div>
+              <div class="post-meta-name" tabindex="0">রহিম আহমেদ</div>
+              <div class="post-meta-row">
+                <span class="post-meta-time">৩ ঘণ্টা আগে · 3h ago</span>
+                <span class="post-meta-sep">·</span>
+                <span class="post-meta-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+                  Public
+                </span>
+              </div>
+            </div>
+          </div>
+          <button class="post-more-btn" aria-label="More options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </button>
+        </div>
+
+        <p class="post-text">
+          আজকের ইফতার পার্টিতে পুরো মহল্লা একসাথে! 🍛❤️ এই মুহূর্তগুলোই জীবনকে সুন্দর করে।<br/>
+          <span style="font-family:var(--font-en);font-size:13px;color:var(--text-light);">The whole neighborhood came together for iftar today! These moments make life beautiful.</span>
+        </p>
+
+        <img src="post_community_1783606546707.png" class="post-media" alt="Community gathering — সামাজিক অনুষ্ঠান"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="post-media post-media-placeholder img-placeholder-1" style="display:none">🍛</div>
+
+        <div class="post-react-summary">
+          <div class="flex-center">
+            <div class="post-react-emojis">
+              <div class="post-react-emoji-bubble">❤️</div>
+              <div class="post-react-emoji-bubble">😊</div>
+              <div class="post-react-emoji-bubble">🔥</div>
+            </div>
+            <span class="post-react-count">১৮৪ জন · 184</span>
+          </div>
+          <span class="post-comment-count">৩৭ মন্তব্য · 37 comments</span>
+        </div>
+
+        <!-- Reaction bar — ORIGINAL iconography -->
+        <div class="post-reaction-bar" role="group" aria-label="Post reactions">
+          <!-- React: heart-wave -->
+          <button class="react-btn" id="reactBtn1" onclick="toggleReact(this)" aria-label="প্রতিক্রিয়া / React">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              <path d="M3 14 Q5 11 7 14 Q9 17 11 14" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.5"/>
+            </svg>
+            <div>
+              <div class="react-btn-label-bn">প্রতিক্রিয়া</div>
+              <div class="react-btn-label-en">React</div>
+            </div>
+          </button>
+
+          <!-- Comment: bubble with dots -->
+          <button class="react-btn" aria-label="মন্তব্য / Comment">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <circle cx="8.5" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15.5" cy="11" r="1" fill="currentColor"/>
+            </svg>
+            <div>
+              <div class="react-btn-label-bn">মন্তব্য</div>
+              <div class="react-btn-label-en">Comment</div>
+            </div>
+          </button>
+
+          <!-- Share/Boost: person with forward arrow -->
+          <button class="react-btn" aria-label="শেয়ার / Share">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="7" cy="12" r="3"/>
+              <path d="M10 12h11M18 9l3 3-3 3"/>
+            </svg>
+            <div>
+              <div class="react-btn-label-bn">শেয়ার</div>
+              <div class="react-btn-label-en">Share</div>
+            </div>
+          </button>
+
+          <!-- Save: bookmark ribbon -->
+          <button class="react-btn" aria-label="সেভ / Save">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              <path d="M9 11h6" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+            <div>
+              <div class="react-btn-label-bn">সেভ</div>
+              <div class="react-btn-label-en">Save</div>
+            </div>
+          </button>
+        </div>
+      </article>
+
+
+      <!-- ====== POST 2: FACT-CHECK "সত্যি নাকি গুজব?" — UNIQUE JOLSHAA FEATURE ====== -->
+      <article class="post-card" aria-label="Post by প্রিয়া রানী — with fact-check badge">
+        <div class="post-header">
+          <div class="post-header-left">
+            <div class="post-avatar post-avatar-2" aria-hidden="true">প্র</div>
+            <div>
+              <div class="post-meta-name" tabindex="0">প্রিয়া রানী দাস</div>
+              <div class="post-meta-row">
+                <span class="post-meta-time">৫ ঘণ্টা আগে · 5h ago</span>
+                <span class="post-meta-sep">·</span>
+                <span class="post-meta-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+                  Public
+                </span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <!-- FACT-CHECK BADGE — Jolshaa signature feature -->
+            <button class="fact-check-badge amber" id="factBadgeBtn" onclick="toggleFactCheck()" aria-label="সত্যি নাকি গুজব? — Fact check status: under review">
+              <!-- Shield SVG -->
+              <svg width="13" height="14" viewBox="0 0 20 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M10 2L3 5v6c0 5 3.5 9.7 7 11 3.5-1.3 7-6 7-11V5L10 2z"/>
+                <path d="M10 8v4M10 14h.01" stroke-width="2.2"/>
+              </svg>
+              <div>
+                <div class="fact-badge-label-bn">যাচাই চলছে</div>
+                <div class="fact-badge-label-en">Under Review</div>
+              </div>
+            </button>
+            <button class="post-more-btn" aria-label="More options">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fact-check expanded info panel -->
+        <div class="fact-check-info" id="factCheckInfo">
+          <div class="fact-check-info-title">
+            <svg width="14" height="14" viewBox="0 0 20 22" fill="none" stroke="var(--fact-amber)" stroke-width="2" stroke-linecap="round">
+              <path d="M10 2L3 5v6c0 5 3.5 9.7 7 11 3.5-1.3 7-6 7-11V5L10 2z"/>
+              <path d="M10 8v4M10 14h.01" stroke-width="2.2"/>
+            </svg>
+            <div>
+              <div class="fci-title-bn">সত্যি নাকি গুজব? — Fact Check</div>
+              <div class="fci-title-en">Community Fact-Checking in Progress</div>
+            </div>
+          </div>
+          <div class="fci-body">
+            এই পোস্টের তথ্য এখনো যাচাই করা হয়নি। জলশা কমিউনিটি এটি নিয়ে কাজ করছে।
+            <span style="font-family:var(--font-en);font-size:12px;color:var(--text-light);display:block;margin-top:4px;">
+              This post's claim is under community fact-check review. Jolshaa community reviewers are verifying it.
+            </span>
+          </div>
+          <div class="fci-voters">
+            🔍 ৪৭ জন যাচাইকারী কাজ করছেন · 47 community reviewers checking
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+            <button style="padding:5px 12px;border-radius:7px;border:1.5px solid var(--fact-green);background:var(--fact-green-bg);color:var(--fact-green);font-family:var(--font-bn);font-size:12px;cursor:pointer;">✓ সত্য মনে হচ্ছে · Seems True</button>
+            <button style="padding:5px 12px;border-radius:7px;border:1.5px solid var(--fact-red);background:var(--fact-red-bg);color:var(--fact-red);font-family:var(--font-bn);font-size:12px;cursor:pointer;">✗ গুজব মনে হচ্ছে · Seems False</button>
+          </div>
+        </div>
+
+        <p class="post-text">
+          শুনলাম আমাদের মহল্লার পুরানো পুকুরটা নাকি ভরাট হয়ে যাচ্ছে? কেউ জানেন এটা সত্যি কিনা?<br/>
+          <span style="font-family:var(--font-en);font-size:13px;color:var(--text-light);">Heard the old pond in our neighbourhood is being filled in. Does anyone know if this is true?</span>
+        </p>
+
+        <img src="post_factcheck_1783606561350.png" class="post-media" alt="Neighbourhood street — মহল্লার রাস্তা"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="post-media post-media-placeholder img-placeholder-2" style="display:none">🏘️</div>
+
+        <div class="post-react-summary">
+          <div class="flex-center">
+            <div class="post-react-emojis">
+              <div class="post-react-emoji-bubble">😮</div>
+              <div class="post-react-emoji-bubble">😟</div>
+            </div>
+            <span class="post-react-count">৯২ জন · 92</span>
+          </div>
+          <span class="post-comment-count">৬৮ মন্তব্য · 68 comments</span>
+        </div>
+
+        <div class="post-reaction-bar" role="group">
+          <button class="react-btn" onclick="toggleReact(this)" aria-label="প্রতিক্রিয়া / React">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              <path d="M3 14 Q5 11 7 14 Q9 17 11 14" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.5"/>
+            </svg>
+            <div><div class="react-btn-label-bn">প্রতিক্রিয়া</div><div class="react-btn-label-en">React</div></div>
+          </button>
+          <button class="react-btn" aria-label="মন্তব্য / Comment">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <circle cx="8.5" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15.5" cy="11" r="1" fill="currentColor"/>
+            </svg>
+            <div><div class="react-btn-label-bn">মন্তব্য</div><div class="react-btn-label-en">Comment</div></div>
+          </button>
+          <button class="react-btn" aria-label="শেয়ার / Share">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="7" cy="12" r="3"/><path d="M10 12h11M18 9l3 3-3 3"/>
+            </svg>
+            <div><div class="react-btn-label-bn">শেয়ার</div><div class="react-btn-label-en">Share</div></div>
+          </button>
+          <button class="react-btn" aria-label="সেভ / Save">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              <path d="M9 11h6" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+            <div><div class="react-btn-label-bn">সেভ</div><div class="react-btn-label-en">Save</div></div>
+          </button>
+        </div>
+      </article>
+
+
+      <!-- ====== POST 3: Text-only post ====== -->
+      <article class="post-card" aria-label="Post by করিম উদ্দিন">
+        <div class="post-header">
+          <div class="post-header-left">
+            <div class="post-avatar post-avatar-3" aria-hidden="true">ক</div>
+            <div>
+              <div class="post-meta-name" tabindex="0">করিম উদ্দিন</div>
+              <div class="post-meta-row">
+                <span class="post-meta-time">৮ ঘণ্টা আগে · 8h ago</span>
+                <span class="post-meta-sep">·</span>
+                <span class="post-meta-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+                  Public
+                </span>
+              </div>
+            </div>
+          </div>
+          <button class="post-more-btn" aria-label="More options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </button>
+        </div>
+
+        <p class="post-text large" style="background:linear-gradient(135deg,var(--teal-xpale),var(--off-white));margin:0;padding:24px 20px 20px;font-size:20px;border-radius:0;">
+          "আপন মানুষের হাসি দেখার জন্য হাজার মাইল পার করা যায়।"<br/>
+          <span style="font-family:var(--font-en);font-size:14px;color:var(--text-light);font-weight:400;margin-top:8px;display:block;">"You can cross a thousand miles just to see the smile of someone you love."</span>
+        </p>
+
+        <div class="post-react-summary">
+          <div class="flex-center">
+            <div class="post-react-emojis">
+              <div class="post-react-emoji-bubble">❤️</div>
+              <div class="post-react-emoji-bubble">😊</div>
+            </div>
+            <span class="post-react-count">৪৪৭ জন · 447</span>
+          </div>
+          <span class="post-comment-count">১০৩ মন্তব্য · 103 comments</span>
+        </div>
+
+        <div class="post-reaction-bar" role="group">
+          <button class="react-btn reacted" onclick="toggleReact(this)" aria-label="প্রতিক্রিয়া / React — reacted">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+            <div><div class="react-btn-label-bn" style="color:var(--coral);">প্রতিক্রিয়া</div><div class="react-btn-label-en">React</div></div>
+          </button>
+          <button class="react-btn" aria-label="মন্তব্য / Comment">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <circle cx="8.5" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15.5" cy="11" r="1" fill="currentColor"/>
+            </svg>
+            <div><div class="react-btn-label-bn">মন্তব্য</div><div class="react-btn-label-en">Comment</div></div>
+          </button>
+          <button class="react-btn" aria-label="শেয়ার / Share">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="7" cy="12" r="3"/><path d="M10 12h11M18 9l3 3-3 3"/>
+            </svg>
+            <div><div class="react-btn-label-bn">শেয়ার</div><div class="react-btn-label-en">Share</div></div>
+          </button>
+          <button class="react-btn" aria-label="সেভ / Save">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              <path d="M9 11h6" stroke-width="1.5" opacity="0.6"/>
+            </svg>
+            <div><div class="react-btn-label-bn">সেভ</div><div class="react-btn-label-en">Save</div></div>
+          </button>
+        </div>
+      </article>
+
+    </div><!-- /feed-inner -->
+  </main>
+
+
+  <!-- ========================= RIGHT SIDEBAR ========================= -->
+  <aside class="sidebar-right" aria-label="Right sidebar widgets">
+
+    <!-- Friend Requests -->
+    <div class="widget">
+      <div class="widget-header">
+        <div>
+          <div class="widget-title-bn">বন্ধু অনুরোধ</div>
+          <div class="widget-title-en">Friend Requests</div>
+        </div>
+        <button class="widget-action" aria-label="See all friend requests">See all</button>
+      </div>
+
+      <div class="friend-req-item">
+        <div class="fr-avatar fr-avatar-1" aria-hidden="true">না</div>
+        <div style="flex:1">
+          <div class="fr-name">নাবিলা ইসলাম</div>
+          <div class="fr-mutual">২ জন পারস্পরিক বন্ধু · 2 mutual friends</div>
+          <div class="fr-actions">
+            <button class="fr-accept">গ্রহণ করুন · Accept</button>
+            <button class="fr-delete">মুছুন · Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="friend-req-item">
+        <div class="fr-avatar fr-avatar-2" aria-hidden="true">জা</div>
+        <div style="flex:1">
+          <div class="fr-name">জাফর সাদিক</div>
+          <div class="fr-mutual">৫ জন পারস্পরিক বন্ধু · 5 mutual friends</div>
+          <div class="fr-actions">
+            <button class="fr-accept">গ্রহণ করুন · Accept</button>
+            <button class="fr-delete">মুছুন · Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Birthday -->
+    <div class="widget">
+      <div class="widget-header">
+        <div>
+          <div class="widget-title-bn">জন্মদিন</div>
+          <div class="widget-title-en">Birthdays</div>
+        </div>
+      </div>
+      <div class="birthday-item">
+        <div class="birthday-icon">🎂</div>
+        <div>
+          <div class="birthday-text-bn">তানভীর আহমেদের আজ জন্মদিন।</div>
+          <div class="birthday-text-en">Send Tanvir Ahmed a birthday wish! · শুভেচ্ছা পাঠান</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- People You May Know -->
+    <div class="widget">
+      <div class="widget-header">
+        <div>
+          <div class="widget-title-bn">পরিচিত হতে পারেন</div>
+          <div class="widget-title-en">People You May Know</div>
+        </div>
+        <button class="widget-action" aria-label="See all suggestions">See all</button>
+      </div>
+
+      <div class="pymk-item">
+        <div class="pymk-avatar pymk-avatar-1" aria-hidden="true">স</div>
+        <div style="flex:1;">
+          <div class="pymk-name">সামিয়া আক্তার</div>
+          <div class="pymk-mutual">৪ জন পারস্পরিক বন্ধু · 4 mutual</div>
+        </div>
+        <button class="pymk-add-btn" aria-label="সামিয়াকে বন্ধু হিসেবে যোগ করুন">+ যোগ করুন</button>
+      </div>
+
+      <div class="pymk-item">
+        <div class="pymk-avatar pymk-avatar-2" aria-hidden="true">মু</div>
+        <div style="flex:1;">
+          <div class="pymk-name">মুনতাহা তানভীর</div>
+          <div class="pymk-mutual">৭ জন পারস্পরিক বন্ধু · 7 mutual</div>
+        </div>
+        <button class="pymk-add-btn" aria-label="মুনতাহাকে বন্ধু হিসেবে যোগ করুন">+ যোগ করুন</button>
+      </div>
+
+      <div class="pymk-item">
+        <div class="pymk-avatar pymk-avatar-3" aria-hidden="true">রি</div>
+        <div style="flex:1;">
+          <div class="pymk-name">রিফাত হোসেন</div>
+          <div class="pymk-mutual">৩ জন পারস্পরিক বন্ধু · 3 mutual</div>
+        </div>
+        <button class="pymk-add-btn" aria-label="রিফাতকে বন্ধু হিসেবে যোগ করুন">+ যোগ করুন</button>
+      </div>
+    </div>
+
+    <!-- Trending -->
+    <div class="widget">
+      <div class="widget-header">
+        <div>
+          <div class="widget-title-bn">ট্রেন্ডিং জলশায়</div>
+          <div class="widget-title-en">Trending on Jolshaa</div>
+        </div>
+      </div>
+
+      <div class="trending-item">
+        <span class="trending-rank">১</span>
+        <div>
+          <div class="trending-topic-bn">#ঢাকার_বৃষ্টি</div>
+          <div class="trending-count">২৩,৪০০ পোস্ট · 23.4K posts</div>
+          <span class="trending-tag">Weather</span>
+        </div>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">২</span>
+        <div>
+          <div class="trending-topic-bn">#রাস্তার_খাবার</div>
+          <div class="trending-count">১৮,৭০০ পোস্ট · 18.7K posts</div>
+          <span class="trending-tag">Food</span>
+        </div>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">৩</span>
+        <div>
+          <div class="trending-topic-bn">#বর্ষাকাল</div>
+          <div class="trending-count">১১,২০০ পোস্ট · 11.2K posts</div>
+          <span class="trending-tag">Season</span>
+        </div>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">৪</span>
+        <div>
+          <div class="trending-topic-bn">#সাহায্য_চাই</div>
+          <div class="trending-count">৮,৯০০ পোস্ট · 8.9K posts</div>
+          <span class="trending-tag" style="background:var(--coral-pale);color:var(--coral);">Help</span>
+        </div>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">৫</span>
+        <div>
+          <div class="trending-topic-bn">#কমিউনিটি_আপডেট</div>
+          <div class="trending-count">৫,৪০০ পোস্ট · 5.4K posts</div>
+          <span class="trending-tag">Community</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Online Friends -->
+    <div class="widget">
+      <div class="widget-header">
+        <div>
+          <div class="widget-title-bn">অনলাইন বন্ধুরা</div>
+          <div class="widget-title-en">Active Friends</div>
+        </div>
+      </div>
+
+      <div class="online-friend">
+        <div class="online-av-wrap">
+          <div class="online-av av-a">র</div>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <div class="online-name">রাহেলা বেগম</div>
+          <div class="online-status">Active now · এখন সক্রিয়</div>
+        </div>
+      </div>
+
+      <div class="online-friend">
+        <div class="online-av-wrap">
+          <div class="online-av av-b">ক</div>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <div class="online-name">করিম উদ্দিন</div>
+          <div class="online-status">Active now · এখন সক্রিয়</div>
+        </div>
+      </div>
+
+      <div class="online-friend online-away">
+        <div class="online-av-wrap">
+          <div class="online-av av-c">ফ</div>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <div class="online-name">ফারহানা হক</div>
+          <div class="online-status">15 min ago · ১৫ মিনিট আগে</div>
+        </div>
+      </div>
+
+      <div class="online-friend">
+        <div class="online-av-wrap">
+          <div class="online-av av-d">ত</div>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <div class="online-name">তানভীর আহমেদ</div>
+          <div class="online-status">Active now · এখন সক্রিয়</div>
+        </div>
+      </div>
+
+      <div class="online-friend online-away">
+        <div class="online-av-wrap">
+          <div class="online-av av-e">স</div>
+          <span class="online-dot"></span>
+        </div>
+        <div>
+          <div class="online-name">সামিয়া আক্তার</div>
+          <div class="online-status">32 min ago · ৩২ মিনিট আগে</div>
+        </div>
+      </div>
+
+    </div>
+
+  </aside>
+
+</div><!-- /page-body -->
+
+
+<script>
+  // Toggle heart reaction
+  function toggleReact(btn) {
+    btn.classList.toggle('reacted');
+    const svg = btn.querySelector('svg');
+    if (btn.classList.contains('reacted')) {
+      svg.setAttribute('fill', 'currentColor');
+      svg.removeAttribute('stroke');
+    } else {
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+    }
+  }
+
+  // Toggle fact-check panel
+  function toggleFactCheck() {
+    const panel = document.getElementById('factCheckInfo');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Hover tooltip on fact-check badge states
+  const badges = document.querySelectorAll('.fact-check-badge');
+  badges.forEach(b => {
+    b.addEventListener('mouseenter', () => {
+      b.style.transform = 'scale(1.04)';
+    });
+    b.addEventListener('mouseleave', () => {
+      b.style.transform = 'scale(1)';
+    });
+  });
+
+  // Navbar scroll shadow
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.navbar');
+    if (window.scrollY > 10) {
+      nav.style.boxShadow = '0 2px 16px rgba(0,0,0,0.1)';
+    } else {
+      nav.style.boxShadow = '0 1px 6px rgba(0,0,0,0.07)';
+    }
+  });
+
+  // Friend request accept/delete micro-interactions
+  document.querySelectorAll('.fr-accept').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = this.closest('.friend-req-item');
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      item.style.transition = 'all 0.3s ease';
+      setTimeout(() => { item.style.display = 'none'; }, 300);
+    });
+  });
+  document.querySelectorAll('.fr-delete').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = this.closest('.friend-req-item');
+      item.style.opacity = '0';
+      item.style.transition = 'opacity 0.25s ease';
+      setTimeout(() => { item.style.display = 'none'; }, 250);
+    });
+  });
+
+  // Add friend buttons
+  document.querySelectorAll('.pymk-add-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.textContent = '✓ পাঠানো হয়েছে · Sent';
+      this.style.background = 'var(--teal-pale)';
+      this.style.color = 'var(--teal)';
+      this.disabled = true;
+    });
+  });
+</script>
+
+</body>
+</html>
