@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>মেসেজ — জলশা | Jolshaa Messenger</title>
+  <meta name="description" content="জলশা মেসেজ — আপনার মানুষদের সাথে কথা বলুন। Jolshaa Messenger." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1B6B5A; --teal-hover: #165a4b; --teal-light: #2a9678;
+      --teal-pale: #E8F2EF; --teal-xpale: #f2faf7; --teal-bubble: linear-gradient(145deg,#1d7a66,#1B6B5A);
+      --off-white: #F5F0E8; --warm-white: #FDFAF5; --card-bg: #FFFFFF;
+      --recv-bubble: #F0EBE3; --recv-text: #1a1a1a;
+      --coral: #E85C4A; --coral-pale: #fef3f1; --coral-dark: #c94030;
+      --gold: #D4A04A; --fact-green: #15803d;
+      --text-dark: #1a1a1a; --text-mid: #4a4a4a; --text-light: #888; --text-xlight: #aaa;
+      --border: #E8E2DA; --border-light: #F0EBE3;
+      --shadow-sm: 0 1px 6px rgba(0,0,0,0.07); --shadow-md: 0 4px 16px rgba(0,0,0,0.1); --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+      --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px;
+      --font-bn: 'Hind Siliguri', sans-serif; --font-en: 'Inter', sans-serif;
+      --nav-h: 58px; --conv-w: 340px; --info-w: 272px;
+    }
+    html, body { height: 100%; font-family: var(--font-bn); background: var(--off-white); color: var(--text-dark); overflow: hidden; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0c8be; border-radius: 4px; }
+
+    /* ===================== NAVBAR ===================== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28); flex-shrink: 0;
+    }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+    .nav-search { flex: 1; max-width: 260px; position: relative; margin-left: 4px; }
+    .nav-search input {
+      width: 100%; padding: 9px 16px 9px 38px;
+      border-radius: 50px; border: 1.5px solid var(--border);
+      background: var(--off-white); font-family: var(--font-bn); font-size: 14px;
+      color: var(--text-dark); outline: none; transition: all 0.2s;
+    }
+    .nav-search input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.1); }
+    .nav-search input::placeholder { color: var(--text-light); font-family: var(--font-en); font-size: 13px; }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 46px; border-radius: var(--radius-sm);
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-light); transition: all 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); }
+    .nav-icon-btn.active::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 3px; background: var(--teal); border-radius: 2px 2px 0 0;
+    }
+    .nav-badge {
+      position: absolute; top: 5px; right: 7px; background: var(--coral); color: white;
+      font-family: var(--font-en); font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center; border: 2px solid white;
+    }
+    .nav-sahajjo {
+      position: relative; display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px; border-radius: 50px; background: var(--coral); color: white;
+      border: none; cursor: pointer; flex-shrink: 0;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s;
+      animation: sahajjoPulse 3s ease-in-out infinite;
+    }
+    .nav-sahajjo:hover { background: var(--coral-dark); transform: translateY(-1px); }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes sahajjoPulse { 0%,100%{box-shadow:0 3px 12px rgba(232,92,74,0.35)}50%{box-shadow:0 3px 18px rgba(232,92,74,0.55)} }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)} }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      cursor: pointer; border: 2px solid var(--teal-pale); transition: all 0.2s;
+    }
+
+    /* ===================== MESSENGER BODY ===================== */
+    .messenger-body {
+      display: flex; height: 100vh; padding-top: var(--nav-h);
+      overflow: hidden;
+    }
+
+    /* ===================== CONVERSATION LIST ===================== */
+    .conv-list {
+      width: var(--conv-w); flex-shrink: 0;
+      background: var(--card-bg); border-right: 1px solid var(--border-light);
+      display: flex; flex-direction: column; height: 100%; overflow: hidden;
+    }
+    .conv-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 16px 10px; flex-shrink: 0;
+    }
+    .conv-title { display: flex; flex-direction: column; }
+    .conv-title-bn { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: var(--text-dark); }
+    .conv-title-en { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 1px; }
+    .new-msg-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal-pale); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--teal); transition: all 0.2s;
+    }
+    .new-msg-btn:hover { background: var(--teal); color: white; }
+
+    /* Conv search */
+    .conv-search { padding: 0 12px 10px; flex-shrink: 0; }
+    .conv-search-inner { position: relative; }
+    .conv-search-inner input {
+      width: 100%; padding: 9px 14px 9px 36px;
+      border-radius: 10px; border: 1.5px solid var(--border);
+      background: var(--off-white); font-family: var(--font-bn); font-size: 13px;
+      color: var(--text-dark); outline: none; transition: all 0.2s;
+    }
+    .conv-search-inner input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .conv-search-inner input::placeholder { color: var(--text-light); font-family: var(--font-en); font-size: 12px; }
+    .conv-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+
+    /* Filter tabs — segmented pill control */
+    .filter-tabs { display: flex; padding: 0 12px 10px; gap: 0; flex-shrink: 0; }
+    .filter-tabs-inner {
+      display: flex; background: var(--off-white); border-radius: 12px;
+      padding: 3px; gap: 0; width: 100%; border: 1px solid var(--border);
+    }
+    .filter-tab {
+      flex: 1; padding: 7px 4px; border-radius: 9px; border: none; background: transparent;
+      cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center;
+    }
+    .filter-tab.active { background: var(--card-bg); box-shadow: var(--shadow-sm); }
+    .filter-tab-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-mid); }
+    .filter-tab-en { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); margin-top: 1px; }
+    .filter-tab.active .filter-tab-bn { color: var(--teal); }
+    .filter-tab.active .filter-tab-en { color: var(--teal-light); }
+
+    /* Conv items */
+    .conv-items { flex: 1; overflow-y: auto; }
+    .conv-section-label {
+      font-family: var(--font-en); font-size: 10px; font-weight: 600;
+      color: var(--text-xlight); letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 6px 16px 4px;
+    }
+    .conv-item {
+      display: flex; align-items: center; gap: 11px; padding: 10px 14px;
+      cursor: pointer; transition: background 0.15s; position: relative; border-bottom: 1px solid var(--border-light);
+    }
+    .conv-item:last-child { border-bottom: none; }
+    .conv-item:hover { background: var(--off-white); }
+    .conv-item.active { background: var(--teal-xpale); border-left: 3px solid var(--teal); }
+    .conv-av-wrap { position: relative; flex-shrink: 0; }
+    .conv-av {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white;
+    }
+    .av-1 { background: linear-gradient(135deg,#f97316,#dc2626); }
+    .av-2 { background: linear-gradient(135deg,#06b6d4,#0891b2); }
+    .av-3 { background: linear-gradient(135deg,#1B6B5A,#2a9678); }
+    .av-4 { background: linear-gradient(135deg,#8b5cf6,#7c3aed); }
+    .av-5 { background: linear-gradient(135deg,#ec4899,#db2777); }
+    .av-6 { background: linear-gradient(135deg,#f59e0b,#d97706); }
+    .av-7 { background: linear-gradient(135deg,#10b981,#059669); }
+    .online-dot {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 11px; height: 11px; border-radius: 50%; border: 2px solid white;
+    }
+    .online-dot.green { background: #22c55e; }
+    .online-dot.grey { background: #9ca3af; }
+    .group-badge {
+      position: absolute; bottom: -2px; right: -2px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--teal); display: flex; align-items: center; justify-content: center;
+      border: 2px solid white;
+    }
+    .conv-info { flex: 1; min-width: 0; }
+    .conv-name-row { display: flex; align-items: center; justify-content: space-between; }
+    .conv-name { font-family: var(--font-bn); font-size: 14px; font-weight: 600; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .conv-time { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); flex-shrink: 0; margin-left: 4px; }
+    .conv-preview-row { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+    .conv-preview { font-family: var(--font-bn); font-size: 12px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
+    .conv-preview.unread { color: var(--text-dark); font-weight: 600; }
+    .conv-badge { background: var(--coral); color: white; font-family: var(--font-en); font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .conv-muted { color: var(--text-xlight); display: flex; }
+
+    /* ===================== CHAT WINDOW ===================== */
+    .chat-window {
+      flex: 1; display: flex; flex-direction: column;
+      min-width: 0; height: 100%; background: var(--warm-white); overflow: hidden;
+    }
+
+    /* Chat header */
+    .chat-header {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      background: var(--card-bg); border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm); flex-shrink: 0; z-index: 10;
+    }
+    .chat-contact-av-wrap { position: relative; flex-shrink: 0; }
+    .chat-contact-av {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white;
+    }
+    .chat-online-dot {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 11px; height: 11px; border-radius: 50%; background: #22c55e; border: 2px solid white;
+    }
+    .chat-contact-info { flex: 1; }
+    .chat-contact-name { font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: var(--text-dark); }
+    .chat-contact-status { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: statusPulse 2s infinite; }
+    @keyframes statusPulse { 0%,100%{opacity:1}50%{opacity:0.5} }
+    .chat-status-bn { font-family: var(--font-bn); font-size: 11px; color: var(--fact-green); font-weight: 500; }
+    .chat-status-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); }
+
+    /* Call/Info buttons */
+    .chat-actions { display: flex; align-items: center; gap: 4px; }
+    .chat-action-btn {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid); transition: all 0.2s;
+    }
+    .chat-action-btn:hover { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+
+    /* Pinned message bar */
+    .pinned-bar {
+      display: flex; align-items: center; gap: 10px; padding: 7px 16px;
+      background: var(--teal-xpale); border-bottom: 1px solid rgba(27,107,90,0.12);
+      flex-shrink: 0; cursor: pointer; transition: background 0.15s;
+    }
+    .pinned-bar:hover { background: var(--teal-pale); }
+    .pinned-icon { color: var(--teal); flex-shrink: 0; }
+    .pinned-content { flex: 1; min-width: 0; }
+    .pinned-label { font-family: var(--font-en); font-size: 9px; color: var(--teal); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .pinned-text { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Chat thread */
+    .chat-thread {
+      flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px;
+    }
+
+    /* Date divider */
+    .date-divider {
+      display: flex; align-items: center; gap: 12px; margin: 10px 0;
+    }
+    .date-divider-line { flex: 1; height: 1px; background: var(--border-light); }
+    .date-divider-text { display: flex; gap: 6px; align-items: baseline; flex-shrink: 0; }
+    .date-bn { font-family: var(--font-bn); font-size: 11px; color: var(--text-light); font-weight: 500; }
+    .date-en { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); }
+
+    /* Message wrappers */
+    .msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+    .msg-row.sent { flex-direction: row-reverse; }
+    .msg-row.received { flex-direction: row; }
+
+    .msg-av {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white;
+    }
+
+    /* Bubble */
+    .bubble {
+      max-width: 65%; position: relative; transition: transform 0.1s;
+    }
+    .bubble:hover { transform: scale(1.01); }
+    .bubble-inner {
+      padding: 10px 14px; word-break: break-word;
+    }
+    .bubble.sent .bubble-inner {
+      background: linear-gradient(145deg, #1d7a66, var(--teal));
+      color: white; border-radius: 18px 18px 4px 18px;
+      box-shadow: 0 3px 12px rgba(27,107,90,0.25);
+    }
+    .bubble.received .bubble-inner {
+      background: var(--recv-bubble); color: var(--recv-text);
+      border-radius: 18px 18px 18px 4px; box-shadow: var(--shadow-sm);
+    }
+    .bubble-text { font-family: var(--font-bn); font-size: 14px; line-height: 1.55; }
+    .bubble-time-row { display: flex; align-items: center; justify-content: flex-end; gap: 5px; margin-top: 4px; }
+    .bubble-time { font-family: var(--font-en); font-size: 10px; }
+    .bubble.sent .bubble-time { color: rgba(255,255,255,0.65); }
+    .bubble.received .bubble-time { color: var(--text-xlight); }
+
+    /* Message status — original: seen avatar approach */
+    .msg-status { display: flex; align-items: center; gap: 2px; }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .status-sent .status-dot { background: rgba(255,255,255,0.45); }
+    .status-delivered .status-dot { background: rgba(255,255,255,0.7); }
+    .status-seen {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.9);
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 6px; font-weight: 700;
+      color: white; background: rgba(255,255,255,0.25);
+    }
+
+    /* Emoji reaction on bubble */
+    .bubble-reaction {
+      position: absolute; bottom: -12px; right: 8px;
+      background: var(--card-bg); border: 1.5px solid var(--border-light);
+      border-radius: 12px; padding: 2px 7px; font-size: 13px;
+      box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.15s;
+    }
+    .bubble.received .bubble-reaction { right: auto; left: 8px; }
+    .bubble-reaction:hover { transform: scale(1.15); }
+
+    /* Reply-quote */
+    .reply-quote {
+      border-left: 3px solid rgba(255,255,255,0.5); padding: 4px 10px; margin-bottom: 6px;
+      border-radius: 0 6px 6px 0; background: rgba(255,255,255,0.12);
+    }
+    .bubble.received .reply-quote { border-left-color: var(--teal); background: rgba(27,107,90,0.08); }
+    .reply-quote-name { font-family: var(--font-en); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+    .bubble.received .reply-quote-name { color: var(--teal); }
+    .reply-quote-text { font-family: var(--font-bn); font-size: 12px; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .bubble.received .reply-quote-text { color: var(--text-mid); }
+
+    /* Image message */
+    .msg-image {
+      width: 220px; border-radius: 14px 14px 4px 14px; overflow: hidden;
+      box-shadow: 0 3px 12px rgba(27,107,90,0.2); cursor: pointer;
+      transition: transform 0.2s; flex-shrink: 0;
+    }
+    .msg-image:hover { transform: scale(1.02); }
+    .msg-image-inner { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .msg-image-placeholder {
+      width: 100%; height: 160px;
+      background: linear-gradient(135deg, #fde68a, #f97316);
+      display: flex; align-items: center; justify-content: center; font-size: 32px;
+    }
+    .msg-image-caption { padding: 6px 10px 8px; background: linear-gradient(145deg,#1d7a66,var(--teal)); }
+    .msg-image-time-row { display: flex; justify-content: flex-end; gap: 5px; }
+
+    /* Voice note message */
+    .voice-note {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      min-width: 220px;
+    }
+    .voice-play-btn {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .bubble.received .voice-play-btn { background: var(--teal); color: white; }
+    .bubble.sent .voice-play-btn { background: rgba(255,255,255,0.25); color: white; }
+    .voice-play-btn:hover { transform: scale(1.1); }
+    .waveform { display: flex; align-items: center; gap: 2px; flex: 1; height: 30px; }
+    .wave-bar { width: 3px; border-radius: 2px; flex-shrink: 0; }
+    .bubble.received .wave-bar { background: rgba(27,107,90,0.35); }
+    .bubble.received .wave-bar.played { background: var(--teal); }
+    .bubble.sent .wave-bar { background: rgba(255,255,255,0.3); }
+    .bubble.sent .wave-bar.played { background: rgba(255,255,255,0.9); }
+    .voice-duration { font-family: var(--font-en); font-size: 11px; flex-shrink: 0; }
+    .bubble.received .voice-duration { color: var(--text-light); }
+    .bubble.sent .voice-duration { color: rgba(255,255,255,0.8); }
+
+    /* Typing indicator */
+    .typing-bubble {
+      display: flex; align-items: center; gap: 5px; padding: 12px 16px;
+      background: var(--recv-bubble); border-radius: 18px 18px 18px 4px;
+      box-shadow: var(--shadow-sm); width: fit-content;
+    }
+    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-light); animation: typingBounce 1.4s ease infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%,60%,100%{ transform: translateY(0); opacity: 0.5; }
+      30%{ transform: translateY(-6px); opacity: 1; }
+    }
+    .typing-label { font-family: var(--font-bn); font-size: 10px; color: var(--text-light); margin-top: 4px; text-align: left; }
+
+    /* ---- INPUT BAR ---- */
+    .chat-input-bar {
+      padding: 10px 16px; background: var(--card-bg);
+      border-top: 1px solid var(--border-light); flex-shrink: 0; position: relative;
+    }
+    .attach-popup {
+      position: absolute; bottom: 64px; left: 52px; z-index: 50;
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md); padding: 8px; display: none; flex-direction: column; gap: 2px;
+      min-width: 180px;
+    }
+    .attach-popup.open { display: flex; }
+    .attach-option {
+      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: background 0.15s; text-align: left;
+    }
+    .attach-option:hover { background: var(--off-white); }
+    .attach-opt-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .attach-opt-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .attach-opt-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); }
+    .input-row { display: flex; align-items: center; gap: 8px; }
+    .input-side-btn {
+      width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-light); cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+    }
+    .input-side-btn:hover { background: var(--off-white); color: var(--teal); }
+    .input-side-btn.active-attach { color: var(--teal); background: var(--teal-pale); }
+    .msg-input-wrap { flex: 1; position: relative; }
+    .msg-input {
+      width: 100%; padding: 10px 16px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--off-white);
+      font-family: var(--font-bn); font-size: 14px; color: var(--text-dark);
+      outline: none; transition: all 0.2s; resize: none; line-height: 1.4;
+    }
+    .msg-input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .msg-input::placeholder { color: var(--text-light); font-family: var(--font-en); font-size: 13px; }
+    .send-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border: none; display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(27,107,90,0.3);
+    }
+    .send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(27,107,90,0.4); }
+    .send-btn.mic-mode { background: linear-gradient(135deg, #f97316, #dc2626); box-shadow: 0 2px 8px rgba(220,38,38,0.3); }
+
+    /* ===================== INFO PANEL ===================== */
+    .info-panel {
+      width: var(--info-w); flex-shrink: 0;
+      background: var(--card-bg); border-left: 1px solid var(--border-light);
+      display: flex; flex-direction: column; height: 100%; overflow-y: auto;
+    }
+    .info-profile { display: flex; flex-direction: column; align-items: center; padding: 20px 16px 14px; border-bottom: 1px solid var(--border-light); }
+    .info-av {
+      width: 60px; height: 60px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 24px; font-weight: 700; color: white;
+      margin-bottom: 8px; border: 3px solid var(--teal-pale);
+    }
+    .info-name { font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: var(--text-dark); }
+    .info-mutual { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+    /* Info tabs */
+    .info-tabs { display: flex; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+    .info-tab {
+      flex: 1; padding: 10px 4px; border: none; background: transparent;
+      cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 1px;
+    }
+    .info-tab.active { border-bottom: 2.5px solid var(--teal); }
+    .info-tab-bn { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--text-light); }
+    .info-tab-en { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); }
+    .info-tab.active .info-tab-bn { color: var(--teal); }
+    .info-tab.active .info-tab-en { color: var(--teal-light); }
+
+    /* Media grid */
+    .info-section { padding: 12px 14px; border-bottom: 1px solid var(--border-light); }
+    .info-section-label { font-family: var(--font-en); font-size: 10px; font-weight: 600; color: var(--text-xlight); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+    .media-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+    .media-thumb {
+      aspect-ratio: 1; border-radius: 8px; overflow: hidden; cursor: pointer;
+      transition: transform 0.2s; position: relative;
+    }
+    .media-thumb:hover { transform: scale(1.04); z-index: 2; }
+    .media-thumb-inner { width: 100%; height: 100%; object-fit: cover; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+    .mt-1 { background: linear-gradient(135deg,#fde68a,#f97316); }
+    .mt-2 { background: linear-gradient(135deg,#bfdbfe,#60a5fa); }
+    .mt-3 { background: linear-gradient(135deg,#bbf7d0,#34d399); }
+    .mt-4 { background: linear-gradient(135deg,#fecdd3,#fb7185); }
+    .mt-5 { background: linear-gradient(135deg,#c4b5fd,#8b5cf6); }
+    .mt-6 { background: linear-gradient(135deg,#fef08a,#facc15); }
+
+    /* Pinned messages */
+    .pinned-msg-item {
+      display: flex; align-items: flex-start; gap: 8px; padding: 8px 0;
+      border-bottom: 1px solid var(--border-light); cursor: pointer;
+    }
+    .pinned-msg-item:last-child { border-bottom: none; }
+    .pinned-msg-icon { color: var(--teal); flex-shrink: 0; margin-top: 2px; }
+    .pinned-msg-text { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); line-height: 1.5; }
+    .pinned-msg-time { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); margin-top: 2px; }
+
+    /* Action rows */
+    .info-action {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 14px; border-bottom: 1px solid var(--border-light);
+      cursor: pointer; transition: background 0.15s;
+    }
+    .info-action:hover { background: var(--off-white); }
+    .info-action-left { display: flex; align-items: center; gap: 10px; }
+    .info-action-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ia-teal { background: var(--teal-pale); color: var(--teal); }
+    .ia-red { background: var(--coral-pale); color: var(--coral); }
+    .ia-grey { background: var(--off-white); color: var(--text-mid); }
+    .info-action-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .info-action-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .info-action.danger .info-action-bn { color: var(--coral-dark); }
+
+    /* Toggle switch */
+    .toggle-switch {
+      width: 38px; height: 22px; border-radius: 11px; border: none; cursor: pointer;
+      background: #d1d5db; transition: background 0.25s; position: relative; flex-shrink: 0;
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%;
+      background: white; top: 3px; left: 3px; transition: left 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle-switch.on { background: var(--teal); }
+    .toggle-switch.on::after { left: 19px; }
+
+    /* ===================== GROUP CHAT DEMO PANEL ===================== */
+    .group-demo-panel {
+      position: fixed; top: 76px; right: 12px; z-index: 200;
+      width: 320px; background: var(--card-bg);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light); overflow: hidden;
+    }
+    .gdp-label {
+      background: var(--teal-pale); padding: 5px 12px;
+      display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(27,107,90,0.12);
+    }
+    .gdp-label-text { font-family: var(--font-en); font-size: 9px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; }
+    .gdp-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border-light); }
+    .group-av-stack { position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+    .group-av-mini {
+      position: absolute; width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 10px; font-weight: 700; color: white;
+      border: 2px solid white;
+    }
+    .gam-1 { background: linear-gradient(135deg,#f97316,#dc2626); top: 0; left: 0; }
+    .gam-2 { background: linear-gradient(135deg,#06b6d4,#0891b2); bottom: 0; right: 0; }
+    .group-name-bn { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .group-meta-en { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 1px; }
+    .gdp-actions { margin-left: auto; display: flex; gap: 6px; }
+    .gdp-act-btn {
+      width: 32px; height: 32px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--off-white); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid); transition: all 0.15s;
+    }
+    .gdp-act-btn:hover { background: var(--teal-pale); color: var(--teal); border-color: var(--teal); }
+    .gdp-members { padding: 10px 14px; }
+    .gdp-members-label { font-family: var(--font-en); font-size: 9px; font-weight: 600; color: var(--text-xlight); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+    .gdp-member { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .gdp-member:last-child { margin-bottom: 0; }
+    .gdp-member-av {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 10px; font-weight: 700; color: white;
+    }
+    .gdp-member-name { font-family: var(--font-bn); font-size: 12px; font-weight: 500; color: var(--text-dark); }
+    .gdp-admin-badge {
+      font-family: var(--font-en); font-size: 8px; font-weight: 700;
+      color: var(--teal); background: var(--teal-pale); padding: 1px 5px; border-radius: 4px; margin-left: auto;
+    }
+
+    /* ===================== CALL OVERLAY PANEL ===================== */
+    .call-overlay-panel {
+      position: fixed; bottom: 30px; right: 12px; z-index: 250;
+      width: 280px; background: linear-gradient(160deg, #0d3d32, #1B6B5A);
+      border-radius: 24px; box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.2);
+      padding: 20px 16px 24px; display: flex; flex-direction: column; align-items: center;
+      border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+    }
+    .call-overlay-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 20%, rgba(42,150,120,0.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .call-demo-label {
+      background: rgba(255,255,255,0.12); padding: 3px 10px; border-radius: 20px; margin-bottom: 14px;
+      font-family: var(--font-en); font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.8);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .call-type-text {
+      font-family: var(--font-bn); font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 16px;
+      text-align: center; line-height: 1.5;
+    }
+    .call-type-en { font-family: var(--font-en); font-size: 10px; color: rgba(255,255,255,0.5); display: block; }
+    .call-avatar-wrap { position: relative; width: 90px; height: 90px; margin-bottom: 14px; }
+    .call-ring {
+      position: absolute; border-radius: 50%; border: 2px solid rgba(42,150,120,0.5);
+      animation: callRing 2s ease-in-out infinite;
+    }
+    .call-ring-1 { inset: -10px; animation-delay: 0s; }
+    .call-ring-2 { inset: -20px; animation-delay: 0.4s; border-color: rgba(42,150,120,0.3); }
+    .call-ring-3 { inset: -30px; animation-delay: 0.8s; border-color: rgba(42,150,120,0.15); }
+    @keyframes callRing {
+      0%{ transform: scale(0.95); opacity: 0.8; }
+      50%{ transform: scale(1.05); opacity: 1; }
+      100%{ transform: scale(0.95); opacity: 0.8; }
+    }
+    .call-av {
+      width: 90px; height: 90px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 34px; font-weight: 700; color: white;
+      background: linear-gradient(135deg,#f97316,#dc2626);
+      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+    }
+    .call-name-bn { font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white; margin-bottom: 2px; }
+    .call-name-en { font-family: var(--font-en); font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 20px; }
+    .call-actions { display: flex; align-items: center; gap: 24px; }
+    .call-btn {
+      width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .call-btn.reject { background: linear-gradient(135deg, var(--coral), var(--coral-dark)); }
+    .call-btn.reject:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(232,92,74,0.5); }
+    .call-btn.accept { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .call-btn.accept:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(34,197,94,0.5); }
+    .call-btn-label { font-family: var(--font-bn); font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 5px; text-align: center; }
+
+    /* Utility */
+    .spacer { flex: 1; }
+    .flex-center { display: flex; align-items: center; }
+  </style>
+</head>
+<body>
+
+<!-- ========================= NAVBAR ========================= -->
+<nav class="navbar">
+  <a href="#" class="nav-logo" aria-label="জলশা হোম — Jolshaa Home">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+    <input type="text" placeholder="খুঁজুন... / Search..." aria-label="Search" />
+  </div>
+  <div class="nav-center">
+    <button class="nav-icon-btn" title="হোম / Home" aria-label="Home">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="গ্রুপ / Groups" aria-label="Groups">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="পেইজ / Pages" aria-label="Pages">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h10l4 4v14H4z"/><path d="M14 4v4h4"/><path d="M8 12h6M8 16h4"/></svg>
+    </button>
+    <button class="nav-icon-btn active" title="বার্তা / Messages" aria-label="Messages">
+      <div class="nav-badge">5</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="বিজ্ঞপ্তি / Notifications" aria-label="Notifications">
+      <div class="nav-badge">3</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/><path d="M8 8 Q12 5 16 8" stroke-width="1.5" opacity="0.4"/></svg>
+    </button>
+  </div>
+  <button class="nav-sahajjo" aria-label="সাহায্য চাই">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>সাহায্য চাই</span>
+  </button>
+  <div class="nav-right">
+    <div class="nav-avatar" title="আমার প্রোফাইল / My Profile" tabindex="0" role="button" aria-label="Profile">আ</div>
+  </div>
+</nav>
+
+
+<!-- ========================= MESSENGER BODY ========================= -->
+<div class="messenger-body">
+
+  <!-- ========================= CONVERSATION LIST ========================= -->
+  <aside class="conv-list" aria-label="Conversations">
+
+    <!-- Header -->
+    <div class="conv-header">
+      <div class="conv-title">
+        <span class="conv-title-bn">মেসেজ</span>
+        <span class="conv-title-en">Messages</span>
+      </div>
+      <button class="new-msg-btn" aria-label="নতুন বার্তা / New Message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="conv-search">
+      <div class="conv-search-inner">
+        <span class="conv-search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+        <input type="text" placeholder="খুঁজুন... / Search conversations" aria-label="Search conversations" />
+      </div>
+    </div>
+
+    <!-- Filter tabs — pill/segmented control -->
+    <div class="filter-tabs">
+      <div class="filter-tabs-inner">
+        <button class="filter-tab active" id="tabAll" onclick="setTab('all')" aria-pressed="true">
+          <span class="filter-tab-bn">সব</span>
+          <span class="filter-tab-en">All</span>
+        </button>
+        <button class="filter-tab" id="tabUnread" onclick="setTab('unread')" aria-pressed="false">
+          <span class="filter-tab-bn">পড়িনি</span>
+          <span class="filter-tab-en">Unread</span>
+        </button>
+        <button class="filter-tab" id="tabGroups" onclick="setTab('groups')" aria-pressed="false">
+          <span class="filter-tab-bn">গ্রুপ</span>
+          <span class="filter-tab-en">Groups</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Conversation items -->
+    <div class="conv-items" role="list" aria-label="Conversation list">
+
+      <!-- ACTIVE / SELECTED -->
+      <div class="conv-item active" role="listitem" tabindex="0" aria-label="রাহেলা বেগম — selected conversation">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-1">র</div>
+          <span class="online-dot green"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">রাহেলা বেগম</span>
+            <span class="conv-time">এখন</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview unread">টাইপ করছেন...</span>
+            <span class="conv-badge">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="করিম উদ্দিন">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-2">ক</div>
+          <span class="online-dot green"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">করিম উদ্দিন</span>
+            <span class="conv-time">৫ মি.</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview">ঠিক আছে, পরে কথা হবে!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group chat item -->
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="পরিবার গ্রুপ — group chat">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-3">প</div>
+          <span class="group-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="9" cy="7" r="3"/><path d="M3 21c0-3 2.7-5 6-5"/><circle cx="17" cy="7" r="2"/><path d="M14 21c0-2.5 1.8-4 4-4"/></svg>
+          </span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">পরিবার গ্রুপ 👨‍👩‍👧‍👦</span>
+            <span class="conv-time">১৫ মি.</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview unread">রাহেলা: কাল সবাই আসছো?</span>
+            <span class="conv-badge">2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="তানভীর আহমেদ">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-4">ত</div>
+          <span class="online-dot grey"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">তানভীর আহমেদ</span>
+            <span class="conv-time">২ ঘণ্টা</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview">ছবিগুলো দেখেছো?</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Muted -->
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="সামিয়া আক্তার — muted">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-5">স</div>
+          <span class="online-dot grey"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">সামিয়া আক্তার</span>
+            <span class="conv-time">গতকাল</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview">ধন্যবাদ!</span>
+            <span class="conv-muted"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/><path d="M17 16.95A7 7 0 015 12v-2m14 0v2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="নাবিলা ইসলাম">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-6">না</div>
+          <span class="online-dot grey"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">নাবিলা ইসলাম</span>
+            <span class="conv-time">গতকাল</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview">দেখা হলে কথা বলবো 😊</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="conv-item" role="listitem" tabindex="0" aria-label="ফারহানা হক">
+        <div class="conv-av-wrap">
+          <div class="conv-av av-7">ফ</div>
+          <span class="online-dot grey"></span>
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">ফারহানা হক</span>
+            <span class="conv-time">সোমবার</span>
+          </div>
+          <div class="conv-preview-row">
+            <span class="conv-preview">আচ্ছা, পরে জানাবো।</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+
+  <!-- ========================= CHAT WINDOW ========================= -->
+  <main class="chat-window" aria-label="Active chat with রাহেলা বেগম">
+
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="chat-contact-av-wrap">
+        <div class="chat-contact-av av-1">র</div>
+        <span class="chat-online-dot"></span>
+      </div>
+      <div class="chat-contact-info">
+        <div class="chat-contact-name">রাহেলা বেগম</div>
+        <div class="chat-contact-status">
+          <span class="chat-status-dot"></span>
+          <span class="chat-status-bn">এখন সক্রিয়</span>
+          <span class="chat-status-en">· Active now</span>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <!-- Audio call — custom phone icon with sound waves -->
+        <button class="chat-action-btn" aria-label="অডিও কল / Audio Call" title="অডিও কল / Audio Call">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M15.05 5A5 5 0 0119 8.95M15.05 1A9 9 0 0123 8.94"/>
+            <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 5.18 2 2 0 015 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 17l-.08-.08z"/>
+          </svg>
+        </button>
+        <!-- Video call — camera with play triangle -->
+        <button class="chat-action-btn" aria-label="ভিডিও কল / Video Call" title="ভিডিও কল / Video Call">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 10l4.553-2.07A1 1 0 0121 8.87V15.13a1 1 0 01-1.447.94L15 14"/>
+            <rect x="1" y="7" width="14" height="11" rx="3"/>
+            <circle cx="7" cy="12" r="2" fill="currentColor" opacity="0.25"/>
+          </svg>
+        </button>
+        <!-- Info -->
+        <button class="chat-action-btn" id="infoToggle" aria-label="চ্যাট তথ্য / Chat Info" title="চ্যাট তথ্য / Chat Info">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pinned message bar -->
+    <div class="pinned-bar" role="note" aria-label="Pinned message">
+      <span class="pinned-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <div class="pinned-content">
+        <div class="pinned-label">📌 পিন করা বার্তা · Pinned Message</div>
+        <div class="pinned-text">আজকে বিকেল ৪টায় একসাথে দেখা করবো — ধানমন্ডি লেক সাইডে।</div>
+      </div>
+    </div>
+
+    <!-- Chat thread -->
+    <div class="chat-thread" id="chatThread" aria-label="Message thread">
+
+      <!-- Date divider -->
+      <div class="date-divider" role="separator">
+        <div class="date-divider-line"></div>
+        <div class="date-divider-text">
+          <span class="date-bn">আজকে</span>
+          <span class="date-en">· Today</span>
+        </div>
+        <div class="date-divider-line"></div>
+      </div>
+
+      <!-- RECEIVED: Text message -->
+      <div class="msg-row received">
+        <div class="msg-av av-1">র</div>
+        <div class="bubble received">
+          <div class="bubble-inner">
+            <p class="bubble-text">আমিনুল ভাই, আসছেন তো আজকে? সবাই অপেক্ষা করছে! 😊</p>
+            <div class="bubble-time-row">
+              <span class="bubble-time">১০:৩২ AM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SENT: Reply-quoted message -->
+      <div class="msg-row sent">
+        <div class="bubble sent">
+          <div class="bubble-inner">
+            <div class="reply-quote">
+              <div class="reply-quote-name">রাহেলা বেগম</div>
+              <div class="reply-quote-text">আমিনুল ভাই, আসছেন তো আজকে? সবাই...</div>
+            </div>
+            <p class="bubble-text">হ্যাঁ অবশ্যই! ৪টার দিকে পৌঁছাব, ট্র্যাফিক না থাকলে 😄</p>
+            <div class="bubble-time-row">
+              <span class="bubble-time">১০:৪৫ AM</span>
+              <!-- Status: delivered (double dots) -->
+              <span class="msg-status">
+                <span class="status-dot" style="background:rgba(255,255,255,0.7)"></span>
+                <span class="status-dot" style="background:rgba(255,255,255,0.7);margin-left:-1px"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SENT: Image message -->
+      <div class="msg-row sent" style="margin-top:2px;">
+        <div class="bubble sent msg-image" style="border-radius:14px 14px 4px 14px;overflow:hidden;background:none;box-shadow:0 3px 12px rgba(27,107,90,0.2);">
+          <div class="msg-image-placeholder" style="font-size:40px;">🎉</div>
+          <div class="msg-image-caption">
+            <div class="bubble-time-row">
+              <span class="bubble-time" style="color:rgba(255,255,255,0.7);font-size:10px;">১০:৪৬ AM</span>
+              <!-- Status: seen (tiny avatar appears) -->
+              <span class="msg-status">
+                <span class="status-seen" title="রাহেলা দেখেছেন · Seen by Raahela">র</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECEIVED: Voice note message -->
+      <div class="msg-row received" style="margin-top:6px;">
+        <div class="msg-av av-1">র</div>
+        <div class="bubble received">
+          <div class="bubble-inner voice-note" style="padding:10px 12px;">
+            <button class="voice-play-btn" aria-label="ভয়েস নোট চালু করুন / Play voice note" onclick="this.innerHTML = this.innerHTML.includes('M5') ? \'<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;white&quot;><rect x=&quot;6&quot; y=&quot;4&quot; width=&quot;4&quot; height=&quot;16&quot; rx=&quot;1&quot;/><rect x=&quot;14&quot; y=&quot;4&quot; width=&quot;4&quot; height=&quot;16&quot; rx=&quot;1&quot;/></svg>\' : \'<svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;white&quot;><polygon points=&quot;5 3 19 12 5 21 5 3&quot;/></svg>\'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <div class="waveform" aria-label="Voice note waveform">
+              <!-- Bars with played progress simulation -->
+              <div class="wave-bar played" style="height:8px"></div>
+              <div class="wave-bar played" style="height:14px"></div>
+              <div class="wave-bar played" style="height:20px"></div>
+              <div class="wave-bar played" style="height:12px"></div>
+              <div class="wave-bar played" style="height:18px"></div>
+              <div class="wave-bar played" style="height:24px"></div>
+              <div class="wave-bar played" style="height:10px"></div>
+              <div class="wave-bar" style="height:16px"></div>
+              <div class="wave-bar" style="height:22px"></div>
+              <div class="wave-bar" style="height:14px"></div>
+              <div class="wave-bar" style="height:8px"></div>
+              <div class="wave-bar" style="height:18px"></div>
+              <div class="wave-bar" style="height:20px"></div>
+              <div class="wave-bar" style="height:12px"></div>
+              <div class="wave-bar" style="height:16px"></div>
+              <div class="wave-bar" style="height:10px"></div>
+              <div class="wave-bar" style="height:22px"></div>
+              <div class="wave-bar" style="height:8px"></div>
+              <div class="wave-bar" style="height:14px"></div>
+              <div class="wave-bar" style="height:18px"></div>
+            </div>
+            <span class="voice-duration">0:24</span>
+          </div>
+          <div class="bubble-time-row" style="padding:0 12px 8px;">
+            <span class="bubble-time">১০:৪৮ AM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SENT: Text with emoji reaction below -->
+      <div class="msg-row sent" style="margin-top:6px;margin-bottom:12px;">
+        <div class="bubble sent" style="position:relative;">
+          <div class="bubble-inner">
+            <p class="bubble-text">দেখ কত সুন্দর! এই জায়গাটা সত্যিই অসাধারণ ❤️</p>
+            <div class="bubble-time-row">
+              <span class="bubble-time">১০:৫২ AM</span>
+              <!-- Status: seen -->
+              <span class="msg-status">
+                <span class="status-seen" title="রাহেলা দেখেছেন · Seen">র</span>
+              </span>
+            </div>
+          </div>
+          <!-- Reaction bubble below -->
+          <div class="bubble-reaction" aria-label="😍 প্রতিক্রিয়া">😍 1</div>
+        </div>
+      </div>
+
+      <!-- RECEIVED: Text -->
+      <div class="msg-row received">
+        <div class="msg-av av-1">র</div>
+        <div class="bubble received">
+          <div class="bubble-inner">
+            <p class="bubble-text">সত্যিই! এত সুন্দর জায়গা আগে দেখিনি। আপনি কোথায় গিয়েছিলেন?</p>
+            <div class="bubble-time-row">
+              <span class="bubble-time">১০:৫৪ AM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="msg-row received" style="margin-top:6px;" id="typingRow">
+        <div class="msg-av av-1">র</div>
+        <div>
+          <div class="typing-bubble">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+          <div class="typing-label">টাইপ করছেন... · typing...</div>
+        </div>
+      </div>
+
+    </div><!-- /chat-thread -->
+
+
+    <!-- ---- INPUT BAR ---- -->
+    <div class="chat-input-bar">
+
+      <!-- Attachment popup -->
+      <div class="attach-popup" id="attachPopup">
+        <button class="attach-option" aria-label="ছবি/ভিডিও / Photo or Video">
+          <div class="attach-opt-icon" style="background:#fff0e6;">📷</div>
+          <div>
+            <div class="attach-opt-bn">ছবি / ভিডিও</div>
+            <div class="attach-opt-en">Photo / Video</div>
+          </div>
+        </button>
+        <button class="attach-option" aria-label="ফাইল / File">
+          <div class="attach-opt-icon" style="background:#eff6ff;">📎</div>
+          <div>
+            <div class="attach-opt-bn">ফাইল</div>
+            <div class="attach-opt-en">File</div>
+          </div>
+        </button>
+        <button class="attach-option" aria-label="ভয়েস নোট / Voice Note">
+          <div class="attach-opt-icon" style="background:#f0fdf4;">🎤</div>
+          <div>
+            <div class="attach-opt-bn">ভয়েস নোট</div>
+            <div class="attach-opt-en">Voice Note</div>
+          </div>
+        </button>
+        <button class="attach-option" aria-label="লোকেশন / Location">
+          <div class="attach-opt-icon" style="background:#fef2f2;">📍</div>
+          <div>
+            <div class="attach-opt-bn">লোকেশন</div>
+            <div class="attach-opt-en">Location</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="input-row">
+        <!-- Emoji -->
+        <button class="input-side-btn" aria-label="ইমোজি / Emoji">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </button>
+
+        <!-- Attach -->
+        <button class="input-side-btn" id="attachBtn" onclick="toggleAttach()" aria-label="সংযুক্তি / Attachment">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+
+        <!-- Text input -->
+        <div class="msg-input-wrap">
+          <input
+            id="msgInput"
+            class="msg-input"
+            type="text"
+            placeholder="একটি বার্তা লিখুন... / Type a message..."
+            aria-label="Message input"
+            oninput="handleInput(this)"
+          />
+        </div>
+
+        <!-- Send / Mic toggle -->
+        <button class="send-btn mic-mode" id="sendBtn" aria-label="বার্তা পাঠান / Send message">
+          <svg id="micIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+          <svg id="sendIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="display:none;transform:translateX(2px)">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ========================= INFO PANEL ========================= -->
+  <aside class="info-panel" id="infoPanel" aria-label="Chat information panel">
+
+    <!-- Profile -->
+    <div class="info-profile">
+      <div class="info-av av-1">র</div>
+      <div class="info-name">রাহেলা বেগম</div>
+      <div class="info-mutual">৬ জন পারস্পরিক বন্ধু · 6 mutual friends</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="info-tabs">
+      <button class="info-tab active" aria-pressed="true">
+        <span class="info-tab-bn">মিডিয়া</span>
+        <span class="info-tab-en">Media</span>
+      </button>
+      <button class="info-tab" aria-pressed="false">
+        <span class="info-tab-bn">ফাইল</span>
+        <span class="info-tab-en">Files</span>
+      </button>
+      <button class="info-tab" aria-pressed="false">
+        <span class="info-tab-bn">লিংক</span>
+        <span class="info-tab-en">Links</span>
+      </button>
+    </div>
+
+    <!-- Media grid -->
+    <div class="info-section">
+      <div class="info-section-label">শেয়ার করা মিডিয়া · Shared Media</div>
+      <div class="media-grid">
+        <div class="media-thumb"><div class="media-thumb-inner mt-1">🎉</div></div>
+        <div class="media-thumb"><div class="media-thumb-inner mt-2">🌅</div></div>
+        <div class="media-thumb"><div class="media-thumb-inner mt-3">🍛</div></div>
+        <div class="media-thumb"><div class="media-thumb-inner mt-4">👨‍👩‍👧</div></div>
+        <div class="media-thumb"><div class="media-thumb-inner mt-5">🌿</div></div>
+        <div class="media-thumb"><div class="media-thumb-inner mt-6">☕</div></div>
+      </div>
+    </div>
+
+    <!-- Pinned messages -->
+    <div class="info-section">
+      <div class="info-section-label">📌 পিন করা বার্তা · Pinned Messages</div>
+      <div class="pinned-msg-item">
+        <span class="pinned-msg-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <div>
+          <div class="pinned-msg-text">আজকে বিকেল ৪টায় একসাথে দেখা করবো — ধানমন্ডি লেক সাইডে।</div>
+          <div class="pinned-msg-time">আজ · 9:15 AM</div>
+        </div>
+      </div>
+      <div class="pinned-msg-item">
+        <span class="pinned-msg-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <div>
+          <div class="pinned-msg-text">রাহেলার জন্মদিন: ১৪ই জুলাই 🎂</div>
+          <div class="pinned-msg-time">গত সপ্তাহে · Last week</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="info-action" role="button" tabindex="0" aria-label="নোটিফিকেশন নিঃশব্দ — Mute notifications">
+      <div class="info-action-left">
+        <div class="info-action-icon ia-teal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6"/><path d="M17 16.95A7 7 0 015 12v-2m14 0v2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div>
+          <div class="info-action-bn">নোটিফিকেশন নিঃশব্দ</div>
+          <div class="info-action-en">Mute Notifications</div>
+        </div>
+      </div>
+      <button class="toggle-switch" id="muteToggle" onclick="this.classList.toggle('on')" aria-label="Mute toggle"></button>
+    </div>
+
+    <div class="info-action" role="button" tabindex="0" aria-label="প্রোফাইল দেখুন — View Profile">
+      <div class="info-action-left">
+        <div class="info-action-icon ia-grey">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="info-action-bn">প্রোফাইল দেখুন</div>
+          <div class="info-action-en">View Profile</div>
+        </div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-xlight)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+
+    <div class="info-action danger" role="button" tabindex="0" aria-label="ব্লক করুন — Block">
+      <div class="info-action-left">
+        <div class="info-action-icon ia-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        </div>
+        <div>
+          <div class="info-action-bn" style="color:var(--coral-dark)">ব্লক করুন</div>
+          <div class="info-action-en">Block</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-action danger" role="button" tabindex="0" aria-label="কথোপকথন মুছুন — Delete conversation">
+      <div class="info-action-left">
+        <div class="info-action-icon ia-red">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        </div>
+        <div>
+          <div class="info-action-bn" style="color:var(--coral-dark)">কথোপকথন মুছুন</div>
+          <div class="info-action-en">Delete Conversation</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+</div><!-- /messenger-body -->
+
+
+<!-- ========================= GROUP CHAT DEMO PANEL ========================= -->
+<div class="group-demo-panel" id="groupDemoPanel" aria-label="Group chat variant demo">
+  <div class="gdp-label">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><circle cx="9" cy="7" r="3"/><path d="M3 21c0-3 2.7-5 6-5"/><circle cx="17" cy="7" r="2"/><path d="M14 21c0-2.5 1.8-4 4-4"/></svg>
+    <span class="gdp-label-text">গ্রুপ চ্যাট ভ্যারিয়েন্ট · Group Chat State</span>
+  </div>
+
+  <div class="gdp-header">
+    <div class="group-av-stack">
+      <div class="group-av-mini gam-1">র</div>
+      <div class="group-av-mini gam-2">ক</div>
+    </div>
+    <div>
+      <div class="group-name-bn">পরিবার গ্রুপ 👨‍👩‍👧‍👦</div>
+      <div class="group-meta-en">8 members · 3 active now</div>
+    </div>
+    <div class="gdp-actions">
+      <button class="gdp-act-btn" title="অডিও কল"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.08 9.81 19.79 19.79 0 01.11 1.18 2 2 0 012.11 1h3a2 2 0 012 1.72 12 12 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12 12 0 002.81.7A2 2 0 0122 16z"/></svg></button>
+      <button class="gdp-act-btn" title="গ্রুপ তথ্য"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+    </div>
+  </div>
+
+  <div class="gdp-members">
+    <div class="gdp-members-label">সদস্যরা · Members</div>
+    <div class="gdp-member">
+      <div class="gdp-member-av av-1">র</div>
+      <div class="gdp-member-name">রাহেলা বেগম</div>
+      <span class="gdp-admin-badge">Admin</span>
+    </div>
+    <div class="gdp-member">
+      <div class="gdp-member-av av-2">ক</div>
+      <div class="gdp-member-name">করিম উদ্দিন</div>
+      <span class="gdp-admin-badge">Admin</span>
+    </div>
+    <div class="gdp-member">
+      <div class="gdp-member-av av-4">ত</div>
+      <div class="gdp-member-name">তানভীর আহমেদ</div>
+    </div>
+    <div class="gdp-member" style="opacity:0.6;font-style:italic;">
+      <span style="font-family:var(--font-en);font-size:10px;color:var(--text-light);">+ ৫ জন আরো · +5 more members</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================= INCOMING CALL OVERLAY PANEL ========================= -->
+<div class="call-overlay-panel" id="callPanel" aria-label="Incoming video call" role="dialog">
+  <div class="call-demo-label">ডেমো: ইনকামিং কল · Incoming Call State</div>
+  <div class="call-type-text">
+    ইনকামিং ভিডিও কল
+    <span class="call-type-en">Incoming Video Call</span>
+  </div>
+  <div class="call-avatar-wrap">
+    <div class="call-ring call-ring-1"></div>
+    <div class="call-ring call-ring-2"></div>
+    <div class="call-ring call-ring-3"></div>
+    <div class="call-av">র</div>
+  </div>
+  <div class="call-name-bn" style="margin-top:14px;">রাহেলা বেগম</div>
+  <div class="call-name-en">Raahela Begum</div>
+  <div class="call-actions">
+    <!-- Reject -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <button class="call-btn reject" aria-label="কল প্রত্যাখ্যান করুন / Reject call">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <path d="M10.68 13.31a16 16 0 003.41 2.6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7 2 2 0 011.72 2v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.42 19.42 0 01-3.33-2.67M23 1L1 23"/>
+        </svg>
+      </button>
+      <span class="call-btn-label">মুছুন · Reject</span>
+    </div>
+    <!-- Accept -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <button class="call-btn accept" aria-label="কল গ্রহণ করুন / Accept call">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 10l4.553-2.07A1 1 0 0121 8.87V15.13a1 1 0 01-1.447.94L15 14"/>
+          <rect x="1" y="7" width="14" height="11" rx="3"/>
+        </svg>
+      </button>
+      <span class="call-btn-label">গ্রহণ করুন · Accept</span>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Filter tabs
+  function setTab(tab) {
+    ['tabAll','tabUnread','tabGroups'].forEach(id => {
+      const el = document.getElementById(id);
+      const active = id === 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1);
+      el.classList.toggle('active', active);
+      el.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  // Attachment popup toggle
+  function toggleAttach() {
+    const popup = document.getElementById('attachPopup');
+    const btn = document.getElementById('attachBtn');
+    const open = popup.classList.toggle('open');
+    btn.classList.toggle('active-attach', open);
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#attachBtn') && !e.target.closest('#attachPopup')) {
+      document.getElementById('attachPopup').classList.remove('open');
+      document.getElementById('attachBtn').classList.remove('active-attach');
+    }
+  });
+
+  // Send/Mic toggle based on input
+  function handleInput(input) {
+    const micIcon = document.getElementById('micIcon');
+    const sendIcon = document.getElementById('sendIcon');
+    const sendBtn = document.getElementById('sendBtn');
+    if (input.value.trim().length > 0) {
+      micIcon.style.display = 'none';
+      sendIcon.style.display = 'block';
+      sendBtn.classList.remove('mic-mode');
+    } else {
+      micIcon.style.display = 'block';
+      sendIcon.style.display = 'none';
+      sendBtn.classList.add('mic-mode');
+    }
+  }
+
+  // Send message
+  document.getElementById('sendBtn').addEventListener('click', function() {
+    const input = document.getElementById('msgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const thread = document.getElementById('chatThread');
+    const row = document.createElement('div');
+    row.className = 'msg-row sent';
+    row.style.marginTop = '4px';
+    const now = new Date();
+    const t = now.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'});
+    row.innerHTML = `<div class="bubble sent"><div class="bubble-inner"><p class="bubble-text">${text}</p><div class="bubble-time-row"><span class="bubble-time">${t}</span><span class="msg-status"><span class="status-dot" style="background:rgba(255,255,255,0.45)"></span></span></div></div></div>`;
+    const typingRow = document.getElementById('typingRow');
+    thread.insertBefore(row, typingRow);
+    thread.scrollTop = thread.scrollHeight;
+    input.value = '';
+    handleInput(input);
+  });
+
+  // Allow Enter to send
+  document.getElementById('msgInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('sendBtn').click(); }
+  });
+
+  // Scroll chat to bottom on load
+  const thread = document.getElementById('chatThread');
+  thread.scrollTop = thread.scrollHeight;
+
+  // Info panel tab switching
+  document.querySelectorAll('.info-tab').forEach((tab, i) => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.info-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed','false'); });
+      this.classList.add('active');
+      this.setAttribute('aria-pressed','true');
+    });
+  });
+
+  // Conversation item selection
+  document.querySelectorAll('.conv-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
