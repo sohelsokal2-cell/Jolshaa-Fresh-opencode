@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ইভেন্ট — জলশা | Jolshaa Events</title>
+  <meta name="description" content="জলশায় ইভেন্ট আবিষ্কার করুন এবং অংশগ্রহণ করুন। Discover and join community events on Jolshaa."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --off-white:    #F5F0E8;
+      --card-bg:      #FFFFFF;
+      --coral:        #E85C4A;
+      --coral-pale:   #fff2f0;
+      --amber:        #D97706;
+      --amber-pale:   #fffbeb;
+      --purple:       #7c3aed;
+      --purple-pale:  #f5f3ff;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #888;
+      --text-xlight:  #bbb;
+      --border:       #E8E2DA;
+      --border-light: #F0EBE3;
+      --shadow-xs:    0 1px 4px rgba(0,0,0,0.05);
+      --shadow-sm:    0 2px 12px rgba(0,0,0,0.08);
+      --shadow-md:    0 6px 26px rgba(0,0,0,0.10);
+      --shadow-teal:  0 6px 28px rgba(27,107,90,0.18);
+      --radius-sm:    10px;
+      --radius-md:    14px;
+      --radius-lg:    18px;
+      --radius-xl:    24px;
+      --font-bn:      'Hind Siliguri', sans-serif;
+      --font-en:      'Inter', sans-serif;
+      --nav-h:        58px;
+      --sb-left-w:    248px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-bn); background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ═══════════════════ NAVBAR ═══════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(145deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(27,107,90,0.28); }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+    .nav-search { flex: 1; max-width: 280px; position: relative; margin-left: 4px; }
+    .nav-search input { width: 100%; padding: 9px 16px 9px 38px; border-radius: 50px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-en); font-size: 13px; color: var(--text-dark); outline: none; transition: all 0.2s; }
+    .nav-search input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .nav-search input::placeholder { color: var(--text-light); }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 52px; height: 46px; border-radius: 10px; border: none; background: transparent; cursor: pointer; color: var(--text-light); transition: all 0.2s; }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); background: var(--teal-xpale); }
+    .nav-badge { position: absolute; top: 5px; right: 7px; background: var(--coral); color: white; font-family: var(--font-en); font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .nav-sahajjo { display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 50px; background: var(--coral); color: white; border: none; cursor: pointer; flex-shrink: 0; font-family: var(--font-bn); font-size: 13px; font-weight: 600; box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s; }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.75)} }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white; cursor: pointer; border: 2px solid var(--teal-pale); }
+
+    /* ═══════════════════ PAGE LAYOUT ═══════════════════ */
+    .page-body { display: flex; padding-top: var(--nav-h); min-height: 100vh; }
+
+    /* ═══════════════════ LEFT SIDEBAR ═══════════════════ */
+    .sidebar-left {
+      width: var(--sb-left-w); position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 16px 10px 40px; background: var(--card-bg);
+      border-right: 1px solid var(--border-light);
+    }
+    .sb-hdr { padding: 2px 6px 14px; display: flex; align-items: center; gap: 10px; }
+    .sb-hdr-icon { width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-title-bn { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: var(--text-dark); }
+    .sb-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Create button */
+    .btn-create-event {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 11px 16px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg,var(--teal),var(--teal-light));
+      border: none; color: white; font-family: var(--font-bn); font-size: 14px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 14px rgba(27,107,90,0.30); transition: all 0.22s;
+      margin-bottom: 14px;
+    }
+    .btn-create-event:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,107,90,0.40); }
+
+    /* Nav tabs */
+    .sb-nav-tabs { display: flex; flex-direction: column; gap: 3px; margin-bottom: 14px; }
+    .sb-tab {
+      display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 11px;
+      border: none; background: transparent; cursor: pointer; transition: all 0.18s; text-align: left; width: 100%; position: relative;
+    }
+    .sb-tab:hover { background: var(--off-white); }
+    .sb-tab.active { background: var(--teal-xpale); }
+    .sb-tab.active::before { content:''; position:absolute; left:0; top:22%; bottom:22%; width:3px; border-radius:0 3px 3px 0; background:var(--teal); }
+    .st-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .sti-yours  { background: linear-gradient(135deg,var(--teal-xpale),var(--teal-pale)); }
+    .sti-disc   { background: linear-gradient(135deg,var(--amber-pale),#fde68a); }
+    .sti-host   { background: linear-gradient(135deg,var(--purple-pale),#ddd6fe); }
+    .st-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .sb-tab.active .st-bn { color: var(--teal); font-weight: 700; }
+    .st-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .st-badge { margin-left: auto; font-family: var(--font-en); font-size: 10px; font-weight: 700; color: white; background: var(--teal); padding: 2px 7px; border-radius: 7px; }
+
+    /* Category filter section */
+    .sb-section-lbl { font-family: var(--font-en); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-xlight); padding: 4px 6px 8px; }
+    .sb-cat-wrap { display: flex; flex-direction: column; gap: 4px; padding: 0 2px; }
+    .cat-filter-item {
+      display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 11px;
+      border: none; background: transparent; cursor: pointer; transition: all 0.18s; text-align: left; width: 100%;
+    }
+    .cat-filter-item:hover { background: var(--off-white); }
+    .cat-filter-item.active { background: var(--teal-xpale); }
+    .cfi-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .cfi-music   { background: linear-gradient(135deg,#ec4899,#f43f5e); }
+    .cfi-sports  { background: linear-gradient(135deg,#16a34a,#4ade80); }
+    .cfi-comm    { background: linear-gradient(135deg,var(--teal),var(--teal-light)); }
+    .cfi-edu     { background: linear-gradient(135deg,#d97706,#fbbf24); }
+    .cfi-arts    { background: linear-gradient(135deg,#7c3aed,#a78bfa); }
+    .cfi-tech    { background: linear-gradient(135deg,#0ea5e9,#38bdf8); }
+    .cfi-bn { font-family: var(--font-bn); font-size: 12.5px; color: var(--text-dark); font-weight: 500; }
+    .cat-filter-item.active .cfi-bn { color: var(--teal); font-weight: 700; }
+    .cfi-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); }
+    .cfi-count { margin-left: auto; font-family: var(--font-en); font-size: 10px; color: var(--text-light); }
+
+    /* Mini upcoming widget */
+    .sb-divider { height: 1px; background: var(--border-light); margin: 12px 4px; }
+    .sb-upcoming { padding: 0 4px; }
+    .sb-upcoming-hdr { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; padding: 0 6px; }
+    .upcoming-row { display: flex; align-items: center; gap: 9px; padding: 7px 6px; border-radius: 10px; cursor: pointer; transition: background 0.16s; }
+    .upcoming-row:hover { background: var(--off-white); }
+    .ur-date-badge { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .udb-day  { font-family: var(--font-en); font-size: 15px; font-weight: 800; color: var(--teal); line-height: 1; }
+    .udb-mon  { font-family: var(--font-en); font-size: 8.5px; font-weight: 700; color: var(--text-light); text-transform: uppercase; }
+    .ur-title { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--text-dark); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* ═══════════════════ MAIN + DETAIL LAYOUT ═══════════════════ */
+    .content-area { margin-left: var(--sb-left-w); flex: 1; display: flex; gap: 0; min-width: 0; }
+    .feed-col { flex: 1; min-width: 0; padding: 22px 18px 60px; }
+    .detail-col { width: 360px; flex-shrink: 0; border-left: 1px solid var(--border-light); background: var(--card-bg); position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); overflow-y: auto; }
+
+    /* ─── Feed header strip ─── */
+    .feed-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .fh-title-bn { font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: var(--text-dark); }
+    .fh-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .feed-sort { display: flex; align-items: center; gap: 6px; }
+    .sort-label { font-family: var(--font-en); font-size: 11px; color: var(--text-light); }
+    .sort-select { padding: 6px 10px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--card-bg); font-family: var(--font-en); font-size: 11.5px; color: var(--text-mid); outline: none; cursor: pointer; }
+
+    /* Category pill row */
+    .cat-pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+    .cat-pill { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card-bg); font-family: var(--font-bn); font-size: 12px; font-weight: 500; color: var(--text-mid); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+    .cat-pill:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .cat-pill.active { background: var(--teal); border-color: var(--teal-hover); color: white; box-shadow: 0 2px 8px rgba(27,107,90,0.24); }
+
+    /* ═══════════════════ EVENT CARDS ═══════════════════ */
+    .events-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media (max-width: 1100px) { .detail-col { display: none; } }
+    @media (max-width: 800px)  { .events-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px)  { .content-area { margin-left: 0; } .sidebar-left { transform: translateX(-100%); } }
+    @media (max-width: 500px)  { .nav-wordmark { display: none; } }
+
+    .event-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-xs);
+      overflow: hidden; cursor: pointer; transition: all 0.24s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .event-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .event-card.selected { border-color: rgba(27,107,90,0.35); box-shadow: var(--shadow-teal), 0 0 0 2px rgba(27,107,90,0.12); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Cover area */
+    .ec-cover { position: relative; aspect-ratio: 16/9; overflow: hidden; }
+    .ec-cover-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center; font-size: 56px;
+      position: relative;
+    }
+    .ec-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.50) 100%); }
+    .ec-cover-emoji { position: relative; z-index: 1; opacity: 0.22; }
+
+    /* Online badge */
+    .ec-online-badge {
+      position: absolute; top: 10px; right: 10px; z-index: 5;
+      display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px;
+      background: rgba(255,255,255,0.22); backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255,255,255,0.40);
+    }
+    .eob-bn { font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white; }
+    .eob-en { font-family: var(--font-en); font-size: 9px; color: rgba(255,255,255,0.85); }
+
+    /* ── ORIGINAL DATE BADGE — arched teal chip ── */
+    .ec-date-badge {
+      position: absolute; bottom: 10px; left: 10px; z-index: 5;
+      display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: 14px;
+      background: linear-gradient(145deg,var(--teal),var(--teal-light));
+      box-shadow: 0 4px 16px rgba(27,107,90,0.45);
+      min-width: 54px;
+    }
+    .edb-day  { font-family: var(--font-en); font-size: 24px; font-weight: 800; color: white; line-height: 1; }
+    .edb-mon  { font-family: var(--font-en); font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+    .edb-dow  { font-family: var(--font-bn); font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.75); margin-top: 2px; }
+    /* Category color tab on left edge */
+    .ec-cat-tab { position: absolute; top: 0; left: 0; bottom: 0; width: 4px; border-radius: 0 0 0 var(--radius-lg); }
+
+    /* Card body */
+    .ec-body { padding: 14px 15px 4px; }
+    .ec-category-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 6px; font-family: var(--font-bn); font-size: 10.5px; font-weight: 700; margin-bottom: 7px; }
+    .ec-title { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.35; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ec-when { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+    .ec-when-icon { color: var(--teal); flex-shrink: 0; }
+    .ec-when-bn { font-family: var(--font-bn); font-size: 12.5px; color: var(--text-mid); font-weight: 500; }
+    .ec-when-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .ec-where { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 10px; }
+    .ec-where-icon { color: var(--coral); flex-shrink: 0; margin-top: 2px; }
+    .ec-where-bn { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); }
+    .ec-where-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+
+    /* Avatar stack + count */
+    .ec-going-row { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+    .avatar-stack { display: flex; }
+    .av-sm { width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; margin-left: -7px; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 9px; font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+    .av-sm:first-child { margin-left: 0; }
+    .ec-going-text { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--text-mid); }
+    .ec-going-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); }
+
+    /* ── RSVP Segmented Control — original treatment ── */
+    .rsvp-control { display: flex; background: var(--off-white); border-radius: 12px; padding: 3px; gap: 2px; margin-bottom: 14px; border: 1px solid var(--border-light); }
+    .rsvp-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+      padding: 7px 4px; border-radius: 9px; border: none; background: transparent;
+      font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--text-light);
+      cursor: pointer; transition: all 0.20s; white-space: nowrap;
+    }
+    .rsvp-btn:hover { background: var(--card-bg); color: var(--text-mid); }
+    /* Going — teal */
+    .rsvp-btn.rb-going.selected { background: var(--teal); color: white; box-shadow: 0 2px 10px rgba(27,107,90,0.28); }
+    /* Interested — amber */
+    .rsvp-btn.rb-interest.selected { background: var(--amber); color: white; box-shadow: 0 2px 10px rgba(217,119,6,0.28); }
+    /* Can't go — muted */
+    .rsvp-btn.rb-cant.selected { background: #6b7280; color: white; }
+
+    /* ─── Wide card (spans 2 cols) ─── */
+    .event-card.ec-wide { grid-column: span 2; }
+    .event-card.ec-wide .ec-cover { aspect-ratio: 21/8; }
+    .event-card.ec-wide .ec-body-row { display: flex; gap: 0; }
+    .event-card.ec-wide .ec-body { flex: 1; }
+    .event-card.ec-wide .ec-right { width: 220px; padding: 14px 15px 14px 0; flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+
+    /* ═══════════════════ DETAIL PANEL ═══════════════════ */
+    .detail-col-inner { padding: 0 0 40px; }
+
+    /* Detail cover */
+    .detail-cover { position: relative; aspect-ratio: 16/8; overflow: hidden; }
+    .detail-cover-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 80px; }
+    .detail-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.60)); }
+    .detail-cover-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 18px 14px; }
+    .dct-title { font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: white; line-height: 1.3; }
+    /* Detail date badge — larger version */
+    .detail-date-badge {
+      position: absolute; top: 12px; left: 14px; z-index: 5;
+      display: flex; flex-direction: column; align-items: center; padding: 10px 14px; border-radius: 16px;
+      background: linear-gradient(145deg,var(--teal),var(--teal-light));
+      box-shadow: 0 6px 20px rgba(27,107,90,0.50);
+      min-width: 62px;
+    }
+    .ddb-day  { font-family: var(--font-en); font-size: 30px; font-weight: 900; color: white; line-height: 1; }
+    .ddb-mon  { font-family: var(--font-en); font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); text-transform: uppercase; }
+    .ddb-dow  { font-family: var(--font-bn); font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.72); margin-top: 2px; }
+
+    /* Detail body */
+    .detail-body { padding: 16px 18px; }
+    .detail-title { font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: var(--text-dark); line-height: 1.35; margin-bottom: 12px; }
+    .detail-info-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .dir-icon-wrap { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .diw-teal  { background: var(--teal-pale); }
+    .diw-coral { background: var(--coral-pale); }
+    .diw-amber { background: var(--amber-pale); }
+    .dir-bn  { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .dir-en  { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+    /* Host row */
+    .detail-host { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--off-white); border: 1px solid var(--border-light); margin-bottom: 14px; }
+    .dh-av { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+    .dh-name { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .dh-role { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .btn-follow-host { margin-left: auto; padding: 6px 12px; border-radius: 9px; border: 1.5px solid var(--teal); background: var(--teal-xpale); color: var(--teal); font-family: var(--font-bn); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.18s; }
+    .btn-follow-host:hover { background: var(--teal); color: white; }
+
+    /* Description */
+    .detail-desc { font-family: var(--font-bn); font-size: 13px; color: var(--text-mid); line-height: 1.7; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    .btn-read-more { font-family: var(--font-bn); font-size: 12.5px; color: var(--teal); font-weight: 600; background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 16px; display: block; }
+
+    /* Guest tabs */
+    .guest-tabs-wrap { margin-bottom: 12px; }
+    .guest-tabs-hdr { font-family: var(--font-bn); font-size: 13.5px; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; }
+    .guest-tabs { display: flex; background: var(--off-white); border-radius: 11px; padding: 3px; gap: 2px; border: 1px solid var(--border-light); margin-bottom: 12px; }
+    .gtab { flex: 1; padding: 7px 8px; border-radius: 8px; border: none; background: transparent; font-family: var(--font-bn); font-size: 12.5px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.18s; }
+    .gtab.active { background: var(--card-bg); color: var(--teal); box-shadow: var(--shadow-xs); }
+    /* Guest list */
+    .guest-list { display: flex; flex-direction: column; gap: 8px; }
+    .guest-row { display: flex; align-items: center; gap: 9px; }
+    .ga-av { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 12px; font-weight: 700; color: white; border: 1.5px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.09); }
+    .ga-name { font-family: var(--font-bn); font-size: 12.5px; font-weight: 600; color: var(--text-dark); }
+    .ga-mutual { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Divider in detail */
+    .det-divider { height: 1px; background: var(--border-light); margin: 14px 0; }
+
+    /* Comment preview */
+    .detail-comments-hdr { font-family: var(--font-bn); font-size: 13.5px; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; }
+    .comment-row { display: flex; gap: 9px; margin-bottom: 10px; align-items: flex-start; }
+    .cr-av { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white; }
+    .cr-bubble { flex: 1; background: var(--off-white); border-radius: 0 12px 12px 12px; padding: 8px 11px; border: 1px solid var(--border-light); }
+    .crb-name { font-family: var(--font-bn); font-size: 11.5px; font-weight: 700; color: var(--teal); }
+    .crb-text { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); line-height: 1.5; margin-top: 2px; }
+    .comment-input-row { display: flex; gap: 8px; align-items: center; }
+    .ci-av { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+    .ci-input { flex: 1; padding: 8px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-bn); font-size: 12.5px; color: var(--text-dark); outline: none; transition: all 0.18s; }
+    .ci-input:focus { border-color: var(--teal); background: white; }
+    .ci-input::placeholder { color: var(--text-xlight); }
+
+    /* Detail RSVP + Share row */
+    .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 18px 18px; }
+    .btn-det-rsvp { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 14px; border-radius: var(--radius-md); background: linear-gradient(135deg,var(--teal),var(--teal-light)); border: none; color: white; font-family: var(--font-bn); font-size: 13.5px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(27,107,90,0.30); transition: all 0.22s; }
+    .btn-det-rsvp:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,107,90,0.40); }
+    .btn-det-share { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 16px; border-radius: var(--radius-md); background: var(--off-white); border: 1.5px solid var(--border); color: var(--text-mid); font-family: var(--font-bn); font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+    .btn-det-share:hover { background: var(--teal-xpale); border-color: var(--teal); color: var(--teal); }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav class="navbar" role="navigation" aria-label="Jolshaa navigation">
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+    <input type="text" placeholder="ইভেন্ট খুঁজুন... / Search events..." aria-label="Search" onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='search.html'"/>
+  </div>
+  <div class="nav-center">
+    <button class="nav-icon-btn" onclick="window.location='newsfeed.html'" title="হোম"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='groups.html'" title="গ্রুপ"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg></button>
+    <button class="nav-icon-btn active" title="ইভেন্ট / Events"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='messenger.html'" title="বার্তা"><div class="nav-badge">5</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='notifications.html'" title="বিজ্ঞপ্তি"><div class="nav-badge">৭</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></button>
+  </div>
+  <button class="nav-sahajjo" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    সাহায্য চাই
+  </button>
+  <div class="nav-avatar" onclick="window.location='profile.html'" title="প্রোফাইল">আ</div>
+</nav>
+
+<div class="page-body">
+
+  <!-- ════════════ LEFT SIDEBAR ════════════ -->
+  <aside class="sidebar-left" aria-label="Events navigation">
+    <div class="sb-hdr">
+      <div class="sb-hdr-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="sb-title-bn">ইভেন্ট</div>
+        <div class="sb-title-en">Events · Jolshaa</div>
+      </div>
+    </div>
+
+    <button class="btn-create-event">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      ইভেন্ট তৈরি করো
+      <span style="font-family:var(--font-en);font-size:10px;opacity:0.8">/ Create Event</span>
+    </button>
+
+    <div class="sb-nav-tabs">
+      <button class="sb-tab" onclick="setTab(this)">
+        <div class="st-icon sti-yours">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="st-bn">তোমার ইভেন্ট</div>
+          <div class="st-en">Your Events</div>
+        </div>
+        <span class="st-badge">৩</span>
+      </button>
+
+      <button class="sb-tab active" onclick="setTab(this)">
+        <div class="st-icon sti-disc">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <div>
+          <div class="st-bn">আবিষ্কার করো</div>
+          <div class="st-en">Discover</div>
+        </div>
+      </button>
+
+      <button class="sb-tab" onclick="setTab(this)">
+        <div class="st-icon sti-host">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <div class="st-bn">তুমি আয়োজন করছো</div>
+          <div class="st-en">Hosting</div>
+        </div>
+      </button>
+    </div>
+
+    <div class="sb-section-lbl">বিভাগ / Category</div>
+    <div class="sb-cat-wrap">
+      <button class="cat-filter-item active" onclick="setCatFilter(this)">
+        <div class="cfi-dot" style="background:linear-gradient(135deg,#1B6B5A,#2a9678)"></div>
+        <div><div class="cfi-bn">সব বিভাগ</div><div class="cfi-en">All Categories</div></div>
+        <span class="cfi-count">৪৭</span>
+      </button>
+      <button class="cat-filter-item" onclick="setCatFilter(this)">
+        <div class="cfi-dot cfi-music"></div>
+        <div><div class="cfi-bn">সংগীত</div><div class="cfi-en">Music</div></div>
+        <span class="cfi-count">১২</span>
+      </button>
+      <button class="cat-filter-item" onclick="setCatFilter(this)">
+        <div class="cfi-dot cfi-sports"></div>
+        <div><div class="cfi-bn">খেলাধুলা</div><div class="cfi-en">Sports</div></div>
+        <span class="cfi-count">৮</span>
+      </button>
+      <button class="cat-filter-item" onclick="setCatFilter(this)">
+        <div class="cfi-dot cfi-comm"></div>
+        <div><div class="cfi-bn">সম্প্রদায়</div><div class="cfi-en">Community</div></div>
+        <span class="cfi-count">১৫</span>
+      </button>
+      <button class="cat-filter-item" onclick="setCatFilter(this)">
+        <div class="cfi-dot cfi-edu"></div>
+        <div><div class="cfi-bn">শিক্ষা</div><div class="cfi-en">Education</div></div>
+        <span class="cfi-count">৭</span>
+      </button>
+      <button class="cat-filter-item" onclick="setCatFilter(this)">
+        <div class="cfi-dot cfi-arts"></div>
+        <div><div class="cfi-bn">শিল্পকলা</div><div class="cfi-en">Arts &amp; Culture</div></div>
+        <span class="cfi-count">৫</span>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-upcoming">
+      <div class="sb-upcoming-hdr">📅 আসছে শীঘ্রই</div>
+      <div class="upcoming-row" onclick="selectEvent(1)">
+        <div class="ur-date-badge" style="background:var(--teal-xpale);border:1.5px solid var(--teal-pale)">
+          <div class="udb-day">১৫</div><div class="udb-mon">Aug</div>
+        </div>
+        <div class="ur-title">ঢাকা লোকসংগীত উৎসব ২০২৫</div>
+      </div>
+      <div class="upcoming-row" onclick="selectEvent(2)">
+        <div class="ur-date-badge" style="background:var(--amber-pale);border:1.5px solid #fde68a">
+          <div class="udb-day" style="color:var(--amber)">২২</div><div class="udb-mon">Aug</div>
+        </div>
+        <div class="ur-title">জলশা কমিউনিটি মিট-আপ</div>
+      </div>
+      <div class="upcoming-row" onclick="selectEvent(3)">
+        <div class="ur-date-badge" style="background:var(--purple-pale);border:1.5px solid #ddd6fe">
+          <div class="udb-day" style="color:var(--purple)">৩০</div><div class="udb-mon">Aug</div>
+        </div>
+        <div class="ur-title">ওয়েব ডিজাইন ওয়ার্কশপ</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════════════ CONTENT AREA ════════════ -->
+  <div class="content-area">
+
+    <!-- ─── FEED COLUMN ─── -->
+    <div class="feed-col">
+      <div class="feed-hdr">
+        <div>
+          <div class="fh-title-bn">ইভেন্ট আবিষ্কার করো</div>
+          <div class="fh-title-en">Discover Events · Near You &amp; Online</div>
+        </div>
+        <div class="feed-sort">
+          <span class="sort-label">Sort:</span>
+          <select class="sort-select"><option>তারিখ / Date</option><option>জনপ্রিয়তা / Popular</option><option>কাছে / Near Me</option></select>
+        </div>
+      </div>
+
+      <!-- Category pills (horizontal strip) -->
+      <div class="cat-pill-row">
+        <button class="cat-pill active" onclick="setPill(this)">🎯 সব</button>
+        <button class="cat-pill" onclick="setPill(this)">🎵 সংগীত</button>
+        <button class="cat-pill" onclick="setPill(this)">⚽ খেলাধুলা</button>
+        <button class="cat-pill" onclick="setPill(this)">🤝 সম্প্রদায়</button>
+        <button class="cat-pill" onclick="setPill(this)">📚 শিক্ষা</button>
+        <button class="cat-pill" onclick="setPill(this)">🎭 শিল্পকলা</button>
+        <button class="cat-pill" onclick="setPill(this)">💻 টেক</button>
+        <button class="cat-pill" onclick="setPill(this)">🌐 অনলাইন</button>
+      </div>
+
+      <!-- Event grid -->
+      <div class="events-grid">
+
+        <!-- CARD 1 — Wide featured, Music -->
+        <div class="event-card ec-wide" id="ecard1" style="animation-delay:0.04s" onclick="selectEvent(1)">
+          <div class="ec-cover">
+            <div class="ec-cover-bg" style="background:linear-gradient(140deg,#1a0f2e,#3b1a5e,#5c2d8a)">
+              <div class="ec-cover-overlay"></div>
+              <div class="ec-cover-emoji" style="font-size:90px;opacity:0.18">🎸</div>
+            </div>
+            <div class="ec-date-badge">
+              <div class="edb-day">১৫</div>
+              <div class="edb-mon">Aug</div>
+              <div class="edb-dow">শনিবার</div>
+            </div>
+          </div>
+          <div class="ec-body-row">
+            <div class="ec-body">
+              <div class="ec-category-chip" style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe">🎵 সংগীত / Music</div>
+              <div class="ec-title">ঢাকা লোকসংগীত উৎসব ২০২৫ — বাউল থেকে ব্যান্ড একই মঞ্চে</div>
+              <div class="ec-when">
+                <span class="ec-when-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                <div><div class="ec-when-bn">শনি, ১৫ আগস্ট · সন্ধ্যা ৬টা</div><div class="ec-when-en">Sat, Aug 15 · 6:00 PM</div></div>
+              </div>
+              <div class="ec-where">
+                <span class="ec-where-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                <div><div class="ec-where-bn">বাংলাদেশ শিল্পকলা একাডেমি, ঢাকা</div><div class="ec-where-en">Shilpakala Academy · Dhaka</div></div>
+              </div>
+              <div class="ec-going-row">
+                <div class="avatar-stack">
+                  <div class="av-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ন</div>
+                  <div class="av-sm" style="background:linear-gradient(135deg,#1B6B5A,#4ECDC4)">আ</div>
+                  <div class="av-sm" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ম</div>
+                  <div class="av-sm" style="background:linear-gradient(135deg,#d97706,#fbbf24)">র</div>
+                  <div class="av-sm" style="background:#6b7280;font-size:8px">+৮৭</div>
+                </div>
+                <div><div class="ec-going-text">৯১ জন যাচ্ছে</div><div class="ec-going-en">91 going · 145 interested</div></div>
+              </div>
+            </div>
+            <div class="ec-right">
+              <div class="rsvp-control">
+                <button class="rsvp-btn rb-going selected" id="rsvp1-going" onclick="setRsvp(event,'rsvp1')">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  যাচ্ছি
+                </button>
+                <button class="rsvp-btn rb-interest" id="rsvp1-interest" onclick="setRsvp(event,'rsvp1')">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                  আগ্রহী
+                </button>
+                <button class="rsvp-btn rb-cant" id="rsvp1-cant" onclick="setRsvp(event,'rsvp1')">✕ পারব না</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2 — Sports -->
+        <div class="event-card" id="ecard2" style="animation-delay:0.09s" onclick="selectEvent(2)">
+          <div class="ec-cover">
+            <div class="ec-cover-bg" style="background:linear-gradient(140deg,#052e16,#14532d,#1e7c3c)">
+              <div class="ec-cover-overlay"></div>
+              <div class="ec-cover-emoji">⚽</div>
+            </div>
+            <div class="ec-date-badge">
+              <div class="edb-day">২২</div>
+              <div class="edb-mon">Aug</div>
+              <div class="edb-dow">শুক্রবার</div>
+            </div>
+          </div>
+          <div class="ec-body">
+            <div class="ec-category-chip" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">⚽ খেলাধুলা / Sports</div>
+            <div class="ec-title">জলশা ফুটবল টুর্নামেন্ট — কমিউনিটি কাপ ২০২৫</div>
+            <div class="ec-when">
+              <span class="ec-when-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <div><div class="ec-when-bn">শুক্র, ২২ আগস্ট · সকাল ৯টা</div><div class="ec-when-en">Fri, Aug 22 · 9:00 AM</div></div>
+            </div>
+            <div class="ec-where">
+              <span class="ec-where-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div><div class="ec-where-bn">বঙ্গবন্ধু জাতীয় স্টেডিয়াম, ঢাকা</div><div class="ec-where-en">National Stadium · Dhaka</div></div>
+            </div>
+            <div class="ec-going-row">
+              <div class="avatar-stack">
+                <div class="av-sm" style="background:linear-gradient(135deg,#16a34a,#4ade80)">ক</div>
+                <div class="av-sm" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">স</div>
+                <div class="av-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ত</div>
+                <div class="av-sm" style="background:#6b7280;font-size:8px">+৪২</div>
+              </div>
+              <div><div class="ec-going-text">৪৫ জন যাচ্ছে</div><div class="ec-going-en">45 going · 78 interested</div></div>
+            </div>
+            <div class="rsvp-control">
+              <button class="rsvp-btn rb-going" id="rsvp2-going" onclick="setRsvp(event,'rsvp2')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                যাচ্ছি
+              </button>
+              <button class="rsvp-btn rb-interest selected" id="rsvp2-interest" onclick="setRsvp(event,'rsvp2')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                আগ্রহী
+              </button>
+              <button class="rsvp-btn rb-cant" id="rsvp2-cant" onclick="setRsvp(event,'rsvp2')">✕ পারব না</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3 — Online Event, Community -->
+        <div class="event-card" id="ecard3" style="animation-delay:0.13s" onclick="selectEvent(3)">
+          <div class="ec-cover">
+            <div class="ec-cover-bg" style="background:linear-gradient(140deg,#0c1a2e,#1a3a5e,#0a2a4a)">
+              <div class="ec-cover-overlay"></div>
+              <div class="ec-online-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                <span class="eob-bn">অনলাইন</span>
+                <span class="eob-en">/ Online</span>
+              </div>
+              <div class="ec-cover-emoji">💻</div>
+            </div>
+            <div class="ec-date-badge">
+              <div class="edb-day">৩০</div>
+              <div class="edb-mon">Aug</div>
+              <div class="edb-dow">শনিবার</div>
+            </div>
+          </div>
+          <div class="ec-body">
+            <div class="ec-category-chip" style="background:#f2f9f7;color:var(--teal);border:1px solid var(--teal-pale)">🌐 অনলাইন ইভেন্ট / Online</div>
+            <div class="ec-title">ওয়েব ডিজাইন ওয়ার্কশপ — ফ্রি বিগিনার সেশন</div>
+            <div class="ec-when">
+              <span class="ec-when-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <div><div class="ec-when-bn">শনি, ৩০ আগস্ট · দুপুর ৩টা</div><div class="ec-when-en">Sat, Aug 30 · 3:00 PM</div></div>
+            </div>
+            <div class="ec-where">
+              <span class="ec-where-icon" style="color:var(--teal)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span>
+              <div><div class="ec-where-bn">জলশা লাইভ প্ল্যাটফর্ম</div><div class="ec-where-en">Jolshaa Live Platform · Free</div></div>
+            </div>
+            <div class="ec-going-row">
+              <div class="avatar-stack">
+                <div class="av-sm" style="background:linear-gradient(135deg,var(--teal),var(--teal-light))">আ</div>
+                <div class="av-sm" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ফ</div>
+                <div class="av-sm" style="background:linear-gradient(135deg,#d97706,#fbbf24)">র</div>
+                <div class="av-sm" style="background:#6b7280;font-size:8px">+২৩৪</div>
+              </div>
+              <div><div class="ec-going-text">২৩৭ জন যাচ্ছে</div><div class="ec-going-en">237 going · 412 interested</div></div>
+            </div>
+            <div class="rsvp-control">
+              <button class="rsvp-btn rb-going" id="rsvp3-going" onclick="setRsvp(event,'rsvp3')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                যাচ্ছি
+              </button>
+              <button class="rsvp-btn rb-interest" id="rsvp3-interest" onclick="setRsvp(event,'rsvp3')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                আগ্রহী
+              </button>
+              <button class="rsvp-btn rb-cant" id="rsvp3-cant" onclick="setRsvp(event,'rsvp3')">✕ পারব না</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4 — Arts, in person -->
+        <div class="event-card" id="ecard4" style="animation-delay:0.17s" onclick="selectEvent(4)">
+          <div class="ec-cover">
+            <div class="ec-cover-bg" style="background:linear-gradient(140deg,#2e0a1e,#5a1a3a,#8a2d5a)">
+              <div class="ec-cover-overlay"></div>
+              <div class="ec-cover-emoji">🎨</div>
+            </div>
+            <div class="ec-date-badge">
+              <div class="edb-day">০৫</div>
+              <div class="edb-mon">Sep</div>
+              <div class="edb-dow">শুক্রবার</div>
+            </div>
+          </div>
+          <div class="ec-body">
+            <div class="ec-category-chip" style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe">🎨 শিল্পকলা / Arts</div>
+            <div class="ec-title">চিত্রকলা প্রদর্শনী — তরুণ শিল্পীদের কাজ একই ছাদের নিচে</div>
+            <div class="ec-when">
+              <span class="ec-when-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <div><div class="ec-when-bn">শুক্র, ৫ সেপ্টেম্বর · বিকাল ৪টা</div><div class="ec-when-en">Fri, Sep 5 · 4:00 PM</div></div>
+            </div>
+            <div class="ec-where">
+              <span class="ec-where-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div><div class="ec-where-bn">ধানমন্ডি আর্ট গ্যালারি, ঢাকা</div><div class="ec-where-en">Dhanmondi Art Gallery · Dhaka</div></div>
+            </div>
+            <div class="ec-going-row">
+              <div class="avatar-stack">
+                <div class="av-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ল</div>
+                <div class="av-sm" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">প</div>
+                <div class="av-sm" style="background:#6b7280;font-size:8px">+৩১</div>
+              </div>
+              <div><div class="ec-going-text">৩৩ জন যাচ্ছে</div><div class="ec-going-en">33 going · 57 interested</div></div>
+            </div>
+            <div class="rsvp-control">
+              <button class="rsvp-btn rb-going" id="rsvp4-going" onclick="setRsvp(event,'rsvp4')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                যাচ্ছি
+              </button>
+              <button class="rsvp-btn rb-interest" id="rsvp4-interest" onclick="setRsvp(event,'rsvp4')">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                আগ্রহী
+              </button>
+              <button class="rsvp-btn rb-cant" id="rsvp4-cant" onclick="setRsvp(event,'rsvp4')">✕ পারব না</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /events-grid -->
+    </div><!-- /feed-col -->
+
+    <!-- ─── DETAIL PANEL ─── -->
+    <aside class="detail-col" aria-label="Event detail">
+      <div class="detail-col-inner">
+
+        <!-- Cover -->
+        <div class="detail-cover">
+          <div class="detail-cover-bg" style="background:linear-gradient(140deg,#1a0f2e,#3b1a5e,#5c2d8a)">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 35% 40%,rgba(124,58,237,0.18),transparent 60%)"></div>
+            <span style="font-size:90px;opacity:0.18;position:relative;z-index:1">🎸</span>
+          </div>
+          <div class="detail-cover-overlay"></div>
+          <div class="detail-date-badge">
+            <div class="ddb-day">১৫</div>
+            <div class="ddb-mon">August</div>
+            <div class="ddb-dow">শনিবার</div>
+          </div>
+          <div class="detail-cover-title">
+            <div class="dct-title">ঢাকা লোকসংগীত উৎসব ২০২৫</div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="detail-body">
+          <div class="detail-title">ঢাকা লোকসংগীত উৎসব ২০২৫ — বাউল থেকে ব্যান্ড একই মঞ্চে</div>
+
+          <!-- When -->
+          <div class="detail-info-row">
+            <div class="dir-icon-wrap diw-teal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <div class="dir-bn">শনি, ১৫ আগস্ট · সন্ধ্যা ৬টা — রাত ১০টা</div>
+              <div class="dir-en">Sat, Aug 15, 2025 · 6:00 PM – 10:00 PM</div>
+            </div>
+          </div>
+
+          <!-- Where -->
+          <div class="detail-info-row">
+            <div class="dir-icon-wrap diw-coral">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="dir-bn">বাংলাদেশ শিল্পকলা একাডেমি, সেগুনবাগিচা, ঢাকা</div>
+              <div class="dir-en">Shilpakala Academy · Segunbagicha, Dhaka</div>
+            </div>
+          </div>
+
+          <!-- Ticket -->
+          <div class="detail-info-row" style="margin-bottom:14px">
+            <div class="dir-icon-wrap diw-amber">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><path d="M2 9a3 3 0 000 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 000-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z"/></svg>
+            </div>
+            <div>
+              <div class="dir-bn">প্রবেশ মূল্য: ২০০ টাকা</div>
+              <div class="dir-en">Entry: ৳200 · Available online &amp; at gate</div>
+            </div>
+          </div>
+
+          <!-- Host -->
+          <div class="detail-host">
+            <div class="dh-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">জ</div>
+            <div>
+              <div class="dh-name">জলশা মিউজিক কমিউনিটি</div>
+              <div class="dh-role">আয়োজক / Host · Verified</div>
+            </div>
+            <button class="btn-follow-host" onclick="toggleFollow(this)">+ ফলো</button>
+          </div>
+
+          <!-- Description -->
+          <div class="detail-desc" id="detDesc">বাংলাদেশের লোকসংগীতের সমৃদ্ধ ঐতিহ্যকে উদযাপন করতে আমরা আয়োজন করছি ঢাকা লোকসংগীত উৎসব ২০২৫। এই উৎসবে একই মঞ্চে পাবেন বাউল গান, ভাটিয়ালি, মুর্শিদি এবং আধুনিক ব্যান্ড সংগীতের অসাধারণ মেলবন্ধন। দেশের বিভিন্ন প্রান্ত থেকে আসবেন ৩০ জনেরও বেশি শিল্পী।</div>
+          <button class="btn-read-more" onclick="toggleDesc()">আরও পড়ুন... / Read more</button>
+
+          <div class="det-divider"></div>
+
+          <!-- Guest tabs -->
+          <div class="guest-tabs-wrap">
+            <div class="guest-tabs-hdr">অংশগ্রহণকারীরা / Guests</div>
+            <div class="guest-tabs">
+              <button class="gtab active" onclick="setGuestTab(this,'going')">✓ যাচ্ছে (৯১)</button>
+              <button class="gtab" onclick="setGuestTab(this,'interest')">♥ আগ্রহী (১৪৫)</button>
+            </div>
+            <div class="guest-list" id="guestList">
+              <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,var(--teal),var(--teal-light))">আ</div><div><div class="ga-name">আরিফ হোসেন</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৩ জন</div></div></div>
+              <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ন</div><div><div class="ga-name">নাহিদ হাসান</div><div class="ga-mutual">পারস্পরিক বন্ধু: ১ জন</div></div></div>
+              <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ম</div><div><div class="ga-name">মিতা চৌধুরী</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৫ জন</div></div></div>
+              <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#d97706,#fbbf24)">র</div><div><div class="ga-name">রাফি আহমেদ</div><div class="ga-mutual">পারস্পরিক বন্ধু: ২ জন</div></div></div>
+            </div>
+          </div>
+
+          <div class="det-divider"></div>
+
+          <!-- Comments preview -->
+          <div class="detail-comments-hdr">মন্তব্য / Comments</div>
+          <div class="comment-row">
+            <div class="cr-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ন</div>
+            <div class="cr-bubble">
+              <div class="crb-name">নাহিদ হাসান</div>
+              <div class="crb-text">এই ইভেন্টের জন্য অনেকদিন ধরে অপেক্ষা করছিলাম! ছাদনাতলা ব্যান্ড কি পারফর্ম করবে?</div>
+            </div>
+          </div>
+          <div class="comment-row">
+            <div class="cr-av" style="background:linear-gradient(135deg,#16a34a,#4ade80)">স</div>
+            <div class="cr-bubble">
+              <div class="crb-name">সাদিয়া ইসলাম</div>
+              <div class="crb-text">আমি বাউল গানের জন্য বিশেষভাবে যাব। প্রতি বছরের মতো এবারও অসাধারণ হবে আশা করি! 🎵</div>
+            </div>
+          </div>
+          <div class="comment-input-row">
+            <div class="ci-av">আ</div>
+            <input type="text" class="ci-input" placeholder="মন্তব্য করুন... / Write a comment..."/>
+          </div>
+        </div><!-- /detail-body -->
+
+        <!-- Action buttons -->
+        <div class="detail-actions">
+          <button class="btn-det-rsvp" id="detRsvpBtn" onclick="toggleDetailRsvp(this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            যাচ্ছি / Going
+          </button>
+          <button class="btn-det-share" onclick="handleShare()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            শেয়ার
+          </button>
+        </div>
+
+      </div><!-- /detail-col-inner -->
+    </aside>
+
+  </div><!-- /content-area -->
+</div><!-- /page-body -->
+
+<script>
+  /* ─── Sidebar tabs ─── */
+  function setTab(el) {
+    document.querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function setCatFilter(el) {
+    document.querySelectorAll('.cat-filter-item').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function setPill(el) {
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ─── RSVP segmented control ─── */
+  function setRsvp(e, prefix) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const parent = btn.closest('.rsvp-control');
+    parent.querySelectorAll('.rsvp-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  /* ─── Card selection → update detail panel ─── */
+  function selectEvent(id) {
+    document.querySelectorAll('.event-card').forEach(c => c.classList.remove('selected'));
+    const card = document.getElementById('ecard' + id);
+    if (card) card.classList.add('selected');
+    // scroll detail to top
+    const dc = document.querySelector('.detail-col');
+    if (dc) dc.scrollTop = 0;
+  }
+  // Default: card 1 selected on load
+  window.addEventListener('DOMContentLoaded', () => selectEvent(1));
+
+  /* ─── Guest tabs ─── */
+  function setGuestTab(el, type) {
+    document.querySelectorAll('.gtab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const list = document.getElementById('guestList');
+    if (type === 'interest') {
+      list.innerHTML = `
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">প</div><div><div class="ga-name">পারিসা তাহের</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৪ জন</div></div></div>
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">ক</div><div><div class="ga-name">কামরুল হাসান</div><div class="ga-mutual">পারস্পরিক বন্ধু: ২ জন</div></div></div>
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#d97706,#fbbf24)">ত</div><div><div class="ga-name">তাসনিম আক্তার</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৬ জন</div></div></div>`;
+    } else {
+      list.innerHTML = `
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,var(--teal),var(--teal-light))">আ</div><div><div class="ga-name">আরিফ হোসেন</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৩ জন</div></div></div>
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ন</div><div><div class="ga-name">নাহিদ হাসান</div><div class="ga-mutual">পারস্পরিক বন্ধু: ১ জন</div></div></div>
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ম</div><div><div class="ga-name">মিতা চৌধুরী</div><div class="ga-mutual">পারস্পরিক বন্ধু: ৫ জন</div></div></div>
+        <div class="guest-row"><div class="ga-av" style="background:linear-gradient(135deg,#d97706,#fbbf24)">র</div><div><div class="ga-name">রাফি আহমেদ</div><div class="ga-mutual">পারস্পরিক বন্ধু: ২ জন</div></div></div>`;
+    }
+  }
+
+  /* ─── Detail RSVP toggle ─── */
+  function toggleDetailRsvp(btn) {
+    const going = btn.dataset.going === '1';
+    if (!going) {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> যাচ্ছি ✓ / Going`;
+      btn.style.background = 'linear-gradient(135deg,#16a34a,#4ade80)';
+      btn.dataset.going = '1';
+    } else {
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> যাচ্ছি / Going`;
+      btn.style.background = '';
+      btn.dataset.going = '0';
+    }
+  }
+
+  /* ─── Follow host toggle ─── */
+  function toggleFollow(btn) {
+    const following = btn.dataset.following === '1';
+    btn.textContent = following ? '+ ফলো' : '✓ ফলো করছেন';
+    btn.dataset.following = following ? '0' : '1';
+    if (!following) { btn.style.background = 'var(--teal)'; btn.style.color = 'white'; }
+    else { btn.style.background = ''; btn.style.color = ''; }
+  }
+
+  /* ─── Read more ─── */
+  function toggleDesc() {
+    const d = document.getElementById('detDesc');
+    const expanded = d.style.webkitLineClamp === 'unset';
+    d.style.webkitLineClamp = expanded ? '4' : 'unset';
+    d.style.display = expanded ? '-webkit-box' : 'block';
+  }
+
+  /* ─── Share ─── */
+  function handleShare() { alert('ইভেন্ট লিংক কপি হয়েছে! / Event link copied!'); }
+</script>
+</body>
+</html>

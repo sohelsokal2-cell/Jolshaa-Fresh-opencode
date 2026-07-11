@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — Jolshaa Internal</title>
+  <meta name="description" content="Jolshaa internal admin panel — user management, reports, and platform analytics."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --bg:           #F0F2F5;       /* cool-neutral admin bg */
+      --bg-dark:      #E6E9EE;
+      --sidebar-bg:   #111C1A;       /* deep teal-black sidebar */
+      --sidebar-dark: #0d1614;
+      --card-bg:      #FFFFFF;
+      --topbar-bg:    #FFFFFF;
+      --green:        #16a34a;
+      --green-pale:   #DCFCE7;
+      --amber:        #D97706;
+      --amber-pale:   #FEF3C7;
+      --coral:        #E85C4A;
+      --coral-pale:   #FFE4E1;
+      --blue:         #0ea5e9;
+      --blue-pale:    #E0F2FE;
+      --purple:       #7c3aed;
+      --purple-pale:  #EDE9FE;
+      --red:          #DC2626;
+      --red-pale:     #FEE2E2;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #6b7280;
+      --text-xlight:  #9ca3af;
+      --border:       #E5E7EB;
+      --border-dark:  #D1D5DB;
+      --shadow-xs:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-sm:    0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:    0 4px 20px rgba(0,0,0,0.10);
+      --radius-sm:    8px;
+      --radius-md:    12px;
+      --radius-lg:    16px;
+      --font-bn:      'Hind Siliguri', sans-serif;
+      --font-en:      'Inter', sans-serif;
+      --sb-w:         220px;
+      --topbar-h:     54px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-en); background: var(--bg); color: var(--text-dark); min-height: 100vh; display: flex; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    /* ═══════════ SIDEBAR ═══════════ */
+    .sidebar {
+      width: var(--sb-w); min-height: 100vh; background: var(--sidebar-bg);
+      display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 200; overflow-y: auto;
+    }
+    /* Admin header */
+    .sb-brand {
+      display: flex; align-items: center; gap: 10px; padding: 16px 14px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .sb-brand-badge {
+      width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(145deg,var(--teal),var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white;
+      box-shadow: 0 2px 8px rgba(27,107,90,0.40);
+    }
+    .sb-brand-text { }
+    .sb-brand-title { font-family: var(--font-en); font-size: 13px; font-weight: 800; color: white; letter-spacing: 0.1px; }
+    .sb-brand-sub { font-family: var(--font-en); font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 1px; }
+    /* Nav section label */
+    .sb-section { padding: 14px 14px 4px; font-family: var(--font-en); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: rgba(255,255,255,0.25); }
+    /* Nav item */
+    .sb-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin: 1px 8px;
+      border-radius: var(--radius-sm); cursor: pointer; transition: all 0.18s;
+      border: none; background: transparent; text-align: left; width: calc(100% - 16px);
+    }
+    .sb-item:hover { background: rgba(255,255,255,0.07); }
+    .sb-item.active { background: linear-gradient(135deg,rgba(27,107,90,0.55),rgba(42,150,120,0.35)); border-left: 3px solid var(--teal-light); padding-left: 9px; }
+    .si-icon { width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .sb-item.active .si-icon { background: rgba(27,107,90,0.35); }
+    .sb-item:hover:not(.active) .si-icon { background: rgba(255,255,255,0.06); }
+    .si-label { font-family: var(--font-en); font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.55); }
+    .sb-item.active .si-label { color: white; font-weight: 600; }
+    .sb-item:hover .si-label { color: rgba(255,255,255,0.80); }
+    .si-bn { font-family: var(--font-bn); font-size: 10px; color: rgba(255,255,255,0.28); margin-top: 1px; }
+    .sb-item.active .si-bn { color: rgba(255,255,255,0.50); }
+    .si-badge { margin-left: auto; font-family: var(--font-en); font-size: 10px; font-weight: 700; background: var(--coral); color: white; border-radius: 6px; padding: 1px 7px; flex-shrink: 0; }
+    .si-badge.amber { background: var(--amber); }
+    /* Divider */
+    .sb-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 8px 14px; }
+    /* Sidebar footer */
+    .sb-footer { margin-top: auto; padding: 12px 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+    .sf-admin-row { display: flex; align-items: center; gap: 9px; }
+    .sf-av { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: white; flex-shrink: 0; }
+    .sf-name { font-family: var(--font-en); font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,0.75); }
+    .sf-role { font-family: var(--font-en); font-size: 9px; color: rgba(255,255,255,0.30); margin-top: 1px; }
+
+    /* ═══════════ TOP BAR ═══════════ */
+    .topbar {
+      position: fixed; top: 0; left: var(--sb-w); right: 0; height: var(--topbar-h); z-index: 100;
+      background: var(--topbar-bg); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 20px; gap: 12px; box-shadow: var(--shadow-xs);
+    }
+    .tb-breadcrumb { display: flex; align-items: center; gap: 6px; }
+    .tbc-root { font-family: var(--font-en); font-size: 12px; color: var(--text-light); }
+    .tbc-sep { color: var(--text-xlight); font-size: 11px; }
+    .tbc-page { font-family: var(--font-en); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .tb-spacer { flex: 1; }
+    .tb-search { position: relative; }
+    .tb-search input { padding: 7px 14px 7px 34px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--bg); font-family: var(--font-en); font-size: 12.5px; color: var(--text-dark); outline: none; width: 220px; transition: all 0.18s; }
+    .tb-search input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .tb-search input::placeholder { color: var(--text-xlight); }
+    .tb-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-xlight); }
+    .tb-action { display: flex; align-items: center; gap: 6px; }
+    .tb-icon-btn { width: 34px; height: 34px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--card-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-light); transition: all 0.18s; position: relative; }
+    .tb-icon-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .tb-notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); border: 1.5px solid white; }
+    .tb-admin-chip { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 9px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); }
+    .tac-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .tac-text { font-family: var(--font-en); font-size: 11px; font-weight: 700; color: white; }
+
+    /* ═══════════ MAIN AREA ═══════════ */
+    .main-area { margin-left: var(--sb-w); padding-top: var(--topbar-h); flex: 1; min-width: 0; }
+    .main-inner { display: flex; gap: 0; min-height: calc(100vh - var(--topbar-h)); }
+    .center-col { flex: 1; min-width: 0; padding: 20px 18px 40px; }
+    .right-col { width: 310px; flex-shrink: 0; border-left: 1px solid var(--border); background: var(--card-bg); padding: 20px 16px 40px; overflow-y: auto; max-height: calc(100vh - var(--topbar-h)); position: sticky; top: var(--topbar-h); }
+
+    /* ═══════════ OVERVIEW HEADER ═══════════ */
+    .overview-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+    .oh-left { }
+    .oh-title { font-family: var(--font-en); font-size: 17px; font-weight: 800; color: var(--text-dark); }
+    .oh-sub { font-family: var(--font-en); font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+    .oh-sub span { font-family: var(--font-bn); }
+    .oh-right { display: flex; gap: 7px; }
+    .btn-export { display: flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-dark); background: var(--card-bg); font-family: var(--font-en); font-size: 11.5px; font-weight: 600; color: var(--text-mid); cursor: pointer; transition: all 0.18s; }
+    .btn-export:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-primary-sm { display: flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: var(--radius-sm); border: none; background: var(--teal); font-family: var(--font-en); font-size: 11.5px; font-weight: 700; color: white; cursor: pointer; transition: all 0.18s; box-shadow: 0 2px 8px rgba(27,107,90,0.24); }
+    .btn-primary-sm:hover { background: var(--teal-hover); }
+
+    /* ═══════════ STAT CARDS ═══════════ */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+    @media (max-width: 1000px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-card {
+      background: var(--card-bg); border-radius: var(--radius-md); padding: 16px;
+      border: 1px solid var(--border); box-shadow: var(--shadow-xs); position: relative; overflow: hidden;
+      transition: all 0.20s;
+    }
+    .stat-card:hover { box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+    /* Colored left accent bar */
+    .stat-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:var(--radius-md) 0 0 var(--radius-md); }
+    .sc-users::before  { background: var(--teal); }
+    .sc-active::before { background: var(--green); }
+    .sc-reports::before{ background: var(--amber); }
+    .sc-rev::before    { background: var(--purple); }
+
+    .sc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .sc-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sci-users   { background: var(--teal-xpale); }
+    .sci-active  { background: var(--green-pale); }
+    .sci-reports { background: var(--amber-pale); }
+    .sci-rev     { background: var(--purple-pale); }
+    /* Trend chip */
+    .sc-trend { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 6px; font-family: var(--font-en); font-size: 10px; font-weight: 700; }
+    .sc-trend.up   { background: var(--green-pale); color: var(--green); }
+    .sc-trend.down { background: var(--red-pale); color: var(--red); }
+    .sc-trend.warn { background: var(--amber-pale); color: var(--amber); }
+    .sc-label { font-family: var(--font-en); font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .sc-bn    { font-family: var(--font-bn); font-size: 10.5px; color: var(--text-xlight); margin-bottom: 5px; }
+    .sc-value { font-family: var(--font-en); font-size: 26px; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; line-height: 1; }
+    .sc-value .sc-unit { font-size: 14px; font-weight: 600; color: var(--text-light); margin-right: 2px; }
+    .sc-sub { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); margin-top: 5px; }
+
+    /* Sparkline mini chart */
+    .sc-sparkline { margin-top: 10px; }
+
+    /* ═══════════ ACTIVITY MINI-CHART ═══════════ */
+    .activity-card { background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-xs); padding: 16px; margin-bottom: 16px; }
+    .ac-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .ac-title { font-family: var(--font-en); font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+    .ac-bn { font-family: var(--font-bn); font-size: 10px; color: var(--text-xlight); margin-top: 1px; }
+    .ac-tabs { display: flex; gap: 3px; }
+    .act-tab { padding: 4px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: transparent; font-family: var(--font-en); font-size: 10.5px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.16s; }
+    .act-tab.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+    /* Bar chart */
+    .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 70px; padding: 0 2px; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.4s ease; cursor: pointer; }
+    .bar:hover { filter: brightness(1.12); }
+    .bar-lbl { font-family: var(--font-en); font-size: 8.5px; color: var(--text-xlight); }
+
+    /* ═══════════ USER TABLE ═══════════ */
+    .user-table-card { background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-xs); overflow: hidden; margin-bottom: 16px; }
+    .utc-top { display: flex; align-items: center; gap: 10px; padding: 13px 15px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .utc-title { font-family: var(--font-en); font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+    .utc-bn { font-family: var(--font-bn); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .utc-count { font-family: var(--font-en); font-size: 10px; font-weight: 700; background: var(--teal-pale); color: var(--teal); padding: 2px 8px; border-radius: 6px; }
+    .utc-spacer { flex: 1; }
+    /* Table search + filter */
+    .table-search { position: relative; }
+    .table-search input { padding: 6px 10px 6px 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); font-family: var(--font-en); font-size: 12px; color: var(--text-dark); outline: none; width: 180px; transition: all 0.18s; }
+    .table-search input:focus { border-color: var(--teal); background: white; }
+    .table-search input::placeholder { color: var(--text-xlight); }
+    .ts-icon { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-xlight); }
+    .filter-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); font-family: var(--font-en); font-size: 12px; color: var(--text-mid); outline: none; cursor: pointer; }
+    .filter-select:focus { border-color: var(--teal); }
+
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table thead tr { background: var(--bg); border-bottom: 1px solid var(--border); }
+    .data-table th { padding: 9px 14px; text-align: left; font-family: var(--font-en); font-size: 10.5px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+    .data-table th:first-child { padding-left: 16px; }
+    .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.14s; }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:hover { background: rgba(27,107,90,0.03); }
+    .data-table tbody tr:nth-child(even) { background: rgba(245,247,250,0.60); }
+    .data-table tbody tr:nth-child(even):hover { background: rgba(27,107,90,0.04); }
+    .data-table td { padding: 10px 14px; vertical-align: middle; font-family: var(--font-en); font-size: 12.5px; color: var(--text-dark); }
+    .data-table td:first-child { padding-left: 16px; }
+    /* User cell */
+    .user-cell { display: flex; align-items: center; gap: 9px; }
+    .uc-av { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 12px; font-weight: 700; color: white; border: 1.5px solid white; box-shadow: var(--shadow-xs); }
+    .uc-name { font-family: var(--font-en); font-size: 12.5px; font-weight: 600; color: var(--text-dark); }
+    .uc-handle { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    /* Status badge */
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 6px; font-family: var(--font-en); font-size: 10.5px; font-weight: 700; }
+    .sb-active    { background: var(--green-pale); color: var(--green); }
+    .sb-suspended { background: var(--amber-pale); color: var(--amber); }
+    .sb-banned    { background: var(--red-pale); color: var(--red); }
+    .sb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    /* Action buttons */
+    .action-btns { display: flex; align-items: center; gap: 5px; }
+    .action-btn { width: 28px; height: 28px; border-radius: 7px; border: 1.5px solid var(--border); background: var(--card-bg); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.16s; }
+    .action-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .action-btn.danger:hover { border-color: var(--red); color: var(--red); background: var(--red-pale); }
+    .action-btn.warn:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-pale); }
+    /* Date cell */
+    .date-cell { font-family: var(--font-en); font-size: 11.5px; color: var(--text-light); }
+    /* Pagination */
+    .table-pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--border); }
+    .tp-info { font-family: var(--font-en); font-size: 11.5px; color: var(--text-light); }
+    .tp-pages { display: flex; gap: 4px; }
+    .tp-page { width: 28px; height: 28px; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; font-family: var(--font-en); font-size: 11.5px; font-weight: 600; color: var(--text-mid); cursor: pointer; transition: all 0.16s; display: flex; align-items: center; justify-content: center; }
+    .tp-page:hover, .tp-page.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+    /* ═══════════ RIGHT PANEL — REPORTS ═══════════ */
+    .rp-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .rp-title { font-family: var(--font-en); font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .rp-bn { font-family: var(--font-bn); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .rp-count { font-family: var(--font-en); font-size: 10px; font-weight: 700; background: var(--amber-pale); color: var(--amber); padding: 2px 8px; border-radius: 6px; }
+    /* Filter row */
+    .rp-filters { display: flex; gap: 5px; margin-bottom: 12px; flex-wrap: wrap; }
+    .rpf-chip { padding: 4px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: transparent; font-family: var(--font-en); font-size: 10.5px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.16s; }
+    .rpf-chip:hover { border-color: var(--teal); color: var(--teal); }
+    .rpf-chip.active { background: var(--teal); border-color: var(--teal); color: white; }
+    /* Report item */
+    .report-item { padding: 11px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--card-bg); margin-bottom: 8px; transition: all 0.16s; }
+    .report-item:hover { border-color: rgba(27,107,90,0.30); box-shadow: var(--shadow-xs); }
+    .report-item.high { border-left: 3px solid var(--red); }
+    .report-item.med  { border-left: 3px solid var(--amber); }
+    .report-item.low  { border-left: 3px solid var(--blue); }
+    .ri-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 7px; }
+    .ri-av { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 10px; font-weight: 700; color: white; }
+    .ri-reporter { font-family: var(--font-en); font-size: 11px; font-weight: 600; color: var(--text-dark); }
+    .ri-time { font-family: var(--font-en); font-size: 9.5px; color: var(--text-xlight); margin-top: 1px; }
+    .ri-priority { margin-left: auto; display: flex; align-items: center; gap: 3px; font-family: var(--font-en); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 5px; }
+    .rip-high { background: var(--red-pale); color: var(--red); }
+    .rip-med  { background: var(--amber-pale); color: var(--amber); }
+    .rip-low  { background: var(--blue-pale); color: var(--blue); }
+    .ri-preview { background: var(--bg); border-radius: 7px; padding: 7px 9px; margin-bottom: 7px; font-family: var(--font-en); font-size: 11px; color: var(--text-mid); line-height: 1.5; border: 1px solid var(--border); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ri-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .ri-reason { font-family: var(--font-en); font-size: 10px; color: var(--text-light); display: flex; align-items: center; gap: 4px; }
+    .ri-count-chip { font-family: var(--font-en); font-size: 9.5px; font-weight: 700; background: var(--red-pale); color: var(--red); padding: 1px 7px; border-radius: 5px; margin-left: auto; }
+    .ri-actions { display: flex; gap: 6px; }
+    .btn-review { flex: 1; padding: 6px 0; border-radius: 7px; background: var(--teal); border: none; color: white; font-family: var(--font-en); font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.16s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-review:hover { background: var(--teal-hover); }
+    .btn-dismiss { padding: 6px 10px; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; font-family: var(--font-en); font-size: 11px; font-weight: 600; color: var(--text-light); cursor: pointer; transition: all 0.16s; }
+    .btn-dismiss:hover { border-color: var(--text-light); }
+
+    /* Responsive */
+    @media (max-width: 1100px) { .right-col { display: none; } }
+    @media (max-width: 780px) { .main-area { margin-left: 0; } .sidebar { transform: translateX(-100%); } }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════ SIDEBAR ════════════ -->
+  <aside class="sidebar" role="navigation" aria-label="Admin navigation">
+
+    <div class="sb-brand">
+      <div class="sb-brand-badge">জ</div>
+      <div class="sb-brand-text">
+        <div class="sb-brand-title">Jolshaa Admin</div>
+        <div class="sb-brand-sub">Internal Dashboard</div>
+      </div>
+    </div>
+
+    <div class="sb-section">Main</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+
+      <button class="sb-item active" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-light)" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <div><div class="si-label">Overview</div><div class="si-bn">ওভারভিউ</div></div>
+      </button>
+
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div><div class="si-label">User Management</div><div class="si-bn">ইউজার ব্যবস্থাপনা</div></div>
+      </button>
+
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        </div>
+        <div><div class="si-label">Reports</div><div class="si-bn">রিপোর্ট</div></div>
+        <span class="si-badge">23</span>
+      </button>
+
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11" stroke-width="2.5"/></svg>
+        </div>
+        <div><div class="si-label">Rumor Review</div><div class="si-bn">গুজব রিভিউ</div></div>
+        <span class="si-badge amber">8</span>
+      </button>
+
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div><div class="si-label">Ad Review</div><div class="si-bn">বিজ্ঞাপন রিভিউ</div></div>
+      </button>
+
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Finance</div>
+
+    <div style="display:flex;flex-direction:column;gap:0">
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v14m0 0l-4-4m4 4l4-4M3 18h18"/></svg>
+        </div>
+        <div><div class="si-label">Payouts</div><div class="si-bn">উত্তোলন</div></div>
+      </button>
+
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div><div class="si-label">Platform Revenue</div><div class="si-bn">প্ল্যাটফর্ম আয়</div></div>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">System</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <button class="sb-item" onclick="setNav(this)">
+        <div class="si-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </div>
+        <div><div class="si-label">Settings</div><div class="si-bn">সেটিংস</div></div>
+      </button>
+    </div>
+
+    <!-- Sidebar footer -->
+    <div class="sb-footer">
+      <div class="sf-admin-row">
+        <div class="sf-av">আ</div>
+        <div>
+          <div class="sf-name">আরিফ হোসেন</div>
+          <div class="sf-role">Super Admin · v2.4.1</div>
+        </div>
+        <button style="margin-left:auto;background:rgba(255,255,255,0.07);border:none;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="showToast('লগআউট করা হচ্ছে...')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="2.2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+  <!-- ════════════ MAIN AREA ════════════ -->
+  <div class="main-area">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="tb-breadcrumb">
+        <span class="tbc-root">Jolshaa Admin</span>
+        <span class="tbc-sep">›</span>
+        <span class="tbc-page" id="breadcrumbPage">Overview</span>
+      </div>
+      <div class="tb-spacer"></div>
+      <div class="tb-search">
+        <span class="tb-search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+        <input type="text" placeholder="Search users, reports…" aria-label="Global search"/>
+      </div>
+      <div class="tb-action">
+        <div class="tb-icon-btn" onclick="showToast('নোটিফিকেশন প্যানেল')" title="Notifications">
+          <div class="tb-notif-dot"></div>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
+        <div class="tb-icon-btn" onclick="showToast('রিফ্রেশ হচ্ছে...')" title="Refresh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="tb-admin-chip">
+          <div class="tac-dot"></div>
+          <span class="tac-text">Live</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT ROW -->
+    <div class="main-inner">
+
+      <!-- CENTER COLUMN -->
+      <div class="center-col">
+
+        <!-- Overview Header -->
+        <div class="overview-hdr">
+          <div class="oh-left">
+            <div class="oh-title">Platform Overview</div>
+            <div class="oh-sub">Real-time data · Last updated: <span>এইমাত্র</span> / just now</div>
+          </div>
+          <div class="oh-right">
+            <button class="btn-export" onclick="showToast('CSV রপ্তানি হচ্ছে...')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Report
+            </button>
+            <button class="btn-primary-sm" onclick="showToast('নতুন ঘোষণা পাঠানো হচ্ছে...')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4z"/></svg>
+              Broadcast
+            </button>
+          </div>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="stats-grid">
+
+          <!-- Total Users -->
+          <div class="stat-card sc-users">
+            <div class="sc-top">
+              <div class="sc-icon sci-users">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div class="sc-trend up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                +3.2%
+              </div>
+            </div>
+            <div class="sc-label">Total Users</div>
+            <div class="sc-bn">মোট ইউজার</div>
+            <div class="sc-value">2.4M</div>
+            <div class="sc-sub">+78k this month</div>
+            <svg class="sc-sparkline" viewBox="0 0 80 24" width="80" height="24" style="margin-top:8px">
+              <polyline points="0,18 10,15 20,17 30,10 40,12 50,6 60,8 70,4 80,2" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+              <circle cx="80" cy="2" r="2.5" fill="var(--teal)"/>
+            </svg>
+          </div>
+
+          <!-- Active Today -->
+          <div class="stat-card sc-active">
+            <div class="sc-top">
+              <div class="sc-icon sci-active">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="sc-trend up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                +11.8%
+              </div>
+            </div>
+            <div class="sc-label">Active Today</div>
+            <div class="sc-bn">আজ সক্রিয়</div>
+            <div class="sc-value">142K</div>
+            <div class="sc-sub">Peak: 2:30 PM · 186k concurrent</div>
+            <svg class="sc-sparkline" viewBox="0 0 80 24" width="80" height="24" style="margin-top:8px">
+              <polyline points="0,20 10,14 20,16 30,11 40,13 50,7 60,10 70,5 80,4" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+              <circle cx="80" cy="4" r="2.5" fill="var(--green)"/>
+            </svg>
+          </div>
+
+          <!-- Pending Reports -->
+          <div class="stat-card sc-reports">
+            <div class="sc-top">
+              <div class="sc-icon sci-reports">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div class="sc-trend warn">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/></svg>
+                +5 today
+              </div>
+            </div>
+            <div class="sc-label">Pending Reports</div>
+            <div class="sc-bn">মুলতুবি রিপোর্ট</div>
+            <div class="sc-value">23</div>
+            <div class="sc-sub">8 high priority · Avg 4.2 hrs old</div>
+            <svg class="sc-sparkline" viewBox="0 0 80 24" width="80" height="24" style="margin-top:8px">
+              <polyline points="0,8 10,12 20,7 30,14 40,10 50,16 60,12 70,18 80,15" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+              <circle cx="80" cy="15" r="2.5" fill="var(--amber)"/>
+            </svg>
+          </div>
+
+          <!-- Revenue This Month -->
+          <div class="stat-card sc-rev">
+            <div class="sc-top">
+              <div class="sc-icon sci-rev">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+              <div class="sc-trend up">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                +18.7%
+              </div>
+            </div>
+            <div class="sc-label">Revenue This Month</div>
+            <div class="sc-bn">এই মাসের আয়</div>
+            <div class="sc-value"><span class="sc-unit">৳</span>8.6M</div>
+            <div class="sc-sub">Goal: ৳10M · 86% achieved</div>
+            <svg class="sc-sparkline" viewBox="0 0 80 24" width="80" height="24" style="margin-top:8px">
+              <polyline points="0,22 10,18 20,19 30,14 40,12 50,9 60,7 70,5 80,3" fill="none" stroke="var(--purple)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+              <circle cx="80" cy="3" r="2.5" fill="var(--purple)"/>
+            </svg>
+          </div>
+
+        </div><!-- /stats-grid -->
+
+        <!-- ACTIVITY BAR CHART -->
+        <div class="activity-card">
+          <div class="ac-hdr">
+            <div>
+              <div class="ac-title">Daily Active Users</div>
+              <div class="ac-bn">দৈনিক সক্রিয় ইউজার</div>
+            </div>
+            <div class="ac-tabs">
+              <button class="act-tab" onclick="setChartTab(this)">7d</button>
+              <button class="act-tab active" onclick="setChartTab(this)">30d</button>
+              <button class="act-tab" onclick="setChartTab(this)">90d</button>
+            </div>
+          </div>
+          <div class="bar-chart" id="barChart"></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0 0;font-family:var(--font-en);font-size:9px;color:var(--text-xlight)">
+            <span>Jun 12</span><span>Jun 17</span><span>Jun 22</span><span>Jun 27</span><span>Jul 2</span><span>Jul 7</span><span>Jul 12</span>
+          </div>
+        </div>
+
+        <!-- USER MANAGEMENT TABLE -->
+        <div class="user-table-card">
+          <div class="utc-top">
+            <div>
+              <div class="utc-title">User Management</div>
+              <div class="utc-bn">ইউজার ব্যবস্থাপনা</div>
+            </div>
+            <div class="utc-count">2,401,547 users</div>
+            <div class="utc-spacer"></div>
+            <div class="table-search">
+              <span class="ts-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+              <input type="text" placeholder="Search by name or email…" oninput="filterTable(this.value)"/>
+            </div>
+            <select class="filter-select" onchange="showToast('ফিল্টার প্রয়োগ হচ্ছে...')">
+              <option>All Status</option>
+              <option>Active</option>
+              <option>Suspended</option>
+              <option>Banned</option>
+            </select>
+            <button class="btn-primary-sm" onclick="showToast('নতুন ইউজার তৈরি করছেন...')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add User
+            </button>
+          </div>
+
+          <div style="overflow-x:auto">
+            <table class="data-table" id="userTable">
+              <thead>
+                <tr>
+                  <th>User ↕</th>
+                  <th>Email</th>
+                  <th>Joined</th>
+                  <th>Posts</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-pagination">
+            <div class="tp-info">Showing <b>1–8</b> of <b>2,401,547</b> users</div>
+            <div class="tp-pages">
+              <button class="tp-page">‹</button>
+              <button class="tp-page active">1</button>
+              <button class="tp-page" onclick="setPage(this)">2</button>
+              <button class="tp-page" onclick="setPage(this)">3</button>
+              <button class="tp-page" style="font-size:10px;color:var(--text-xlight);border:none;cursor:default">…</button>
+              <button class="tp-page" onclick="setPage(this)">301</button>
+              <button class="tp-page">›</button>
+            </div>
+          </div>
+        </div><!-- /user-table-card -->
+
+      </div><!-- /center-col -->
+
+      <!-- RIGHT COLUMN — REPORTS -->
+      <div class="right-col">
+
+        <div class="rp-hdr">
+          <div>
+            <div class="rp-title">Reports Queue</div>
+            <div class="rp-bn">রিপোর্ট তালিকা</div>
+          </div>
+          <div class="rp-count">23 pending</div>
+        </div>
+
+        <div class="rp-filters">
+          <button class="rpf-chip active" onclick="setRpFilter(this)">All</button>
+          <button class="rpf-chip" onclick="setRpFilter(this)">
+            <span style="color:inherit">🔴</span> High
+          </button>
+          <button class="rpf-chip" onclick="setRpFilter(this)">Rumor</button>
+          <button class="rpf-chip" onclick="setRpFilter(this)">Spam</button>
+        </div>
+
+        <!-- Report 1 — High priority -->
+        <div class="report-item high">
+          <div class="ri-top">
+            <div class="ri-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ন</div>
+            <div>
+              <div class="ri-reporter">নাহিদ হাসান</div>
+              <div class="ri-time">14 minutes ago</div>
+            </div>
+            <div class="ri-priority rip-high">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              HIGH
+            </div>
+          </div>
+          <div class="ri-preview">"এই ওষুধ খেলে ক্যান্সার ভালো হয়ে যায়…" পোস্টটি বিভ্রান্তিকর স্বাস্থ্য তথ্য ছড়াচ্ছে।</div>
+          <div class="ri-meta">
+            <div class="ri-reason">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Medical Misinformation
+            </div>
+            <div class="ri-count-chip">7 reports</div>
+          </div>
+          <div class="ri-actions">
+            <button class="btn-review" onclick="showToast('রিপোর্ট রিভিউ খুলছেন...')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              রিভিউ করো / Review
+            </button>
+            <button class="btn-dismiss" onclick="showToast('বরখাস্ত করা হয়েছে')">Dismiss</button>
+          </div>
+        </div>
+
+        <!-- Report 2 — Medium -->
+        <div class="report-item med">
+          <div class="ri-top">
+            <div class="ri-av" style="background:linear-gradient(135deg,#1B6B5A,#2a9678)">ম</div>
+            <div>
+              <div class="ri-reporter">মিতা চৌধুরী</div>
+              <div class="ri-time">1 hour ago</div>
+            </div>
+            <div class="ri-priority rip-med">MED</div>
+          </div>
+          <div class="ri-preview">User is posting political content with inflammatory language targeting a specific community group…</div>
+          <div class="ri-meta">
+            <div class="ri-reason">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Hate Speech
+            </div>
+            <div class="ri-count-chip">3 reports</div>
+          </div>
+          <div class="ri-actions">
+            <button class="btn-review" onclick="showToast('রিপোর্ট রিভিউ খুলছেন...')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              রিভিউ করো / Review
+            </button>
+            <button class="btn-dismiss" onclick="showToast('বরখাস্ত করা হয়েছে')">Dismiss</button>
+          </div>
+        </div>
+
+        <!-- Report 3 — Low -->
+        <div class="report-item low">
+          <div class="ri-top">
+            <div class="ri-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">প</div>
+            <div>
+              <div class="ri-reporter">পারিসা তাহের</div>
+              <div class="ri-time">3 hours ago</div>
+            </div>
+            <div class="ri-priority rip-low">LOW</div>
+          </div>
+          <div class="ri-preview">Spam account posting repetitive promotional content — 47 identical posts in last 2 hours.</div>
+          <div class="ri-meta">
+            <div class="ri-reason">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Spam / Bot Activity
+            </div>
+            <div class="ri-count-chip">1 report</div>
+          </div>
+          <div class="ri-actions">
+            <button class="btn-review" onclick="showToast('রিপোর্ট রিভিউ খুলছেন...')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              রিভিউ করো / Review
+            </button>
+            <button class="btn-dismiss" onclick="showToast('বরখাস্ত করা হয়েছে')">Dismiss</button>
+          </div>
+        </div>
+
+        <!-- Report 4 — High -->
+        <div class="report-item high">
+          <div class="ri-top">
+            <div class="ri-av" style="background:linear-gradient(135deg,#d97706,#fbbf24)">র</div>
+            <div>
+              <div class="ri-reporter">রাফি আহমেদ</div>
+              <div class="ri-time">5 hours ago</div>
+            </div>
+            <div class="ri-priority rip-high">HIGH</div>
+          </div>
+          <div class="ri-preview">গুজব ছড়ানো হচ্ছে — "আগামীকাল থেকে জলশা বন্ধ হয়ে যাচ্ছে" মর্মে ভুয়া পোস্ট ভাইরাল।</div>
+          <div class="ri-meta">
+            <div class="ri-reason">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Platform Rumor
+            </div>
+            <div class="ri-count-chip">12 reports</div>
+          </div>
+          <div class="ri-actions">
+            <button class="btn-review" onclick="showToast('রিপোর্ট রিভিউ খুলছেন...')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              রিভিউ করো / Review
+            </button>
+            <button class="btn-dismiss" onclick="showToast('বরখাস্ত করা হয়েছে')">Dismiss</button>
+          </div>
+        </div>
+
+        <button style="width:100%;margin-top:6px;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:transparent;font-family:var(--font-en);font-size:11.5px;font-weight:600;color:var(--text-light);cursor:pointer;transition:all 0.16s" onmouseover="this.style.borderColor='var(--teal)';this.style.color='var(--teal)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-light)'" onclick="showToast('সব রিপোর্ট দেখছেন...')">
+          View All 23 Reports →
+        </button>
+
+      </div><!-- /right-col -->
+
+    </div><!-- /main-inner -->
+  </div><!-- /main-area -->
+
+  <!-- Toast -->
+  <div id="toast" style="position:fixed;bottom:24px;left:calc(var(--sb-w) + 50%);transform:translateX(-50%) translateY(16px);background:#111;color:white;padding:9px 18px;border-radius:10px;font-family:'Inter',sans-serif;font-size:12.5px;z-index:9999;opacity:0;transition:all 0.28s;pointer-events:none;white-space:nowrap"></div>
+
+<script>
+  /* ─── Sidebar nav ─── */
+  function setNav(el) {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('breadcrumbPage').textContent = el.querySelector('.si-label').textContent;
+    // Update SVG icon color
+    el.querySelectorAll('svg line, svg circle, svg path, svg rect, svg polyline, svg polygon').forEach(s => s.setAttribute('stroke','var(--teal-light)'));
+  }
+
+  /* ─── Chart tabs ─── */
+  function setChartTab(el) {
+    el.closest('.ac-tabs').querySelectorAll('.act-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    buildBarChart();
+  }
+
+  /* ─── Bar chart ─── */
+  function buildBarChart() {
+    const container = document.getElementById('barChart');
+    container.innerHTML = '';
+    const days = 30;
+    const days_short = ['M','T','W','T','F','S','S'];
+    for (let i = 0; i < days; i++) {
+      const v = Math.round(40 + Math.random() * 60);
+      const isWeekend = i % 7 >= 5;
+      const isToday = i === days - 1;
+      const wrap = document.createElement('div'); wrap.className = 'bar-wrap';
+      const bar = document.createElement('div'); bar.className = 'bar';
+      bar.style.height = v + '%';
+      bar.style.background = isToday
+        ? 'var(--teal)'
+        : isWeekend
+          ? 'rgba(27,107,90,0.35)'
+          : 'rgba(27,107,90,0.55)';
+      bar.title = `DAU: ${Math.round(v * 2400)}`;
+      bar.addEventListener('click', () => showToast(`Day ${i+1}: ${Math.round(v * 2400).toLocaleString()} active users`));
+      wrap.appendChild(bar);
+      container.appendChild(wrap);
+    }
+  }
+
+  /* ─── User table data ─── */
+  const users = [
+    { name:'আরিফ হোসেন', handle:'@arif.h', email:'arif.h@gmail.com', joined:'Jan 15, 2024', posts:'1,240', status:'active', av:'আ', color:'#1B6B5A' },
+    { name:'মিতা চৌধুরী', handle:'@mita.c', email:'mita.c@yahoo.com', joined:'Mar 3, 2024', posts:'432', status:'active', av:'ম', color:'#ec4899' },
+    { name:'নাহিদ হাসান', handle:'@nahid.h', email:'nahid.h@gmail.com', joined:'Feb 28, 2024', posts:'87', status:'suspended', av:'ন', color:'#7c3aed' },
+    { name:'পারিসা তাহের', handle:'@parisa.t', email:'parisa.t@hotmail.com', joined:'Apr 10, 2024', posts:'2,901', status:'active', av:'প', color:'#d97706' },
+    { name:'রাফি আহমেদ', handle:'@rafi.a', email:'rafi.a@gmail.com', joined:'Jun 1, 2024', posts:'34', status:'active', av:'র', color:'#0ea5e9' },
+    { name:'সাদিয়া ইসলাম', handle:'@sadia.i', email:'sadia.i@outlook.com', joined:'May 22, 2024', posts:'670', status:'active', av:'স', color:'#16a34a' },
+    { name:'কামরুল হাসান', handle:'@kamrul.h', email:'kamrul.h@gmail.com', joined:'Jul 3, 2024', posts:'12', status:'banned', av:'ক', color:'#dc2626' },
+    { name:'তাসনিম আক্তার', handle:'@tasnim.a', email:'tasnim.a@gmail.com', joined:'Jun 18, 2024', posts:'189', status:'suspended', av:'ত', color:'#d97706' },
+  ];
+
+  function renderTable(data) {
+    const tbody = document.getElementById('userTableBody');
+    tbody.innerHTML = '';
+    data.forEach(u => {
+      const statusMap = { active:'sb-active', suspended:'sb-suspended', banned:'sb-banned' };
+      const statusLbl = { active:'সক্রিয় / Active', suspended:'স্থগিত / Suspended', banned:'নিষিদ্ধ / Banned' };
+      tbody.innerHTML += `
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="uc-av" style="background:${u.color}">${u.av}</div>
+              <div><div class="uc-name">${u.name}</div><div class="uc-handle">${u.handle}</div></div>
+            </div>
+          </td>
+          <td style="color:var(--text-light);font-size:11.5px">${u.email}</td>
+          <td><div class="date-cell">${u.joined}</div></td>
+          <td style="font-weight:600;font-size:12px">${u.posts}</td>
+          <td>
+            <span class="status-badge ${statusMap[u.status]}">
+              <span class="sb-dot"></span>${statusLbl[u.status]}
+            </span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="action-btn" title="View Profile" onclick="showToast('প্রোফাইল দেখছেন: ${u.name}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button class="action-btn warn" title="Suspend User" onclick="showToast('${u.name} স্থগিত করা হয়েছে')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              </button>
+              <button class="action-btn danger" title="Delete Account" onclick="showToast('${u.name} অ্যাকাউন্ট মুছে ফেলা হয়েছে')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+    });
+  }
+
+  function filterTable(q) {
+    const filtered = users.filter(u =>
+      u.name.toLowerCase().includes(q.toLowerCase()) ||
+      u.email.toLowerCase().includes(q.toLowerCase()) ||
+      u.handle.toLowerCase().includes(q.toLowerCase())
+    );
+    renderTable(filtered);
+  }
+
+  function setPage(btn) {
+    document.querySelectorAll('.tp-page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable(users); // re-render for demo
+  }
+
+  /* ─── Report filter ─── */
+  function setRpFilter(el) {
+    el.closest('.rp-filters').querySelectorAll('.rpf-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ─── Toast ─── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(16px)';
+    }, 2400);
+  }
+
+  /* ─── Init ─── */
+  window.addEventListener('DOMContentLoaded', () => {
+    renderTable(users);
+    buildBarChart();
+  });
+</script>
+</body>
+</html>

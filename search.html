@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>সার্চ ফলাফল: "মন্টু" — জলশা | Jolshaa Search</title>
+  <meta name="description" content="জলশায় 'মন্টু' খোঁজার ফলাফল। Jolshaa search results for 'montoo'." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --off-white:    #F5F0E8;
+      --card-bg:      #FFFFFF;
+      --coral:        #E85C4A;
+      --coral-pale:   #fef3f1;
+      --coral-dark:   #c94030;
+      --amber:        #D97706;
+      --amber-pale:   #fffbeb;
+      --gold:         #D4A04A;
+      --gold-pale:    #fdf6eb;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #888;
+      --text-xlight:  #bbb;
+      --border:       #E8E2DA;
+      --border-light: #F0EBE3;
+      --shadow-xs:    0 1px 4px rgba(0,0,0,0.05);
+      --shadow-sm:    0 2px 10px rgba(0,0,0,0.08);
+      --shadow-md:    0 6px 24px rgba(0,0,0,0.10);
+      --radius-md:    14px;
+      --radius-lg:    18px;
+      --font-bn:      'Hind Siliguri', sans-serif;
+      --font-en:      'Inter', sans-serif;
+      --nav-h:        58px;
+      --sidebar-w:    292px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-bn); background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ════════════════════════════ NAVBAR ════════════════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28); flex-shrink: 0;
+    }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+
+    /* Active search bar */
+    .nav-search { flex: 1; max-width: 320px; position: relative; margin-left: 4px; }
+    .nav-search input {
+      width: 100%; padding: 9px 42px 9px 38px; border-radius: 50px;
+      border: 2px solid var(--teal); background: var(--teal-xpale);
+      font-family: var(--font-bn); font-size: 14px; color: var(--text-dark);
+      outline: none; font-weight: 500; box-shadow: 0 0 0 4px rgba(27,107,90,0.08);
+      transition: all 0.2s;
+    }
+    .nav-search input:focus { background: white; box-shadow: 0 0 0 4px rgba(27,107,90,0.12); }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--teal); pointer-events: none; }
+    .nav-search-clear {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      width: 22px; height: 22px; border-radius: 50%; background: var(--border);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--text-mid); transition: all 0.15s;
+    }
+    .nav-search-clear:hover { background: var(--border); color: var(--coral); }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 46px; border-radius: 10px; border: none;
+      background: transparent; cursor: pointer; color: var(--text-light); transition: all 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-badge {
+      position: absolute; top: 5px; right: 7px;
+      background: var(--coral); color: white; font-family: var(--font-en); font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center; border: 2px solid white;
+    }
+    .nav-sahajjo {
+      display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 50px;
+      background: var(--coral); color: white; border: none; cursor: pointer; flex-shrink: 0;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s;
+      animation: sahajjoPulse 3s ease-in-out infinite;
+    }
+    .nav-sahajjo:hover { background: var(--coral-dark); }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes sahajjoPulse { 0%,100%{box-shadow:0 3px 12px rgba(232,92,74,0.35)}50%{box-shadow:0 3px 20px rgba(232,92,74,0.55)} }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)} }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      cursor: pointer; border: 2px solid var(--teal-pale); transition: all 0.2s;
+    }
+
+    /* ════════════════════════════ PAGE BODY ════════════════════════════ */
+    .page-body { display: flex; padding-top: var(--nav-h); min-height: 100vh; }
+
+    /* ════════════════════════════ LEFT SIDEBAR ════════════════════════════ */
+    .sidebar-left {
+      width: var(--sidebar-w); position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 18px 12px 36px; background: transparent;
+    }
+    .sb-brand-header { padding: 2px 6px 14px; }
+    .sb-title-bn { font-family: var(--font-bn); font-size: 21px; font-weight: 700; color: var(--text-dark); }
+    .sb-title-en { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 2px; }
+    /* Query pill */
+    .sb-query-pill {
+      display: inline-flex; align-items: center; gap: 6px; margin: 0 6px 16px;
+      padding: 6px 12px; border-radius: 50px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      box-shadow: 0 3px 10px rgba(27,107,90,0.22);
+    }
+    .sb-query-text { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: white; }
+    .sb-query-en { font-family: var(--font-en); font-size: 10px; color: rgba(255,255,255,0.76); }
+
+    /* Filter card */
+    .filter-card {
+      background: var(--card-bg); border: 1px solid var(--border-light);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-xs);
+      overflow: hidden; margin-bottom: 12px;
+    }
+    .filter-card-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 14px 10px; border-bottom: 1px solid var(--border-light);
+    }
+    .filter-card-title-bn { font-family: var(--font-bn); font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+    .filter-card-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .filter-reset { font-family: var(--font-en); font-size: 10.5px; color: var(--teal); font-weight: 500; background: none; border: none; cursor: pointer; padding: 2px 5px; border-radius: 5px; transition: background 0.15s; }
+    .filter-reset:hover { background: var(--teal-xpale); }
+
+    /* ─── Toggle Switches ─── */
+    .filter-toggle-row {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 11px 14px; gap: 10px; border-bottom: 1px solid var(--border-light);
+    }
+    .filter-toggle-row:last-child { border-bottom: none; }
+    .ftgl-text { flex: 1; min-width: 0; }
+    .ftgl-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 500; color: var(--text-dark); }
+    .ftgl-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 2px; }
+
+    /* Original warm toggle switch */
+    .toggle-switch { position: relative; flex-shrink: 0; width: 42px; height: 24px; margin-top: 1px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: var(--border); transition: background 0.22s;
+      cursor: pointer; border: 1.5px solid transparent;
+    }
+    .toggle-track::before {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: white; box-shadow: 0 1px 5px rgba(0,0,0,0.22);
+      transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), background 0.22s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: var(--teal); border-color: var(--teal-hover); }
+    .toggle-switch input:checked + .toggle-track::before { transform: translateX(18px); background: white; box-shadow: 0 1px 6px rgba(27,107,90,0.4); }
+
+    /* ─── Dropdown Filters ─── */
+    .filter-dropdown { border-bottom: 1px solid var(--border-light); }
+    .filter-dropdown:last-child { border-bottom: none; }
+    .fdd-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 11px 14px; background: none; border: none; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .fdd-btn:hover { background: var(--off-white); }
+    .fdd-btn-left { display: flex; align-items: center; gap: 9px; }
+    .fdd-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.2s; flex-shrink: 0; }
+    .fdd-btn.open .fdd-dot { background: var(--teal); }
+    .fdd-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 500; color: var(--text-dark); }
+    .fdd-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); }
+    .fdd-arrow { color: var(--text-light); transition: transform 0.22s; flex-shrink: 0; }
+    .fdd-btn.open .fdd-arrow { transform: rotate(180deg); color: var(--teal); }
+    .fdd-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .fdd-body.open { max-height: 180px; }
+    .fdd-inner { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 7px; }
+    .fdd-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .fdd-check {
+      width: 17px; height: 17px; border-radius: 6px; border: 1.5px solid var(--border);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s; background: var(--off-white);
+    }
+    .fdd-option input[type="radio"] { display: none; }
+    .fdd-option input:checked + .fdd-check { background: var(--teal); border-color: var(--teal); }
+    .fdd-option input:checked + .fdd-check::after { content:'✓'; color: white; font-size: 10px; font-weight: 700; font-family: var(--font-en); }
+    .fdd-option-bn { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); }
+
+    /* ─── Category Nav ─── */
+    .cat-nav { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: var(--radius-md); box-shadow: var(--shadow-xs); overflow: hidden; }
+    .cat-nav-hdr { padding: 11px 14px 8px; border-bottom: 1px solid var(--border-light); }
+    .cat-nav-lbn { font-family: var(--font-bn); font-size: 12px; font-weight: 700; color: var(--text-mid); }
+    .cat-nav-len { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); margin-top: 1px; }
+    .cat-nav-list { padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+    .cat-item {
+      display: flex; align-items: center; gap: 11px; padding: 9px 10px;
+      border-radius: 11px; cursor: pointer; text-decoration: none;
+      transition: all 0.18s; position: relative;
+    }
+    .cat-item:hover { background: var(--teal-xpale); }
+    .cat-item.active { background: linear-gradient(135deg, var(--teal-pale), var(--teal-xpale)); }
+    .cat-icon {
+      width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; transition: transform 0.18s;
+    }
+    .cat-item:hover .cat-icon { transform: scale(1.08); }
+    .ci-all    { background: linear-gradient(135deg, #e8f2ef, #d1ebe3); }
+    .ci-people { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+    .ci-reels  { background: linear-gradient(135deg, #fff1f2, #fecdd3); }
+    .ci-groups { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+    .ci-pages  { background: linear-gradient(135deg, #e0f2fe, #bae6fd); }
+    .ci-events { background: linear-gradient(135deg, #fdf2f8, #fce7f3); }
+    .cat-text-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .cat-item.active .cat-text-bn { color: var(--teal); font-weight: 700; }
+    .cat-text-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .cat-count { margin-left: auto; font-family: var(--font-en); font-size: 10px; font-weight: 700; color: var(--text-light); background: var(--off-white); padding: 2px 6px; border-radius: 6px; flex-shrink: 0; }
+    .cat-item.active .cat-count { background: var(--teal); color: white; }
+    /* Active bar */
+    .cat-item.active::before {
+      content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 3px; border-radius: 0 3px 3px 0; background: var(--teal);
+    }
+
+    /* ════════════════════════════ MAIN CONTENT ════════════════════════════ */
+    .main-content { margin-left: var(--sidebar-w); flex: 1; padding: 24px 28px 60px 24px; max-width: calc(860px + var(--sidebar-w)); }
+
+    /* Result meta bar */
+    .result-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding: 0 2px;
+    }
+    .result-count-bn { font-family: var(--font-bn); font-size: 14px; color: var(--text-mid); }
+    .result-count-en { font-family: var(--font-en); font-size: 10.5px; color: var(--text-light); margin-top: 2px; }
+    .result-sort { display: flex; align-items: center; gap: 7px; }
+    .result-sort-lbl { font-family: var(--font-en); font-size: 11px; color: var(--text-light); }
+    .sort-select {
+      padding: 6px 12px 6px 10px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--card-bg);
+      font-family: var(--font-bn); font-size: 12px; color: var(--text-dark);
+      outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+      padding-right: 28px; transition: border-color 0.18s;
+    }
+    .sort-select:focus { border-color: var(--teal); }
+
+    /* Result section stack */
+    .results-stack { display: flex; flex-direction: column; gap: 18px; }
+
+    /* ─── Result Card ─── */
+    .result-card {
+      background: var(--card-bg); border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+      overflow: hidden; transition: box-shadow 0.22s;
+      animation: cardSlide 0.38s ease both;
+    }
+    .result-card:nth-child(2) { animation-delay: 0.07s; }
+    .result-card:nth-child(3) { animation-delay: 0.14s; }
+    @keyframes cardSlide { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+
+    .rc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px 12px; border-bottom: 1px solid var(--border-light);
+      background: linear-gradient(to right, var(--teal-xpale), transparent);
+    }
+    .rc-title-wrap { display: flex; align-items: center; gap: 10px; }
+    .rc-icon {
+      width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rci-people { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+    .rci-pages  { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+    .rci-post   { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+    .rc-title-bn { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .rc-title-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .rc-count-badge {
+      font-family: var(--font-en); font-size: 10.5px; font-weight: 700;
+      color: var(--teal); background: var(--teal-pale); padding: 3px 8px;
+      border-radius: 20px; border: 1px solid rgba(27,107,90,0.15);
+    }
+
+    /* ─── People rows ─── */
+    .people-list { padding: 6px 0; }
+    .person-row {
+      display: flex; align-items: center; gap: 13px;
+      padding: 11px 18px; transition: background 0.15s; cursor: pointer;
+    }
+    .person-row:hover { background: var(--off-white); }
+    .pr-avatar {
+      width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white;
+      border: 2.5px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.13);
+    }
+    .pr-info { flex: 1; min-width: 0; }
+    .pr-name { font-family: var(--font-bn); font-size: 14.5px; font-weight: 700; color: var(--text-dark); }
+
+    /* Highlight matched query in name */
+    .match-hl { color: var(--teal); background: var(--teal-xpale); padding: 0 2px; border-radius: 3px; }
+
+    .pr-meta { font-family: var(--font-bn); font-size: 12px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    .pr-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-xlight); }
+    .pr-mutual { display: flex; align-items: center; gap: 4px; }
+    .pr-mutual-faces { display: flex; }
+    .pr-mf {
+      width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid white;
+      margin-left: -5px; font-family: var(--font-bn); font-size: 8px; font-weight: 700; color: white;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .pr-mf:first-child { margin-left: 0; }
+    /* Add friend button — solid pill */
+    .btn-add-friend {
+      display: flex; align-items: center; gap: 6px; padding: 8px 15px; border-radius: 50px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border: none; color: white; cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.26); transition: all 0.2s;
+    }
+    .btn-add-friend:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(27,107,90,0.36); }
+    .btn-af-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; line-height: 1.1; }
+    .btn-af-en { font-family: var(--font-en); font-size: 8px; opacity: 0.8; }
+    /* Remove button variant */
+    .btn-add-friend.pending {
+      background: var(--off-white); border: 1.5px solid var(--border); color: var(--text-mid);
+      box-shadow: none;
+    }
+    .btn-add-friend.pending:hover { background: #ede8de; }
+    .btn-add-friend.pending .btn-af-bn { color: var(--text-mid); }
+
+    /* Divider between rows */
+    .pr-divider { height: 1px; background: var(--border-light); margin: 0 18px; }
+
+    /* ─── Pages rows ─── */
+    .pages-list { padding: 6px 0; }
+    .page-row {
+      display: flex; align-items: center; gap: 13px;
+      padding: 11px 18px; transition: background 0.15s; cursor: pointer;
+    }
+    .page-row:hover { background: var(--off-white); }
+    .page-thumb {
+      width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; border: 2px solid var(--border-light); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .pgr-info { flex: 1; min-width: 0; }
+    .pgr-name { font-family: var(--font-bn); font-size: 14.5px; font-weight: 700; color: var(--text-dark); }
+    .pgr-cat-row { display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+    .pgr-cat { font-family: var(--font-bn); font-size: 11.5px; color: var(--text-light); }
+    .pgr-fol { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); }
+    .pgr-desc { font-family: var(--font-bn); font-size: 12px; color: var(--text-mid); margin-top: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Follow button — outlined */
+    .btn-follow {
+      display: flex; align-items: center; gap: 5px; padding: 8px 15px; border-radius: 50px;
+      background: transparent; border: 2px solid var(--teal); color: var(--teal);
+      cursor: pointer; flex-shrink: 0; transition: all 0.2s;
+    }
+    .btn-follow:hover { background: var(--teal-xpale); border-color: var(--teal-hover); transform: translateY(-1px); }
+    .btn-follow-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; line-height: 1.1; }
+    .btn-follow-en { font-family: var(--font-en); font-size: 8px; color: var(--teal-light); }
+    /* Following state */
+    .btn-follow.following {
+      background: var(--teal-xpale); border-color: var(--teal-pale);
+    }
+    .btn-follow.following .btn-follow-bn { color: var(--teal-light); }
+
+    /* See-all row */
+    .rc-see-all {
+      border-top: 1px solid var(--border-light); padding: 11px 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-see-all {
+      display: flex; align-items: center; gap: 5px; padding: 7px 18px; border-radius: 9px;
+      background: var(--off-white); border: 1.5px solid var(--border);
+      font-family: var(--font-en); font-size: 12px; font-weight: 600; color: var(--teal);
+      cursor: pointer; transition: all 0.18s;
+    }
+    .btn-see-all:hover { background: var(--teal-xpale); border-color: var(--teal); gap: 8px; }
+    .btn-sa-bn { font-family: var(--font-bn); font-size: 13px; color: var(--text-mid); margin-right: 5px; }
+
+    /* ═══════════════════════════════════════════
+       POST CARD (Jolshaa standard post style)
+    ═══════════════════════════════════════════ */
+    .post-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; animation: cardSlide 0.38s 0.21s ease both; }
+
+    .post-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 16px 12px; }
+    .post-author { display: flex; align-items: flex-start; gap: 11px; }
+    .post-av {
+      width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white;
+      border: 2.5px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .post-name { font-family: var(--font-bn); font-size: 14.5px; font-weight: 700; color: var(--text-dark); }
+    .post-meta-row { display: flex; align-items: center; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+    .post-time-chip {
+      display: flex; align-items: center; gap: 3px;
+      font-family: var(--font-en); font-size: 10px; color: var(--text-light);
+    }
+    .post-loc-chip {
+      display: flex; align-items: center; gap: 3px;
+      font-family: var(--font-bn); font-size: 10.5px; color: var(--teal); font-weight: 500;
+      background: var(--teal-xpale); padding: 2px 7px; border-radius: 5px;
+    }
+    .post-follow-chip {
+      display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 8px;
+      border: 1.5px solid var(--teal); color: var(--teal); background: transparent;
+      font-family: var(--font-bn); font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.18s; flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+    }
+    .post-follow-chip:hover { background: var(--teal-xpale); }
+    .post-options-btn {
+      width: 34px; height: 34px; border-radius: 10px; border: none;
+      background: var(--off-white); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid); transition: all 0.18s; flex-shrink: 0; margin-top: 2px;
+    }
+    .post-options-btn:hover { background: var(--teal-pale); color: var(--teal); }
+
+    /* Post text */
+    .post-text { padding: 0 16px 12px; font-family: var(--font-bn); font-size: 14px; line-height: 1.65; color: var(--text-dark); }
+    .post-text .match-hl { font-weight: 700; }
+
+    /* Post image */
+    .post-img-wrap { position: relative; overflow: hidden; }
+    .post-img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+      background: linear-gradient(135deg, #c8ddd8, #9bbdb5);
+    }
+    .post-img-placeholder {
+      width: 100%; aspect-ratio: 16/9; background: linear-gradient(140deg,#2a9678 0%,#1B6B5A 40%,#14584a 100%);
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    }
+    .pip-overlay {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(78,205,196,0.18), transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.07), transparent 50%);
+    }
+    .pip-emoji { font-size: 72px; opacity: 0.25; position: relative; z-index: 1; }
+    .pip-label { position: absolute; bottom: 16px; left: 16px; right: 16px; }
+    .pip-caption { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88); line-height: 1.4; }
+
+    /* Reaction bar */
+    .post-reaction-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+    }
+    .prb-left { display: flex; align-items: center; gap: 6px; }
+    .prb-emoji-stack { display: flex; }
+    .prb-emoji { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid white; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-left: -4px; background: #ffe4e1; }
+    .prb-emoji:first-child { margin-left: 0; background: #fff0d6; }
+    .prb-emoji:nth-child(2) { background: #e8f2ef; }
+    .prb-react-count { font-family: var(--font-en); font-size: 12px; color: var(--text-light); }
+    .prb-right { display: flex; align-items: center; gap: 4px; }
+    .prb-comments { font-family: var(--font-en); font-size: 11px; color: var(--text-light); }
+
+    /* Action buttons row */
+    .post-actions { display: flex; align-items: stretch; padding: 4px 8px; gap: 2px; }
+    .post-action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 6px; border-radius: 10px; background: none; border: none;
+      cursor: pointer; color: var(--text-mid); transition: all 0.18s; font-family: var(--font-bn); font-size: 13px; font-weight: 500;
+    }
+    .post-action-btn:hover { background: var(--off-white); color: var(--teal); }
+    .post-action-btn.reacted { color: var(--coral); }
+
+    /* ─── Related search chips ─── */
+    .related-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 2px 4px; }
+    .related-lbl { font-family: var(--font-en); font-size: 11px; color: var(--text-light); width: 100%; margin-bottom: 2px; }
+    .chip-related {
+      display: flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 50px;
+      background: var(--card-bg); border: 1.5px solid var(--border);
+      font-family: var(--font-bn); font-size: 12.5px; font-weight: 500; color: var(--text-mid);
+      cursor: pointer; transition: all 0.18s;
+    }
+    .chip-related:hover { background: var(--teal-xpale); border-color: var(--teal); color: var(--teal); }
+    .chip-rel-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); }
+
+    /* ════════════════════════════ RESPONSIVE ════════════════════════════ */
+    @media (max-width: 1280px) { :root { --sidebar-w: 260px; } }
+    @media (max-width: 1080px) { :root { --sidebar-w: 230px; } .pr-mutual { display: none; } }
+    @media (max-width: 860px) {
+      .sidebar-left { transform: translateX(-100%); transition: transform 0.3s; }
+      .main-content { margin-left: 0; }
+    }
+    @media (max-width: 620px) {
+      .nav-wordmark { display: none; }
+      .post-img-placeholder { aspect-ratio: 4/3; }
+      .btn-add-friend .btn-af-en, .btn-follow .btn-follow-en { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar" role="navigation" aria-label="Jolshaa navigation">
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+
+  <!-- Active search bar with query -->
+  <div class="nav-search">
+    <span class="nav-search-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" value="মন্টু" aria-label="Search query" id="searchInput" />
+    <button class="nav-search-clear" onclick="document.getElementById('searchInput').value='';document.getElementById('searchInput').focus();" aria-label="Clear search">
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="nav-center">
+    <button class="nav-icon-btn" title="হোম" onclick="window.location='newsfeed.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="গ্রুপ" onclick="window.location='groups.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="ভিডিও / Watch" onclick="window.location='watch.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7" stroke="none"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="ইভেন্ট / Events" onclick="window.location='events.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="বার্তা" onclick="window.location='messenger.html'">
+      <div class="nav-badge">5</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="বিজ্ঞপ্তি" onclick="window.location='notifications.html'">
+      <div class="nav-badge">৭</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    </button>
+  </div>
+  <button class="nav-sahajjo" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>সাহায্য চাই</span>
+  </button>
+  <div class="nav-avatar" onclick="window.location='profile.html'" title="প্রোফাইল">আ</div>
+</nav>
+
+<div class="page-body">
+
+  <!-- ══════════════ LEFT SIDEBAR ══════════════ -->
+  <aside class="sidebar-left" aria-label="Search filters">
+
+    <div class="sb-brand-header">
+      <div class="sb-title-bn">সার্চ ফলাফল</div>
+      <div class="sb-title-en">Search Results</div>
+    </div>
+
+    <!-- Query pill -->
+    <div class="sb-query-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      <span class="sb-query-text">"মন্টু"</span>
+      <span class="sb-query-en">montoo</span>
+    </div>
+
+    <!-- ─── Filter Card ─── -->
+    <div class="filter-card">
+      <div class="filter-card-hdr">
+        <div>
+          <div class="filter-card-title-bn">ফিল্টার</div>
+          <div class="filter-card-title-en">Filters</div>
+        </div>
+        <button class="filter-reset">রিসেট · Reset</button>
+      </div>
+
+      <!-- Toggle: Recent Posts -->
+      <div class="filter-toggle-row">
+        <div class="ftgl-text">
+          <div class="ftgl-bn">সাম্প্রতিক পোস্ট</div>
+          <div class="ftgl-en">Recent Posts Only</div>
+        </div>
+        <label class="toggle-switch" aria-label="Toggle recent posts">
+          <input type="checkbox" id="toggleRecent" checked onchange="updateToggle(this)" />
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+
+      <!-- Toggle: Posts You've Seen -->
+      <div class="filter-toggle-row">
+        <div class="ftgl-text">
+          <div class="ftgl-bn">তুমি দেখেছো এমন</div>
+          <div class="ftgl-en">Posts You've Seen</div>
+        </div>
+        <label class="toggle-switch" aria-label="Toggle posts you've seen">
+          <input type="checkbox" id="toggleSeen" onchange="updateToggle(this)" />
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+
+      <!-- Dropdown: Date Posted -->
+      <div class="filter-dropdown">
+        <button class="fdd-btn open" id="fddDate" onclick="toggleFdd('fddDate','fddDateBody')" aria-expanded="true">
+          <div class="fdd-btn-left">
+            <div class="fdd-dot"></div>
+            <div><div class="fdd-bn">পোস্টের তারিখ</div><div class="fdd-en">Date Posted</div></div>
+          </div>
+          <svg class="fdd-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fdd-body open" id="fddDateBody">
+          <div class="fdd-inner">
+            <label class="fdd-option"><input type="radio" name="date" value="any" checked /><div class="fdd-check"></div><span class="fdd-option-bn">যেকোনো সময়</span></label>
+            <label class="fdd-option"><input type="radio" name="date" value="today" /><div class="fdd-check"></div><span class="fdd-option-bn">আজকের</span></label>
+            <label class="fdd-option"><input type="radio" name="date" value="week" /><div class="fdd-check"></div><span class="fdd-option-bn">এই সপ্তাহের</span></label>
+            <label class="fdd-option"><input type="radio" name="date" value="month" /><div class="fdd-check"></div><span class="fdd-option-bn">এই মাসের</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dropdown: Posts From -->
+      <div class="filter-dropdown">
+        <button class="fdd-btn" id="fddFrom" onclick="toggleFdd('fddFrom','fddFromBody')" aria-expanded="false">
+          <div class="fdd-btn-left">
+            <div class="fdd-dot"></div>
+            <div><div class="fdd-bn">যেখান থেকে পোস্ট</div><div class="fdd-en">Posts From</div></div>
+          </div>
+          <svg class="fdd-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fdd-body" id="fddFromBody">
+          <div class="fdd-inner">
+            <label class="fdd-option"><input type="radio" name="from" value="all" checked /><div class="fdd-check"></div><span class="fdd-option-bn">সবাই</span></label>
+            <label class="fdd-option"><input type="radio" name="from" value="friends" /><div class="fdd-check"></div><span class="fdd-option-bn">শুধু বন্ধু</span></label>
+            <label class="fdd-option"><input type="radio" name="from" value="groups" /><div class="fdd-check"></div><span class="fdd-option-bn">গ্রুপ</span></label>
+            <label class="fdd-option"><input type="radio" name="from" value="pages" /><div class="fdd-check"></div><span class="fdd-option-bn">পেজ</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dropdown: Tagged Location -->
+      <div class="filter-dropdown">
+        <button class="fdd-btn" id="fddLoc" onclick="toggleFdd('fddLoc','fddLocBody')" aria-expanded="false">
+          <div class="fdd-btn-left">
+            <div class="fdd-dot"></div>
+            <div><div class="fdd-bn">ট্যাগ করা অবস্থান</div><div class="fdd-en">Tagged Location</div></div>
+          </div>
+          <svg class="fdd-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fdd-body" id="fddLocBody">
+          <div class="fdd-inner">
+            <label class="fdd-option"><input type="radio" name="loc" value="any" checked /><div class="fdd-check"></div><span class="fdd-option-bn">যেকোনো স্থান</span></label>
+            <label class="fdd-option"><input type="radio" name="loc" value="dhaka" /><div class="fdd-check"></div><span class="fdd-option-bn">ঢাকা</span></label>
+            <label class="fdd-option"><input type="radio" name="loc" value="ctg" /><div class="fdd-check"></div><span class="fdd-option-bn">চট্টগ্রাম</span></label>
+            <label class="fdd-option"><input type="radio" name="loc" value="sylhet" /><div class="fdd-check"></div><span class="fdd-option-bn">সিলেট</span></label>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /filter-card -->
+
+    <!-- ─── Category Nav ─── -->
+    <div class="cat-nav">
+      <div class="cat-nav-hdr">
+        <div class="cat-nav-lbn">ক্যাটাগরি</div>
+        <div class="cat-nav-len">Category</div>
+      </div>
+      <div class="cat-nav-list">
+        <a href="#" class="cat-item active" onclick="setCategory(event,'all')">
+          <div class="cat-icon ci-all">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round">
+              <rect x="2" y="2" width="9" height="9" rx="2.5"/><rect x="13" y="2" width="9" height="9" rx="2.5"/>
+              <rect x="2" y="13" width="9" height="9" rx="2.5"/><rect x="13" y="13" width="9" height="9" rx="2.5"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">সব</div><div class="cat-text-en">All Results</div></div>
+          <div class="cat-count">৪৮</div>
+        </a>
+        <a href="#" class="cat-item" onclick="setCategory(event,'people')">
+          <div class="cat-icon ci-people">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round">
+              <circle cx="9" cy="7" r="4"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/>
+              <path d="M20 7.5a3 3 0 010 5M23 21c0-2.5-2-4.5-4-5.5"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">মানুষ</div><div class="cat-text-en">People</div></div>
+          <div class="cat-count">১২</div>
+        </a>
+        <a href="#" class="cat-item" onclick="setCategory(event,'reels')">
+          <div class="cat-icon ci-reels">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="3"/>
+              <circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">রিলস</div><div class="cat-text-en">Reels</div></div>
+          <div class="cat-count">৯</div>
+        </a>
+        <a href="#" class="cat-item" onclick="setCategory(event,'groups')">
+          <div class="cat-icon ci-groups">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">গ্রুপ</div><div class="cat-text-en">Groups</div></div>
+          <div class="cat-count">৭</div>
+        </a>
+        <a href="#" class="cat-item" onclick="setCategory(event,'pages')">
+          <div class="cat-icon ci-pages">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round">
+              <path d="M4 4h10l4 4v14H4z"/><path d="M14 4v4h4"/>
+              <line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">পেজ</div><div class="cat-text-en">Pages</div></div>
+          <div class="cat-count">৬</div>
+        </a>
+        <a href="#" class="cat-item" onclick="setCategory(event,'events')">
+          <div class="cat-icon ci-events">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2.2" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="3"/>
+              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <circle cx="12" cy="16" r="2" fill="#ec4899" opacity="0.3"/>
+            </svg>
+          </div>
+          <div><div class="cat-text-bn">ইভেন্ট</div><div class="cat-text-en">Events</div></div>
+          <div class="cat-count">৫</div>
+        </a>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <main class="main-content">
+
+    <!-- Result meta -->
+    <div class="result-meta">
+      <div>
+        <div class="result-count-bn">"মন্টু" — ৪৮টি ফলাফল পাওয়া গেছে</div>
+        <div class="result-count-en">48 results found for "montoo"</div>
+      </div>
+      <div class="result-sort">
+        <span class="result-sort-lbl">Sort:</span>
+        <select class="sort-select" aria-label="Sort results">
+          <option>প্রাসঙ্গিক · Relevant</option>
+          <option>সাম্প্রতিক · Recent</option>
+          <option>জনপ্রিয় · Popular</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Related searches -->
+    <div class="related-chips" style="margin-bottom:20px">
+      <span class="related-lbl">সম্পর্কিত খোঁজ · Related searches:</span>
+      <button class="chip-related">মন্টু মিয়া <span class="chip-rel-en">/ Montu Mia</span></button>
+      <button class="chip-related">মন্টু ভাই <span class="chip-rel-en">/ Montu Bhai</span></button>
+      <button class="chip-related">মন্টু ক্রিকেট <span class="chip-rel-en">/ Montu Cricket</span></button>
+      <button class="chip-related">#মন্টু <span class="chip-rel-en">/ #montoo</span></button>
+    </div>
+
+    <div class="results-stack">
+
+      <!-- ═══ PEOPLE RESULTS CARD ═══ -->
+      <div class="result-card" id="peopleCard">
+        <div class="rc-header">
+          <div class="rc-title-wrap">
+            <div class="rc-icon rci-people">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+                <circle cx="9" cy="7" r="4"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/>
+                <path d="M20 7.5a3 3 0 010 5M23 21c0-2.5-2-4.5-4-5.5"/>
+              </svg>
+            </div>
+            <div>
+              <div class="rc-title-bn">মানুষ</div>
+              <div class="rc-title-en">People</div>
+            </div>
+          </div>
+          <span class="rc-count-badge">১২ জন</span>
+        </div>
+
+        <div class="people-list">
+
+          <!-- Person 1 — mutual friends -->
+          <div class="person-row">
+            <div class="pr-avatar" style="background:linear-gradient(135deg,#1B6B5A,#4ECDC4)">ম</div>
+            <div class="pr-info">
+              <div class="pr-name"><span class="match-hl">মন্টু</span> মিয়া</div>
+              <div class="pr-meta">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                ঢাকা, বাংলাদেশ
+                <div class="pr-meta-dot"></div>
+                <div class="pr-mutual">
+                  <div class="pr-mutual-faces">
+                    <div class="pr-mf" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">র</div>
+                    <div class="pr-mf" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">স</div>
+                    <div class="pr-mf" style="background:linear-gradient(135deg,var(--teal),var(--teal-light))">ক</div>
+                  </div>
+                  <span>৮ জন পরিচিত</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn-add-friend" onclick="toggleAddFriend(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <div><div class="btn-af-bn">বন্ধু যোগ করো</div><div class="btn-af-en">Add Friend</div></div>
+            </button>
+          </div>
+          <div class="pr-divider"></div>
+
+          <!-- Person 2 — sent request -->
+          <div class="person-row">
+            <div class="pr-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">ম</div>
+            <div class="pr-info">
+              <div class="pr-name"><span class="match-hl">মন্টু</span> ভাই কমিলা</div>
+              <div class="pr-meta">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                কুমিল্লা, বাংলাদেশ
+                <div class="pr-meta-dot"></div>
+                <div class="pr-mutual">
+                  <div class="pr-mutual-faces">
+                    <div class="pr-mf" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">ত</div>
+                    <div class="pr-mf" style="background:linear-gradient(135deg,#10b981,#34d399)">আ</div>
+                  </div>
+                  <span>৩ জন পরিচিত</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn-add-friend pending" onclick="toggleAddFriend(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <div><div class="btn-af-bn">অনুরোধ গেছে</div><div class="btn-af-en">Requested</div></div>
+            </button>
+          </div>
+          <div class="pr-divider"></div>
+
+          <!-- Person 3 -->
+          <div class="person-row">
+            <div class="pr-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ম</div>
+            <div class="pr-info">
+              <div class="pr-name">মো. <span class="match-hl">মন্টু</span> হোসেন</div>
+              <div class="pr-meta">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                সিলেট, বাংলাদেশ
+                <div class="pr-meta-dot"></div>
+                <span>১টি পরিচিত</span>
+              </div>
+            </div>
+            <button class="btn-add-friend" onclick="toggleAddFriend(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <div><div class="btn-af-bn">বন্ধু যোগ করো</div><div class="btn-af-en">Add Friend</div></div>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="rc-see-all">
+          <button class="btn-see-all">
+            <span class="btn-sa-bn">সব দেখো</span>
+            See all 12 people
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ PAGES RESULTS CARD ═══ -->
+      <div class="result-card" id="pagesCard">
+        <div class="rc-header">
+          <div class="rc-title-wrap">
+            <div class="rc-icon rci-pages">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+                <path d="M4 4h10l4 4v14H4z"/><path d="M14 4v4h4"/>
+                <line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/>
+              </svg>
+            </div>
+            <div>
+              <div class="rc-title-bn">পেজ</div>
+              <div class="rc-title-en">Pages</div>
+            </div>
+          </div>
+          <span class="rc-count-badge">৬টি পেজ</span>
+        </div>
+
+        <div class="pages-list">
+
+          <!-- Page 1 -->
+          <div class="page-row">
+            <div class="page-thumb" style="background:linear-gradient(135deg,#fde68a,#fbbf24); font-size:26px">🎭</div>
+            <div class="pgr-info">
+              <div class="pgr-name"><span class="match-hl">মন্টু</span>র কমেডি শো</div>
+              <div class="pgr-cat-row">
+                <span class="pgr-cat">বিনোদন পেজ ·</span>
+                <span class="pgr-fol">৩২,৫০০ followers</span>
+              </div>
+              <div class="pgr-desc">বাংলা হাসির জগতে স্বাগতম। প্রতিদিনের মজার কন্টেন্ট, স্কেচ ও কমেডি ক্লিপ।</div>
+            </div>
+            <button class="btn-follow following" onclick="toggleFollow(this)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <div><div class="btn-follow-bn">ফলো করা</div><div class="btn-follow-en">Following</div></div>
+            </button>
+          </div>
+          <div class="pr-divider"></div>
+
+          <!-- Page 2 -->
+          <div class="page-row">
+            <div class="page-thumb" style="background:linear-gradient(135deg,#bae6fd,#7dd3fc); font-size:26px">📰</div>
+            <div class="pgr-info">
+              <div class="pgr-name"><span class="match-hl">মন্টু</span>র ক্রিকেট ডাইরি</div>
+              <div class="pgr-cat-row">
+                <span class="pgr-cat">ক্রীড়া পেজ ·</span>
+                <span class="pgr-fol">৮,৯০০ followers</span>
+              </div>
+              <div class="pgr-desc">বাংলাদেশ ক্রিকেটের সর্বশেষ আপডেট, বিশ্লেষণ ও খেলোয়াড়দের পরিসংখ্যান।</div>
+            </div>
+            <button class="btn-follow" onclick="toggleFollow(this)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <div><div class="btn-follow-bn">ফলো করো</div><div class="btn-follow-en">Follow</div></div>
+            </button>
+          </div>
+          <div class="pr-divider"></div>
+
+          <!-- Page 3 -->
+          <div class="page-row">
+            <div class="page-thumb" style="background:linear-gradient(135deg,#fce7f3,#f9a8d4); font-size:26px">🍛</div>
+            <div class="pgr-info">
+              <div class="pgr-name"><span class="match-hl">মন্টু</span>র রান্নাঘর</div>
+              <div class="pgr-cat-row">
+                <span class="pgr-cat">খাদ্য পেজ ·</span>
+                <span class="pgr-fol">১৫,২০০ followers</span>
+              </div>
+              <div class="pgr-desc">দেশীয় রেসিপি ও রান্নার কৌশল প্রতিদিন শেয়ার করা হয়।</div>
+            </div>
+            <button class="btn-follow" onclick="toggleFollow(this)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <div><div class="btn-follow-bn">ফলো করো</div><div class="btn-follow-en">Follow</div></div>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="rc-see-all">
+          <button class="btn-see-all">
+            <span class="btn-sa-bn">সব দেখো</span>
+            See all 6 pages
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ MATCHED POST CARD ═══ -->
+      <div class="post-card">
+        <!-- Subtle label -->
+        <div style="display:flex;align-items:center;gap:7px;padding:10px 16px 0;">
+          <div class="rc-icon rci-post" style="width:26px;height:26px;border-radius:8px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <span style="font-family:var(--font-bn);font-size:11.5px;color:var(--text-light);">মিলে যাওয়া পোস্ট</span>
+          <span style="font-family:var(--font-en);font-size:9.5px;color:var(--text-xlight);">/ Matched Post</span>
+        </div>
+
+        <div class="post-header">
+          <div class="post-author">
+            <div class="post-av" style="background:linear-gradient(135deg,#1B6B5A,#4ECDC4)">ম</div>
+            <div>
+              <div class="post-name"><span class="match-hl">মন্টু</span> মিয়া</div>
+              <div class="post-meta-row">
+                <div class="post-time-chip">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ৩ ঘন্টা আগে · 3 hours ago
+                </div>
+                <div class="post-loc-chip">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  ঢাকা · Dhaka
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:6px;flex-shrink:0;margin-top:2px;">
+            <button class="post-follow-chip">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>ফলো করো</span>
+            </button>
+            <button class="post-options-btn" aria-label="More options">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="post-text">
+          আজকে আমাদের মহল্লায় <span class="match-hl">মন্টু</span> ভাইয়ের বাড়িতে একটা বিশাল দাওয়াত হলো! 🎉 সবাই মিলে কত্ত মজা করলাম। এই মুহূর্তগুলো সারাজীবন মনে থাকবে।
+        </div>
+
+        <div class="post-img-wrap">
+          <div class="post-img-placeholder">
+            <div class="pip-overlay"></div>
+            <div class="pip-emoji">🎉</div>
+            <div class="pip-label">
+              <div class="pip-caption">দাওয়াতের স্মৃতি — মন্টু ভাইয়ের বাড়ি, ঢাকা</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-reaction-bar">
+          <div class="prb-left">
+            <div class="prb-emoji-stack">
+              <div class="prb-emoji">❤️</div>
+              <div class="prb-emoji">😂</div>
+              <div class="prb-emoji">🎉</div>
+            </div>
+            <span class="prb-react-count">১৪৮</span>
+          </div>
+          <div class="prb-right">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span class="prb-comments">৩২টি মন্তব্য</span>
+          </div>
+        </div>
+
+        <div class="post-actions">
+          <button class="post-action-btn reacted">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--coral)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span>পছন্দ · Like</span>
+          </button>
+          <button class="post-action-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>মন্তব্য · Comment</span>
+          </button>
+          <button class="post-action-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>শেয়ার · Share</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /results-stack -->
+  </main>
+</div>
+
+<script>
+  /* ─── Category selection ─── */
+  function setCategory(e, cat) {
+    e.preventDefault();
+    document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+  }
+
+  /* ─── Toggle filter dropdowns ─── */
+  function toggleFdd(btnId, bodyId) {
+    const btn  = document.getElementById(btnId);
+    const body = document.getElementById(bodyId);
+    const open = btn.classList.contains('open');
+    btn.classList.toggle('open', !open);
+    body.classList.toggle('open', !open);
+    btn.setAttribute('aria-expanded', String(!open));
+  }
+
+  /* ─── Toggle feedback on add-friend ─── */
+  function toggleAddFriend(btn) {
+    const isPending = btn.classList.contains('pending');
+    if (isPending) {
+      btn.classList.remove('pending');
+      btn.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <div><div class="btn-af-bn">বন্ধু যোগ করো</div><div class="btn-af-en">Add Friend</div></div>`;
+    } else {
+      btn.classList.add('pending');
+      btn.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div><div class="btn-af-bn">অনুরোধ গেছে</div><div class="btn-af-en">Requested</div></div>`;
+    }
+  }
+
+  /* ─── Toggle follow state ─── */
+  function toggleFollow(btn) {
+    const isFollowing = btn.classList.contains('following');
+    btn.classList.toggle('following', !isFollowing);
+    if (!isFollowing) {
+      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg><div><div class="btn-follow-bn">ফলো করা</div><div class="btn-follow-en">Following</div></div>`;
+    } else {
+      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><div><div class="btn-follow-bn">ফলো করো</div><div class="btn-follow-en">Follow</div></div>`;
+    }
+  }
+
+  /* ─── Radio custom check rendering ─── */
+  document.querySelectorAll('.fdd-option input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const group = radio.getAttribute('name');
+      document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+        const check = r.nextElementSibling;
+        if (r.checked) {
+          check.style.background = 'var(--teal)';
+          check.style.borderColor = 'var(--teal)';
+          check.textContent = '✓';
+          check.style.color = 'white';
+          check.style.fontSize = '10px';
+          check.style.fontWeight = '700';
+          check.style.display = 'flex';
+          check.style.alignItems = 'center';
+          check.style.justifyContent = 'center';
+        } else {
+          check.style.background = 'var(--off-white)';
+          check.style.borderColor = 'var(--border)';
+          check.textContent = '';
+        }
+      });
+    });
+  });
+
+  /* ─── Search submit on enter ─── */
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const q = e.target.value.trim();
+      if (q) document.querySelector('.sb-query-text').textContent = `"${q}"`;
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ভিডিও দেখো — জলশা | Jolshaa Watch</title>
+  <meta name="description" content="জলশায় ভিডিও আবিষ্কার করো। Discover and watch community videos on Jolshaa Watch."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:        #1B6B5A;
+      --teal-hover:  #165a4b;
+      --teal-light:  #2a9678;
+      --teal-pale:   #E8F2EF;
+      --teal-xpale:  #f2faf7;
+      --off-white:   #F5F0E8;
+      --card-bg:     #FFFFFF;
+      --coral:       #E85C4A;
+      --coral-pale:  #fef3f1;
+      --live-red:    #e53e3e;
+      --live-pale:   #fff5f5;
+      --amber:       #D97706;
+      --text-dark:   #1a1a1a;
+      --text-mid:    #4a4a4a;
+      --text-light:  #888;
+      --text-xlight: #bbb;
+      --border:      #E8E2DA;
+      --border-light:#F0EBE3;
+      --shadow-xs:   0 1px 4px rgba(0,0,0,0.05);
+      --shadow-sm:   0 2px 12px rgba(0,0,0,0.08);
+      --shadow-md:   0 6px 26px rgba(0,0,0,0.10);
+      --shadow-teal: 0 6px 28px rgba(27,107,90,0.18);
+      --radius-sm:   10px;
+      --radius-md:   14px;
+      --radius-lg:   18px;
+      --font-bn:     'Hind Siliguri', sans-serif;
+      --font-en:     'Inter', sans-serif;
+      --nav-h:       58px;
+      --sb-left-w:   240px;
+      --sb-right-w:  272px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-bn); background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ═══════════════════ NAVBAR ═══════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28);
+    }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+    .nav-search { flex: 1; max-width: 280px; position: relative; margin-left: 4px; }
+    .nav-search input {
+      width: 100%; padding: 9px 16px 9px 38px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--off-white);
+      font-family: var(--font-en); font-size: 13px; color: var(--text-dark); outline: none; transition: all 0.2s;
+    }
+    .nav-search input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .nav-search input::placeholder { color: var(--text-light); }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 52px; height: 46px; border-radius: 10px; border: none; background: transparent; cursor: pointer; color: var(--text-light); transition: all 0.2s; }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); background: var(--teal-xpale); }
+    .nav-badge { position: absolute; top: 5px; right: 7px; background: var(--coral); color: white; font-family: var(--font-en); font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .nav-sahajjo { display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 50px; background: var(--coral); color: white; border: none; cursor: pointer; flex-shrink: 0; font-family: var(--font-bn); font-size: 13px; font-weight: 600; box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s; }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.75)} }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white; cursor: pointer; border: 2px solid var(--teal-pale); }
+
+    /* ═══════════════════ PAGE LAYOUT ═══════════════════ */
+    .page-body { display: flex; padding-top: var(--nav-h); min-height: 100vh; }
+
+    /* ═══════════════════ LEFT SIDEBAR ═══════════════════ */
+    .sidebar-left {
+      width: var(--sb-left-w); position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 18px 10px 40px; background: var(--card-bg);
+      border-right: 1px solid var(--border-light);
+    }
+    .sb-brand-hdr { padding: 4px 8px 14px; }
+    .sb-title-wrap { display: flex; align-items: center; gap: 9px; }
+    .sb-icon { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; }
+    .sb-title-bn { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: var(--text-dark); }
+    .sb-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Category filter strip */
+    .sb-cat-strip { display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px; padding: 0 4px 14px; border-bottom: 1px solid var(--border-light); margin-bottom: 8px; }
+    .cat-chip { padding: 5px 11px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-bn); font-size: 11.5px; font-weight: 500; color: var(--text-mid); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+    .cat-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .cat-chip.active { background: var(--teal); border-color: var(--teal-hover); color: white; box-shadow: 0 2px 8px rgba(27,107,90,0.22); }
+
+    /* Nav items */
+    .sb-nav-section { margin-bottom: 4px; }
+    .sb-nav-lbl { font-family: var(--font-en); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-xlight); padding: 8px 10px 5px; }
+    .sb-nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 11px;
+      text-decoration: none; cursor: pointer; transition: all 0.18s; position: relative;
+      border: none; background: transparent; width: 100%; text-align: left;
+    }
+    .sb-nav-item:hover { background: var(--off-white); }
+    .sb-nav-item.active { background: var(--teal-xpale); }
+    .sb-nav-item.active::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; border-radius:0 3px 3px 0; background:var(--teal); }
+    .sni-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: transform 0.18s; }
+    .sb-nav-item:hover .sni-icon { transform: scale(1.07); }
+    .sni-foryou  { background: linear-gradient(135deg,#e8f2ef,#d1ebe3); }
+    .sni-follow  { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+    .sni-live    { background: linear-gradient(135deg,#fff5f5,#fecaca); }
+    .sni-saved   { background: linear-gradient(135deg,#fffbeb,#fde68a); }
+    .sni-yours   { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); }
+    .sni-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); }
+    .sb-nav-item.active .sni-bn { color: var(--teal); font-weight: 700; }
+    .sni-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .sni-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live-red); margin-left: auto; animation: liveBlink 1.1s ease-in-out infinite; }
+    @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .sni-badge { margin-left: auto; font-family: var(--font-en); font-size: 9.5px; font-weight: 700; color: var(--teal); background: var(--teal-pale); padding: 2px 7px; border-radius: 7px; }
+
+    /* Divider */
+    .sb-divider { height: 1px; background: var(--border-light); margin: 8px 4px; }
+
+    /* Upload CTA */
+    .sb-upload-cta {
+      margin: 10px 4px 0; padding: 12px 14px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg,var(--teal-xpale),var(--teal-pale));
+      border: 1.5px solid rgba(27,107,90,0.14);
+    }
+    .sb-upload-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--teal); }
+    .sb-upload-en { font-family: var(--font-en); font-size: 9.5px; color: var(--teal-light); margin-top: 2px; display: block; }
+    .btn-upload {
+      display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px;
+      padding: 8px 12px; border-radius: 10px; background: var(--teal); border: none; color: white;
+      font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-upload:hover { background: var(--teal-hover); }
+
+    /* ═══════════════════ MAIN CONTENT ═══════════════════ */
+    .main-content {
+      margin-left: var(--sb-left-w);
+      margin-right: var(--sb-right-w);
+      flex: 1; padding: 24px 20px 60px; min-width: 0;
+    }
+
+    /* ─── Featured card ─── */
+    .featured-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1.5px solid rgba(27,107,90,0.18);
+      box-shadow: var(--shadow-teal), var(--shadow-sm);
+      overflow: hidden; margin-bottom: 22px;
+      animation: fadeUp 0.4s ease both;
+      position: relative;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    /* Teal glow accent line at top */
+    .featured-card::before { content:''; display:block; height:3px; background: linear-gradient(to right, var(--teal), var(--teal-light), transparent); }
+    .featured-tag {
+      position: absolute; top: 15px; left: 16px; z-index: 5;
+      display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px;
+      background: linear-gradient(135deg,var(--teal),var(--teal-light));
+      box-shadow: 0 3px 10px rgba(27,107,90,0.35);
+    }
+    .ft-bn { font-family: var(--font-bn); font-size: 11.5px; font-weight: 700; color: white; }
+    .ft-en { font-family: var(--font-en); font-size: 9px; color: rgba(255,255,255,0.8); }
+    /* Thumbnail */
+    .fc-thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; }
+    .fc-thumb-bg {
+      width: 100%; height: 100%;
+      background: linear-gradient(140deg, #1a4a3a 0%, #0f2e24 40%, #1B6B5A 70%, #1a3a2a 100%);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .fc-thumb-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 35%, rgba(78,205,196,0.12), transparent 55%), radial-gradient(ellipse at 75% 65%, rgba(255,255,255,0.05), transparent 45%); }
+    .fc-thumb-emoji { font-size: 80px; opacity: 0.18; z-index: 1; position: relative; }
+    .fc-thumb-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 18px 16px; background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%); z-index: 2; }
+    .fctl-title { font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white; line-height: 1.3; }
+    /* Play button overlay */
+    .fc-play-btn {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 4; cursor: pointer;
+    }
+    .fc-play-circle {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(255,255,255,0.22); backdrop-filter: blur(6px);
+      border: 2.5px solid rgba(255,255,255,0.55);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.22s; box-shadow: 0 6px 24px rgba(0,0,0,0.30);
+    }
+    .fc-play-btn:hover .fc-play-circle { background: rgba(255,255,255,0.34); transform: scale(1.08); }
+    /* Duration badge */
+    .duration-badge {
+      position: absolute; bottom: 10px; right: 12px; z-index: 5;
+      padding: 3px 9px; border-radius: 8px;
+      background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
+      font-family: var(--font-en); font-size: 11.5px; font-weight: 700; color: white;
+      letter-spacing: 0.3px;
+    }
+    /* Card meta */
+    .fc-meta { padding: 14px 18px 16px; display: flex; gap: 12px; align-items: flex-start; }
+    .fc-creator-av { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 17px; font-weight: 700; color: white; border: 2.5px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+    .fc-info { flex: 1; min-width: 0; }
+    .fc-video-title { font-family: var(--font-bn); font-size: 15.5px; font-weight: 700; color: var(--text-dark); line-height: 1.35; margin-bottom: 4px; }
+    .fc-creator-name { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--teal); }
+    .fc-stats { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    .fc-stats-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-xlight); }
+    .fc-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .fc-action-btn { display: flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-bn); font-size: 12.5px; color: var(--text-mid); cursor: pointer; transition: all 0.18s; }
+    .fc-action-btn:hover { background: var(--teal-xpale); border-color: var(--teal); color: var(--teal); }
+    .fc-action-btn.primary { background: linear-gradient(135deg,var(--teal),var(--teal-light)); border-color: var(--teal-hover); color: white; box-shadow: 0 3px 10px rgba(27,107,90,0.24); }
+    .fc-action-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(27,107,90,0.34); }
+
+    /* ─── Section header ─── */
+    .section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .sh-title-bn { font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: var(--text-dark); }
+    .sh-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .btn-see-all { display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 8px; background: var(--off-white); border: 1.5px solid var(--border); font-family: var(--font-en); font-size: 11px; font-weight: 600; color: var(--teal); cursor: pointer; transition: all 0.18s; }
+    .btn-see-all:hover { background: var(--teal-xpale); border-color: var(--teal); gap: 7px; }
+
+    /* ─── Video grid — asymmetric rhythm ─── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto;
+      gap: 14px;
+    }
+    /* First card spans 2 cols for rhythm */
+    .vc-wide { grid-column: span 2; }
+
+    /* Video card base */
+    .video-card {
+      background: var(--card-bg); border-radius: var(--radius-md);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-xs);
+      overflow: hidden; cursor: pointer; transition: all 0.22s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .video-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .vc-thumb { position: relative; overflow: hidden; }
+    .vc-wide .vc-thumb { aspect-ratio: 16/8; }
+    .vc-thumb { aspect-ratio: 16/9; }
+    /* Thumb placeholder */
+    .vct-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; position: relative;
+    }
+    /* Gradient overlays per card — varied for visual interest */
+    .vct-1 { background: linear-gradient(140deg,#1e3a5f,#2d6a9f,#1a4a6e); }
+    .vct-2 { background: linear-gradient(140deg,#3d1a4a,#6b2d8a,#4a1a5e); }
+    .vct-3 { background: linear-gradient(140deg,#1a3a0f,#2d6a1e,#1a4a0a); }
+    .vct-4 { background: linear-gradient(140deg,#4a2a0a,#8a5a1e,#5a3a0f); }
+    .vct-5 { background: linear-gradient(140deg,#1a1a3f,#2d2d6a,#1a1a4a); }
+    .vct-6 { background: linear-gradient(140deg,#3a0a1a,#6a1a2d,#4a0a1a); }
+    .vct-emoji { position: relative; z-index: 1; opacity: 0.22; }
+    .vct-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.07), transparent 55%); }
+    .vct-bottom { position: absolute; bottom: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to top, rgba(0,0,0,0.55), transparent); }
+    /* Play overlay on hover */
+    .vc-play-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s; background: rgba(0,0,0,0.12);
+    }
+    .video-card:hover .vc-play-overlay { opacity: 1; }
+    .vc-play-btn { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.26); backdrop-filter: blur(6px); border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; }
+
+    /* Duration pill — distinct shape */
+    .dur-badge {
+      position: absolute; bottom: 8px; right: 9px; z-index: 5;
+      padding: 3px 8px 3px 7px; border-radius: 20px;
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(3px);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .dur-text { font-family: var(--font-en); font-size: 11px; font-weight: 700; color: white; }
+
+    /* LIVE badge */
+    .live-badge {
+      position: absolute; top: 8px; left: 9px; z-index: 5;
+      display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px;
+      background: var(--live-red); box-shadow: 0 2px 10px rgba(229,62,62,0.45);
+    }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: white; animation: liveBlink 1.1s ease-in-out infinite; }
+    .live-text { font-family: var(--font-en); font-size: 11px; font-weight: 800; color: white; letter-spacing: 0.6px; }
+    .live-bn   { font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white; }
+    /* Live viewer count */
+    .live-viewers {
+      position: absolute; bottom: 8px; left: 9px; z-index: 5;
+      display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px;
+      background: rgba(0,0,0,0.68); backdrop-filter: blur(3px);
+    }
+    .lv-text { font-family: var(--font-en); font-size: 11px; font-weight: 600; color: white; }
+    .lv-icon { color: #fc8181; }
+
+    /* Card info area */
+    .vc-info { padding: 11px 13px 13px; }
+    .vc-wide .vc-info { padding: 12px 15px 14px; }
+    .vc-creator-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .vc-av { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 11px; font-weight: 700; color: white; border: 1.5px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
+    .vc-creator-name { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--teal); }
+    .vc-wide .vc-creator-name { font-size: 13px; }
+    /* Verified tick */
+    .vc-verified { width: 14px; height: 14px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .vc-title { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
+    .vc-wide .vc-title { font-size: 14px; }
+    .vc-stats { font-family: var(--font-en); font-size: 10.5px; color: var(--text-light); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+    .vc-stats-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-xlight); }
+
+    /* Category tag on card */
+    .vc-cat-tag { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 6px; background: var(--teal-xpale); border: 1px solid rgba(27,107,90,0.12); font-family: var(--font-bn); font-size: 10.5px; font-weight: 600; color: var(--teal); margin-bottom: 5px; }
+
+    /* Mood dots strip between grid and feature */
+    .mood-strip { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+    .mood-chip { display: flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--card-bg); font-family: var(--font-bn); font-size: 12px; font-weight: 500; color: var(--text-mid); cursor: pointer; transition: all 0.18s; }
+    .mood-chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-xpale); }
+    .mood-chip.active { background: var(--teal); border-color: var(--teal-hover); color: white; box-shadow: 0 2px 8px rgba(27,107,90,0.22); }
+
+    /* ═══════════════════ RIGHT SIDEBAR ═══════════════════ */
+    .sidebar-right {
+      width: var(--sb-right-w); position: fixed; top: var(--nav-h); right: 0; bottom: 0;
+      overflow-y: auto; padding: 18px 12px 40px;
+      background: var(--card-bg); border-left: 1px solid var(--border-light);
+    }
+    .srb-hdr { padding: 2px 4px 12px; }
+    .srb-title-bn { font-family: var(--font-bn); font-size: 14.5px; font-weight: 700; color: var(--text-dark); }
+    .srb-title-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+
+    /* Suggested video row */
+    .sv-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-radius: 10px; cursor: pointer; transition: background 0.16s; }
+    .sv-row:hover { background: var(--off-white); }
+    .sv-thumb { width: 96px; height: 54px; border-radius: 9px; flex-shrink: 0; overflow: hidden; position: relative; }
+    .sv-thumb-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .sv-dur { position: absolute; bottom: 4px; right: 5px; padding: 2px 5px; border-radius: 5px; background: rgba(0,0,0,0.76); font-family: var(--font-en); font-size: 9.5px; font-weight: 700; color: white; }
+    .sv-live-badge { position: absolute; top: 4px; left: 4px; padding: 2px 6px; border-radius: 5px; background: var(--live-red); font-family: var(--font-en); font-size: 8.5px; font-weight: 800; color: white; }
+    .sv-info { flex: 1; min-width: 0; }
+    .sv-title { font-family: var(--font-bn); font-size: 12px; font-weight: 700; color: var(--text-dark); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .sv-creator { font-family: var(--font-bn); font-size: 11px; color: var(--teal); margin-top: 3px; font-weight: 600; }
+    .sv-stats { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .sv-divider { height: 1px; background: var(--border-light); margin: 2px 4px; }
+
+    /* Creator spotlight card */
+    .creator-spotlight {
+      margin-top: 16px; padding: 14px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg,var(--teal-xpale),var(--teal-pale));
+      border: 1.5px solid rgba(27,107,90,0.14);
+    }
+    .cs-hdr-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; color: var(--teal); margin-bottom: 10px; }
+    .cs-creator-row { display: flex; align-items: center; gap: 9px; }
+    .cs-av { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+    .cs-name { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .cs-sub { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    .btn-cs-sub { margin-top: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 12px; border-radius: 9px; background: var(--teal); border: none; color: white; font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.18s; }
+    .btn-cs-sub:hover { background: var(--teal-hover); }
+
+    /* ═══════════════════ RESPONSIVE ═══════════════════ */
+    @media (max-width: 1280px) { :root { --sb-right-w: 240px; } }
+    @media (max-width: 1100px) { :root { --sb-right-w: 0px; } .sidebar-right { display: none; } .main-content { margin-right: 0; } }
+    @media (max-width: 860px)  { :root { --sb-left-w: 0px; } .sidebar-left { transform: translateX(-100%); } .main-content { margin-left: 0; } }
+    @media (max-width: 680px)  { .video-grid { grid-template-columns: 1fr; } .vc-wide { grid-column: span 1; } }
+    @media (max-width: 500px)  { .nav-wordmark { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav class="navbar" role="navigation" aria-label="Jolshaa navigation">
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+    <input type="text" placeholder="ভিডিও খুঁজুন... / Search videos..." aria-label="Search" onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='search.html'"/>
+  </div>
+  <div class="nav-center">
+    <button class="nav-icon-btn" onclick="window.location='newsfeed.html'" title="হোম"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='groups.html'" title="গ্রুপ"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg></button>
+    <button class="nav-icon-btn active" title="ভিডিও / Watch"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='messenger.html'" title="বার্তা"><div class="nav-badge">5</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='notifications.html'" title="বিজ্ঞপ্তি"><div class="nav-badge">৭</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></button>
+  </div>
+  <button class="nav-sahajjo" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    সাহায্য চাই
+  </button>
+  <div class="nav-avatar" onclick="window.location='profile.html'" title="প্রোফাইল">আ</div>
+</nav>
+
+<div class="page-body">
+
+  <!-- ════════════ LEFT SIDEBAR ════════════ -->
+  <aside class="sidebar-left" aria-label="Watch navigation">
+    <div class="sb-brand-hdr">
+      <div class="sb-title-wrap">
+        <div class="sb-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="white" stroke="none"/></svg>
+        </div>
+        <div>
+          <div class="sb-title-bn">ভিডিও</div>
+          <div class="sb-title-en">Jolshaa Watch</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category chips -->
+    <div class="sb-cat-strip">
+      <button class="cat-chip active" onclick="setChip(this)">সব</button>
+      <button class="cat-chip" onclick="setChip(this)">বিনোদন</button>
+      <button class="cat-chip" onclick="setChip(this)">খবর</button>
+      <button class="cat-chip" onclick="setChip(this)">খেলাধুলা</button>
+      <button class="cat-chip" onclick="setChip(this)">রান্না</button>
+      <button class="cat-chip" onclick="setChip(this)">শিক্ষা</button>
+    </div>
+
+    <div class="sb-nav-section">
+      <div class="sb-nav-lbl">নেভিগেশন</div>
+
+      <button class="sb-nav-item active" onclick="setNav(this)">
+        <div class="sni-icon sni-foryou">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <div>
+          <div class="sni-bn">তোমার জন্য</div>
+          <div class="sni-en">For You</div>
+        </div>
+      </button>
+
+      <button class="sb-nav-item" onclick="setNav(this)">
+        <div class="sni-icon sni-follow">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div>
+          <div class="sni-bn">ফলো করা</div>
+          <div class="sni-en">Following</div>
+        </div>
+        <span class="sni-badge">নতুন</span>
+      </button>
+
+      <button class="sb-nav-item" onclick="setNav(this)">
+        <div class="sni-icon sni-live">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--live-red)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="2" fill="var(--live-red)"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg>
+        </div>
+        <div>
+          <div class="sni-bn">লাইভ</div>
+          <div class="sni-en">Live Now</div>
+        </div>
+        <span class="sni-live-dot"></span>
+      </button>
+
+      <button class="sb-nav-item" onclick="setNav(this)">
+        <div class="sni-icon sni-saved">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <div class="sni-bn">সংরক্ষিত ভিডিও</div>
+          <div class="sni-en">Saved Videos</div>
+        </div>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-nav-section">
+      <div class="sb-nav-lbl">Creator</div>
+      <button class="sb-nav-item" onclick="setNav(this)">
+        <div class="sni-icon sni-yours">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div>
+          <div class="sni-bn">তোমার ভিডিও</div>
+          <div class="sni-en">Your Videos</div>
+        </div>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <!-- Upload CTA -->
+    <div class="sb-upload-cta">
+      <div class="sb-upload-bn">ভিডিও আপলোড করো</div>
+      <span class="sb-upload-en">Share your story with Jolshaa</span>
+      <button class="btn-upload">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        আপলোড করো
+      </button>
+    </div>
+  </aside>
+
+  <!-- ════════════ MAIN CONTENT ════════════ -->
+  <main class="main-content">
+
+    <!-- Mood filter strip -->
+    <div class="mood-strip">
+      <button class="mood-chip active" onclick="setMood(this)">🎯 সব / All</button>
+      <button class="mood-chip" onclick="setMood(this)">🎭 বিনোদন</button>
+      <button class="mood-chip" onclick="setMood(this)">📰 খবর / News</button>
+      <button class="mood-chip" onclick="setMood(this)">⚽ খেলাধুলা / Sports</button>
+      <button class="mood-chip" onclick="setMood(this)">🍛 রান্না / Food</button>
+      <button class="mood-chip" onclick="setMood(this)">🎓 শিক্ষা / Education</button>
+      <button class="mood-chip" onclick="setMood(this)">🎵 সংগীত / Music</button>
+    </div>
+
+    <!-- ─── FEATURED CARD ─── -->
+    <div class="featured-card" id="featuredCard" aria-label="Featured video">
+      <div class="featured-tag">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span class="ft-bn">আজকের বিশেষ</span>
+        <span class="ft-en">/ Featured Pick</span>
+      </div>
+
+      <div class="fc-thumb">
+        <div class="fc-thumb-bg">
+          <div class="fc-thumb-overlay"></div>
+          <div class="fc-thumb-emoji">🎤</div>
+          <div class="fc-thumb-label">
+            <div class="fctl-title">বাংলাদেশের সেরা রাস্তার গায়কদের নিয়ে ডকুমেন্টারি — ঢাকার অজানা সুর</div>
+          </div>
+        </div>
+        <div class="fc-play-btn" onclick="handlePlay('featured')">
+          <div class="fc-play-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 4 20 12 6 20"/></svg>
+          </div>
+        </div>
+        <div class="duration-badge">২৪:৩৮</div>
+      </div>
+
+      <div class="fc-meta">
+        <div class="fc-creator-av" style="background:linear-gradient(135deg,#1B6B5A,#4ECDC4)">জ</div>
+        <div class="fc-info">
+          <div class="fc-video-title">বাংলাদেশের সেরা রাস্তার গায়কদের নিয়ে ডকুমেন্টারি — ঢাকার অজানা সুর</div>
+          <div class="fc-creator-name">জলশা ডকুমেন্টারি</div>
+          <div class="fc-stats">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            ২,৩৪,৫০০ ভিউ
+            <span class="fc-stats-dot"></span>
+            ৩ দিন আগে
+            <span class="fc-stats-dot"></span>
+            বিনোদন
+          </div>
+        </div>
+        <div class="fc-actions">
+          <button class="fc-action-btn" onclick="toggleSave(this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            সংরক্ষণ
+          </button>
+          <button class="fc-action-btn" onclick="handleShare()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            শেয়ার
+          </button>
+          <button class="fc-action-btn primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="6 4 20 12 6 20"/></svg>
+            এখনই দেখো
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── VIDEO GRID ─── -->
+    <div class="section-hdr">
+      <div>
+        <div class="sh-title-bn">আরও ভিডিও</div>
+        <div class="sh-title-en">More Videos · Community Feed</div>
+      </div>
+      <button class="btn-see-all">
+        সব দেখো
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="video-grid">
+
+      <!-- Card 1 — wide (spans 2 cols), LIVE -->
+      <div class="video-card vc-wide" style="animation-delay:0.05s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-1" style="aspect-ratio:16/8">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji" style="font-size:60px;opacity:0.18">🏟️</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            <span class="live-text">LIVE</span>
+            <span class="live-bn">লাইভ</span>
+          </div>
+          <div class="live-viewers">
+            <svg class="lv-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>
+            <span class="lv-text">৩,৪৭২ জন দেখছেন</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#e53e3e,#fc8181)">ব</div>
+            <span class="vc-creator-name">বাংলাদেশ ক্রিকেট লাইভ</span>
+            <div class="vc-verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+          <div class="vc-cat-tag">⚽ খেলাধুলা / Sports</div>
+          <div class="vc-title">বাংলাদেশ বনাম ভারত — T20 সিরিজের দ্বিতীয় ম্যাচ, সরাসরি সম্প্রচার</div>
+          <div class="vc-stats">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--live-red)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="2" fill="var(--live-red)"/></svg>
+            <span style="color:var(--live-red);font-weight:700">৩,৪৭২ জন সরাসরি দেখছেন</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — standard -->
+      <div class="video-card" style="animation-delay:0.10s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-2">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji">🎭</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="dur-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="dur-text">১২:৪৫</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">ম</div>
+            <span class="vc-creator-name">মন্টুর কমেডি</span>
+          </div>
+          <div class="vc-title">ঈদের বাজারে কী হলো! হাসতে হাসতে পেট ব্যথা হয়ে যাবে</div>
+          <div class="vc-stats">১,২৩,০০০ ভিউ<span class="vc-stats-sep"></span>২ দিন আগে</div>
+        </div>
+      </div>
+
+      <!-- Card 3 — standard -->
+      <div class="video-card" style="animation-delay:0.14s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-3">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji">🍛</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="dur-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="dur-text">৮:২২</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#16a34a,#4ade80)">ন</div>
+            <span class="vc-creator-name">নানির রান্নাঘর</span>
+          </div>
+          <div class="vc-title">মাত্র ২০ মিনিটে গরুর ভুনা — রেস্টুরেন্টের স্বাদ ঘরে</div>
+          <div class="vc-stats">৮৭,৪০০ ভিউ<span class="vc-stats-sep"></span>৫ ঘণ্টা আগে</div>
+        </div>
+      </div>
+
+      <!-- Card 4 — standard -->
+      <div class="video-card" style="animation-delay:0.18s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-4">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji">🎓</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="dur-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="dur-text">৩৫:১০</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#d97706,#fbbf24)">শ</div>
+            <span class="vc-creator-name">শিক্ষা বাংলা</span>
+            <div class="vc-verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+          <div class="vc-title">HSC পদার্থবিজ্ঞান: তড়িৎ চুম্বকীয় আবেশ সম্পূর্ণ অধ্যায় এক ভিডিওতে</div>
+          <div class="vc-stats">৩,৪৫,৯০০ ভিউ<span class="vc-stats-sep"></span>১ সপ্তাহ আগে</div>
+        </div>
+      </div>
+
+      <!-- Card 5 — wide (spans 2 cols) -->
+      <div class="video-card vc-wide" style="animation-delay:0.22s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-5" style="aspect-ratio:16/8">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji" style="font-size:60px;opacity:0.18">🌿</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="dur-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="dur-text">১৮:০৫</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">ভ</div>
+            <span class="vc-creator-name">ভ্রমণ বাংলাদেশ</span>
+            <div class="vc-verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+          <div class="vc-cat-tag">🌿 ভ্রমণ / Travel</div>
+          <div class="vc-title">সুন্দরবনের গহীনে — বাঘের দেশে তিন দিন, এক অবিস্মরণীয় অভিযান</div>
+          <div class="vc-stats">৫,৬৭,০০০ ভিউ<span class="vc-stats-sep"></span>২ সপ্তাহ আগে</div>
+        </div>
+      </div>
+
+      <!-- Card 6 — standard -->
+      <div class="video-card" style="animation-delay:0.26s">
+        <div class="vc-thumb">
+          <div class="vct-bg vct-6">
+            <div class="vct-overlay"></div>
+            <div class="vct-emoji vct-emoji">🎵</div>
+            <div class="vct-bottom"></div>
+          </div>
+          <div class="dur-badge">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="dur-text">৫:৩৮</span>
+          </div>
+          <div class="vc-play-overlay"><div class="vc-play-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg></div></div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-creator-row">
+            <div class="vc-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ত</div>
+            <span class="vc-creator-name">তানহা মিউজিক</span>
+          </div>
+          <div class="vc-title">আমার ভাঙা হৃদয় — অফিশিয়াল মিউজিক ভিডিও</div>
+          <div class="vc-stats">৪,১২,০০০ ভিউ<span class="vc-stats-sep"></span>৪ দিন আগে</div>
+        </div>
+      </div>
+
+    </div><!-- /video-grid -->
+  </main>
+
+  <!-- ════════════ RIGHT SIDEBAR ════════════ -->
+  <aside class="sidebar-right" aria-label="Suggested videos">
+    <div class="srb-hdr">
+      <div class="srb-title-bn">সাজেস্ট করা ভিডিও</div>
+      <div class="srb-title-en">Suggested Videos</div>
+    </div>
+
+    <!-- Suggested row 1 -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#1e3a5f,#2d6a9f)">📱</div>
+        <div class="sv-dur">৭:২২</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">আইফোন বনাম স্যামসাং — বাংলাদেশে কোনটা ভালো?</div>
+        <div class="sv-creator">টেক বাংলা</div>
+        <div class="sv-stats">৯৮,৩০০ views · 1 day ago</div>
+      </div>
+    </div>
+    <div class="sv-divider"></div>
+
+    <!-- Suggested row 2 — LIVE -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#3a1a0a,#7a3a1a)">🎙️</div>
+        <div class="sv-live-badge">LIVE</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">সন্ধ্যার আড্ডা — সরাসরি আলোচনা অনুষ্ঠান</div>
+        <div class="sv-creator">জলশা টক</div>
+        <div class="sv-stats" style="color:var(--live-red)">● ৮৯২ জন দেখছেন</div>
+      </div>
+    </div>
+    <div class="sv-divider"></div>
+
+    <!-- Suggested row 3 -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#1a3a0f,#2d5a1e)">🏡</div>
+        <div class="sv-dur">১৪:৫৫</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">১০ লাখে ঢাকায় ফ্ল্যাট — সত্যিই কি সম্ভব?</div>
+        <div class="sv-creator">রিয়েল এস্টেট বাংলা</div>
+        <div class="sv-stats">২,৩৪,০০০ views · 3 days ago</div>
+      </div>
+    </div>
+    <div class="sv-divider"></div>
+
+    <!-- Suggested row 4 -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#2d0a3a,#5a1a6a)">🧘</div>
+        <div class="sv-dur">২২:১০</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">মানসিক চাপ কমানোর ৫টি সহজ উপায় — বিশেষজ্ঞের পরামর্শ</div>
+        <div class="sv-creator">সুস্থ জীবন</div>
+        <div class="sv-stats">৪৫,৬০০ views · 6 hours ago</div>
+      </div>
+    </div>
+    <div class="sv-divider"></div>
+
+    <!-- Suggested row 5 -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#1a2a3f,#2a3f5f)">🚢</div>
+        <div class="sv-dur">৩৮:৪৪</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">পদ্মা থেকে মেঘনা — নৌপথে বাংলাদেশ ভ্রমণ</div>
+        <div class="sv-creator">ভ্রমণ বাংলাদেশ</div>
+        <div class="sv-stats">৭,৮৯,০০০ views · 2 weeks ago</div>
+      </div>
+    </div>
+    <div class="sv-divider"></div>
+
+    <!-- Suggested row 6 -->
+    <div class="sv-row">
+      <div class="sv-thumb">
+        <div class="sv-thumb-bg" style="background:linear-gradient(135deg,#2a1a0a,#5a3a1a)">🍕</div>
+        <div class="sv-dur">৯:৫৫</div>
+      </div>
+      <div class="sv-info">
+        <div class="sv-title">পুরান ঢাকার সেরা ৭টি খাবারের দোকান</div>
+        <div class="sv-creator">খাওয়াদাওয়া</div>
+        <div class="sv-stats">১,১২,০০০ views · 5 days ago</div>
+      </div>
+    </div>
+
+    <!-- Creator spotlight -->
+    <div class="creator-spotlight">
+      <div class="cs-hdr-bn">✨ আজকের ক্রিয়েটর</div>
+      <div class="cs-creator-row">
+        <div class="cs-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ত</div>
+        <div>
+          <div class="cs-name">তানহা মিউজিক</div>
+          <div class="cs-sub">৪২,৩০০ subscribers · Music</div>
+        </div>
+      </div>
+      <button class="btn-cs-sub" onclick="toggleSub(this)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        সাবস্ক্রাইব করো
+      </button>
+    </div>
+  </aside>
+
+</div><!-- /page-body -->
+
+<script>
+  /* ─── Nav active state ─── */
+  function setNav(el) {
+    document.querySelectorAll('.sb-nav-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function setChip(el) {
+    document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function setMood(el) {
+    document.querySelectorAll('.mood-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ─── Play handler ─── */
+  function handlePlay(id) {
+    const fc = document.getElementById('featuredCard');
+    if (fc) { fc.style.boxShadow = '0 6px 28px rgba(27,107,90,0.28), 0 0 0 3px rgba(27,107,90,0.18)'; }
+  }
+
+  /* ─── Save toggle ─── */
+  function toggleSave(btn) {
+    const saved = btn.dataset.saved === '1';
+    if (!saved) { btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> সংরক্ষিত'; btn.dataset.saved='1'; btn.style.color='var(--teal)'; }
+    else { btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg> সংরক্ষণ'; btn.dataset.saved='0'; btn.style.color=''; }
+  }
+
+  /* ─── Share ─── */
+  function handleShare() { alert('লিংক কপি হয়েছে! / Link copied!'); }
+
+  /* ─── Subscribe toggle ─── */
+  function toggleSub(btn) {
+    const subbed = btn.dataset.subbed==='1';
+    if (!subbed) { btn.innerHTML='✓ সাবস্ক্রাইব করা হয়েছে'; btn.style.background='var(--teal-hover)'; btn.dataset.subbed='1'; }
+    else { btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> সাবস্ক্রাইব করো'; btn.style.background=''; btn.dataset.subbed='0'; }
+  }
+</script>
+</body>
+</html>

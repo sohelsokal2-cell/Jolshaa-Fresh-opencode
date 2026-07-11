@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>সেটিংস — জলশা | Jolshaa Settings</title>
+  <meta name="description" content="জলশা অ্যাকাউন্ট ও প্রোফাইল সেটিংস পরিচালনা করুন। Manage your Jolshaa account and privacy settings."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --off-white:    #F5F0E8;
+      --card-bg:      #FFFFFF;
+      --coral:        #E85C4A;
+      --coral-pale:   #fff2f0;
+      --danger:       #c0392b;
+      --danger-pale:  #fdf5f4;
+      --danger-border:rgba(192,57,43,0.18);
+      --amber:        #D97706;
+      --amber-pale:   #fffbeb;
+      --purple:       #7c3aed;
+      --green:        #16a34a;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #888;
+      --text-xlight:  #bbb;
+      --border:       #E8E2DA;
+      --border-light: #F0EBE3;
+      --shadow-xs:    0 1px 4px rgba(0,0,0,0.05);
+      --shadow-sm:    0 2px 12px rgba(0,0,0,0.08);
+      --shadow-md:    0 6px 26px rgba(0,0,0,0.10);
+      --radius-sm:    10px;
+      --radius-md:    14px;
+      --radius-lg:    18px;
+      --font-bn:      'Hind Siliguri', sans-serif;
+      --font-en:      'Inter', sans-serif;
+      --nav-h:        58px;
+      --sb-w:         252px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-bn); background: var(--off-white); color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ═══════════════════ NAVBAR ═══════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(145deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(27,107,90,0.28); }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+    .nav-search { flex: 1; max-width: 280px; position: relative; margin-left: 4px; }
+    .nav-search input { width: 100%; padding: 9px 16px 9px 38px; border-radius: 50px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-en); font-size: 13px; color: var(--text-dark); outline: none; transition: all 0.2s; }
+    .nav-search input:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.08); }
+    .nav-search input::placeholder { color: var(--text-light); }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 52px; height: 46px; border-radius: 10px; border: none; background: transparent; cursor: pointer; color: var(--text-light); transition: all 0.2s; }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-badge { position: absolute; top: 5px; right: 7px; background: var(--coral); color: white; font-family: var(--font-en); font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .nav-sahajjo { display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 50px; background: var(--coral); color: white; border: none; cursor: pointer; flex-shrink: 0; font-family: var(--font-bn); font-size: 13px; font-weight: 600; box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s; }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)} }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white; cursor: pointer; border: 2px solid var(--teal-pale); }
+
+    /* ═══════════════════ PAGE BODY ═══════════════════ */
+    .page-body { display: flex; padding-top: var(--nav-h); min-height: 100vh; }
+
+    /* ═══════════════════ LEFT SIDEBAR ═══════════════════ */
+    .sidebar-left {
+      width: var(--sb-w); position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 18px 10px 40px; background: var(--card-bg);
+      border-right: 1px solid var(--border-light);
+    }
+    /* Header */
+    .sb-hdr { display: flex; align-items: center; gap: 10px; padding: 2px 6px 16px; }
+    .sb-hdr-icon { width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-title-bn { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: var(--text-dark); }
+    .sb-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* User mini-card */
+    .sb-user-card { display: flex; align-items: center; gap: 10px; padding: 11px 12px; margin: 0 2px 14px; border-radius: var(--radius-md); background: linear-gradient(135deg,var(--teal-xpale),var(--teal-pale)); border: 1.5px solid rgba(27,107,90,0.12); }
+    .suc-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#4ECDC4,var(--teal)); display: flex; align-items: center; justify-content: center; font-family: var(--font-bn); font-size: 16px; font-weight: 700; color: white; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.12); flex-shrink: 0; }
+    .suc-name { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .suc-handle { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Category items */
+    .sb-cat-section { margin-bottom: 6px; }
+    .sb-cat-lbl { font-family: var(--font-en); font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-xlight); padding: 6px 8px 4px; }
+    .sb-cat-item {
+      display: flex; align-items: center; gap: 11px; padding: 10px 10px; border-radius: 12px;
+      border: none; background: transparent; cursor: pointer; transition: all 0.18s; text-align: left; width: 100%;
+      position: relative; margin-bottom: 2px;
+    }
+    .sb-cat-item:hover { background: var(--off-white); }
+    /* Active: left accent bar + teal bg */
+    .sb-cat-item.active {
+      background: var(--teal-xpale);
+      border-left: 3px solid var(--teal);
+      padding-left: 7px;
+    }
+    .sci-icon {
+      width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.18s;
+    }
+    .sb-cat-item:hover .sci-icon { transform: scale(1.06); }
+    /* Per-category icon colors */
+    .icon-account  { background: linear-gradient(135deg,var(--teal-xpale),var(--teal-pale)); }
+    .icon-privacy  { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+    .icon-security { background: linear-gradient(135deg,#fef9ec,#fde68a); }
+    .icon-notif    { background: linear-gradient(135deg,#fff2f0,#fecaca); }
+    .icon-lang     { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); }
+    .icon-block    { background: linear-gradient(135deg,#fdf5f4,#fca5a5); }
+    .icon-money    { background: linear-gradient(135deg,#fffbeb,#fde68a); }
+    .icon-help     { background: linear-gradient(135deg,#f0f9ff,#bae6fd); }
+    .sci-text { flex: 1; min-width: 0; }
+    .sci-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 500; color: var(--text-dark); line-height: 1.2; }
+    .sb-cat-item.active .sci-bn { color: var(--teal); font-weight: 700; }
+    .sci-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .sci-arrow { color: var(--text-xlight); transition: transform 0.18s; }
+    .sb-cat-item.active .sci-arrow { color: var(--teal); transform: translateX(2px); }
+    .sb-cat-item:hover .sci-arrow { color: var(--text-light); }
+
+    /* Divider */
+    .sb-divider { height: 1px; background: var(--border-light); margin: 10px 4px; }
+
+    /* ═══════════════════ MAIN CONTENT ═══════════════════ */
+    .content-area { margin-left: var(--sb-w); flex: 1; display: flex; gap: 0; min-width: 0; }
+    .main-panel { flex: 1; min-width: 0; padding: 28px 24px 60px; max-width: 720px; }
+    .lang-panel { width: 300px; flex-shrink: 0; padding: 28px 20px 40px; border-left: 1px solid var(--border-light); }
+
+    /* ═══════════════════ SECTION HEADERS ═══════════════════ */
+    .page-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .pt-icon { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(27,107,90,0.24); flex-shrink: 0; }
+    .pt-title-bn { font-family: var(--font-bn); font-size: 22px; font-weight: 700; color: var(--text-dark); }
+    .pt-title-en { font-family: var(--font-en); font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+    /* Settings card */
+    .settings-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-xs);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .sc-header {
+      display: flex; align-items: center; gap: 10px; padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border-light); background: linear-gradient(to right,var(--teal-xpale),transparent);
+    }
+    .sc-header-icon { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sc-title-bn { font-family: var(--font-bn); font-size: 14.5px; font-weight: 700; color: var(--text-dark); }
+    .sc-title-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+
+    /* Field row */
+    .field-row {
+      display: flex; align-items: center; padding: 13px 18px; gap: 12px;
+      border-bottom: 1px solid var(--border-light); transition: background 0.15s;
+    }
+    .field-row:last-child { border-bottom: none; }
+    .field-row:hover { background: #fafaf8; }
+    .field-row.editing { background: var(--teal-xpale); }
+    .fr-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .fri-account { background: var(--teal-pale); }
+    .fri-mail    { background: #ede9fe; }
+    .fri-phone   { background: #f0fdf4; }
+    .fri-lock    { background: var(--amber-pale); }
+    .fr-content { flex: 1; min-width: 0; }
+    .fr-label-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-mid); }
+    .fr-label-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .fr-value { font-family: var(--font-en); font-size: 13.5px; font-weight: 500; color: var(--text-dark); margin-top: 3px; }
+    .fr-value-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); margin-top: 3px; }
+    /* Edit inline input */
+    .fr-input { display: none; width: 100%; padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--teal); background: white; font-family: var(--font-en); font-size: 13.5px; color: var(--text-dark); outline: none; margin-top: 4px; transition: border-color 0.18s; }
+    .fr-input:focus { box-shadow: 0 0 0 3px rgba(27,107,90,0.10); }
+    .field-row.editing .fr-input { display: block; }
+    .field-row.editing .fr-value, .field-row.editing .fr-value-bn { display: none; }
+    /* Edit actions */
+    .fr-edit-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .btn-edit { font-family: var(--font-en); font-size: 11.5px; font-weight: 700; color: var(--teal); background: var(--teal-xpale); border: 1.5px solid rgba(27,107,90,0.15); padding: 5px 11px; border-radius: 8px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+    .btn-edit:hover { background: var(--teal-pale); }
+    .btn-save { font-family: var(--font-en); font-size: 11.5px; font-weight: 700; color: white; background: var(--teal); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; transition: all 0.18s; display: none; }
+    .btn-save:hover { background: var(--teal-hover); }
+    .btn-cancel-edit { font-family: var(--font-en); font-size: 11.5px; font-weight: 600; color: var(--text-light); background: var(--off-white); border: 1.5px solid var(--border); padding: 5px 10px; border-radius: 8px; cursor: pointer; transition: all 0.18s; display: none; }
+    .field-row.editing .btn-edit { display: none; }
+    .field-row.editing .btn-save, .field-row.editing .btn-cancel-edit { display: inline-flex; }
+
+    /* Password action row */
+    .action-row {
+      display: flex; align-items: center; padding: 13px 18px; gap: 12px;
+      border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.15s;
+    }
+    .action-row:hover { background: #fafaf8; }
+    .action-row:last-child { border-bottom: none; }
+    .ar-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .ar-content { flex: 1; }
+    .ar-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .ar-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .ar-chevron { color: var(--text-xlight); transition: transform 0.18s; }
+    .action-row:hover .ar-chevron { color: var(--teal); transform: translateX(2px); }
+
+    /* ════ TOGGLE SWITCHES — original design ════ */
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 18px; border-bottom: 1px solid var(--border-light); transition: background 0.15s;
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-row:hover { background: #fafaf8; }
+    .tr-left { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; }
+    .tr-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .tr-content { min-width: 0; }
+    .tr-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .tr-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .tr-desc { font-family: var(--font-bn); font-size: 11.5px; color: var(--text-light); margin-top: 3px; line-height: 1.4; }
+    /* Custom toggle — pill with sliding dot + label */
+    .toggle-switch { position: relative; display: flex; align-items: center; gap: 8px; flex-shrink: 0; cursor: pointer; }
+    .toggle-track {
+      width: 48px; height: 26px; border-radius: 13px; border: none; cursor: pointer;
+      background: #ddd; transition: background 0.26s cubic-bezier(.4,0,.2,1), box-shadow 0.2s;
+      position: relative; flex-shrink: 0;
+    }
+    .toggle-track::after {
+      content:''; position:absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 50%; background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18); transition: transform 0.26s cubic-bezier(.4,0,.2,1), box-shadow 0.2s;
+    }
+    .toggle-track.on { background: var(--teal); box-shadow: 0 0 0 3px rgba(27,107,90,0.14); }
+    .toggle-track.on::after { transform: translateX(22px); box-shadow: 0 2px 8px rgba(27,107,90,0.30); }
+    .toggle-state-lbl { font-family: var(--font-en); font-size: 10.5px; font-weight: 700; width: 28px; text-align: left; }
+    .toggle-track.on ~ .toggle-state-lbl { color: var(--teal); }
+    .toggle-track:not(.on) ~ .toggle-state-lbl { color: var(--text-xlight); }
+
+    /* Post privacy dropdown */
+    .dropdown-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 13px 18px;
+      border-bottom: 1px solid var(--border-light); gap: 12px; transition: background 0.15s;
+    }
+    .dropdown-row:last-child { border-bottom: none; }
+    .dr-left { display: flex; align-items: center; gap: 11px; flex: 1; }
+    .dr-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .dr-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-dark); }
+    .dr-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .styled-select {
+      padding: 7px 30px 7px 12px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: var(--off-white); font-family: var(--font-bn); font-size: 12.5px; font-weight: 600;
+      color: var(--text-dark); outline: none; cursor: pointer; transition: all 0.18s;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 9px center;
+    }
+    .styled-select:focus { border-color: var(--teal); background-color: white; box-shadow: 0 0 0 3px rgba(27,107,90,0.10); }
+
+    /* ════ DANGER ZONE ════ */
+    .danger-card {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1.5px solid var(--danger-border); box-shadow: var(--shadow-xs);
+      overflow: hidden; margin-bottom: 16px; position: relative;
+    }
+    .danger-card::before { content:''; display:block; height: 3px; background: linear-gradient(to right,rgba(192,57,43,0.40),rgba(192,57,43,0.12),transparent); }
+    .dc-header { padding: 12px 18px 10px; border-bottom: 1px solid var(--danger-border); display: flex; align-items: center; gap: 9px; }
+    .dc-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(192,57,43,0.10); display: flex; align-items: center; justify-content: center; }
+    .dc-title-bn { font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: var(--danger); }
+    .dc-title-en { font-family: var(--font-en); font-size: 9.5px; color: rgba(192,57,43,0.60); margin-top: 1px; }
+    .danger-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; gap: 12px; border-bottom: 1px solid var(--danger-border); transition: background 0.15s; }
+    .danger-row:last-child { border-bottom: none; }
+    .danger-row:hover { background: var(--danger-pale); }
+    .dang-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(192,57,43,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dang-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--danger); }
+    .dang-en { font-family: var(--font-en); font-size: 9.5px; color: rgba(192,57,43,0.60); margin-top: 1px; }
+    .dang-desc { font-family: var(--font-bn); font-size: 11.5px; color: var(--text-light); margin-top: 3px; }
+    .btn-danger {
+      display: flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 10px;
+      background: transparent; border: 1.5px solid var(--danger-border); color: var(--danger);
+      font-family: var(--font-bn); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.20s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-danger:hover { background: var(--danger-pale); border-color: var(--danger); box-shadow: 0 2px 10px rgba(192,57,43,0.14); }
+    .btn-danger-hard {
+      display: flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 10px;
+      background: rgba(192,57,43,0.07); border: 1.5px solid rgba(192,57,43,0.30); color: var(--danger);
+      font-family: var(--font-bn); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.20s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-danger-hard:hover { background: rgba(192,57,43,0.14); border-color: var(--danger); }
+
+    /* ════ SAVE BAR ════ */
+    .save-bar {
+      position: sticky; bottom: 16px; z-index: 10;
+      background: white; border: 1.5px solid var(--teal-pale);
+      border-radius: var(--radius-md); padding: 12px 18px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      box-shadow: 0 8px 32px rgba(27,107,90,0.16); margin-top: 16px;
+      animation: slideUp 0.3s ease both;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .save-bar-msg { font-family: var(--font-bn); font-size: 13px; color: var(--text-mid); }
+    .save-bar-msg span { color: var(--teal); font-weight: 700; }
+    .save-bar-actions { display: flex; gap: 8px; }
+    .btn-discard { padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--off-white); font-family: var(--font-bn); font-size: 13px; color: var(--text-mid); cursor: pointer; transition: all 0.18s; }
+    .btn-discard:hover { background: var(--border); }
+    .btn-save-settings { display: flex; align-items: center; gap: 6px; padding: 8px 20px; border-radius: 10px; background: linear-gradient(135deg,var(--teal),var(--teal-light)); border: none; color: white; font-family: var(--font-bn); font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 12px rgba(27,107,90,0.28); transition: all 0.20s; }
+    .btn-save-settings:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(27,107,90,0.38); }
+
+    /* ════ LANGUAGE PANEL ════ */
+    .lang-panel-title { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; }
+    .lpt-icon { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg,#f0fdf4,#bbf7d0); display: flex; align-items: center; justify-content: center; }
+    .lpt-bn { font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .lpt-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-light); margin-top: 1px; }
+    .lang-card { background: var(--card-bg); border-radius: var(--radius-md); border: 1px solid var(--border-light); box-shadow: var(--shadow-xs); overflow: hidden; }
+    .lang-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer;
+      border-bottom: 1px solid var(--border-light); transition: background 0.15s; position: relative;
+    }
+    .lang-item:last-child { border-bottom: none; }
+    .lang-item:hover { background: var(--off-white); }
+    .lang-item.selected { background: var(--teal-xpale); }
+    /* Original radio treatment — teal filled ring */
+    .lang-radio {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; transition: all 0.20s;
+      background: white;
+    }
+    .lang-item.selected .lang-radio { border-color: var(--teal); background: var(--teal); box-shadow: 0 0 0 3px rgba(27,107,90,0.14); }
+    .lang-radio-dot { width: 8px; height: 8px; border-radius: 50%; background: white; opacity: 0; transform: scale(0.5); transition: all 0.20s; }
+    .lang-item.selected .lang-radio-dot { opacity: 1; transform: scale(1); }
+    .lang-flag { font-size: 18px; flex-shrink: 0; }
+    .lang-name-native { font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .lang-item.selected .lang-name-native { color: var(--teal); }
+    .lang-name-en { font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px; }
+    /* Active language has a right-side teal checkmark */
+    .lang-check { margin-left: auto; opacity: 0; transition: opacity 0.18s; }
+    .lang-item.selected .lang-check { opacity: 1; }
+    /* Left accent bar for selected */
+    .lang-item.selected::before { content:''; position:absolute; left:0; top:15%; bottom:15%; width:3px; border-radius:0 2px 2px 0; background:var(--teal); }
+
+    /* App version note */
+    .app-version { margin-top: 14px; padding: 10px 14px; border-radius: 10px; background: var(--off-white); border: 1px solid var(--border-light); }
+    .av-label { font-family: var(--font-en); font-size: 10px; font-weight: 600; color: var(--text-light); }
+    .av-value { font-family: var(--font-en); font-size: 11.5px; color: var(--teal); font-weight: 700; margin-top: 2px; }
+    .av-note  { font-family: var(--font-bn); font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+    /* Responsive */
+    @media (max-width: 1100px) { .lang-panel { display: none; } }
+    @media (max-width: 780px) { .sidebar-left { transform: translateX(-100%); } .content-area { margin-left: 0; } }
+    @media (max-width: 500px) { .nav-wordmark { display: none; } }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav class="navbar" role="navigation" aria-label="Jolshaa navigation">
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
+    <input type="text" placeholder="খুঁজুন... / Search..." aria-label="Search" onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='search.html'"/>
+  </div>
+  <div class="nav-center">
+    <button class="nav-icon-btn" onclick="window.location='newsfeed.html'" title="হোম"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='groups.html'" title="গ্রুপ"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='watch.html'" title="ভিডিও / Watch"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7" stroke="none"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='events.html'" title="ইভেন্ট / Events"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='messenger.html'" title="বার্তা"><div class="nav-badge">5</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg></button>
+    <button class="nav-icon-btn" onclick="window.location='notifications.html'" title="বিজ্ঞপ্তি"><div class="nav-badge">৭</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></button>
+  </div>
+  <button class="nav-sahajjo" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    সাহায্য চাই
+  </button>
+  <div class="nav-avatar" onclick="window.location='profile.html'" title="প্রোফাইল">আ</div>
+</nav>
+
+<div class="page-body">
+
+  <!-- ════════════ LEFT SIDEBAR ════════════ -->
+  <aside class="sidebar-left" aria-label="Settings navigation">
+
+    <div class="sb-hdr">
+      <div class="sb-hdr-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+      <div>
+        <div class="sb-title-bn">সেটিংস</div>
+        <div class="sb-title-en">Settings</div>
+      </div>
+    </div>
+
+    <!-- User mini card -->
+    <div class="sb-user-card">
+      <div class="suc-av">আ</div>
+      <div>
+        <div class="suc-name">আরিফ হোসেন</div>
+        <div class="suc-handle">@arif.hossain · Jolshaa</div>
+      </div>
+    </div>
+
+    <!-- Main settings categories -->
+    <div class="sb-cat-section">
+      <div class="sb-cat-lbl">General</div>
+
+      <button class="sb-cat-item active" onclick="setCategory(this,'account')" id="cat-account">
+        <div class="sci-icon icon-account">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">অ্যাকাউন্ট</div>
+          <div class="sci-en">Account</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'privacy')" id="cat-privacy">
+        <div class="sci-icon icon-privacy">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">গোপনীয়তা</div>
+          <div class="sci-en">Privacy</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'security')" id="cat-security">
+        <div class="sci-icon icon-security">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">নিরাপত্তা</div>
+          <div class="sci-en">Security</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'notif')" id="cat-notif">
+        <div class="sci-icon icon-notif">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">নোটিফিকেশন</div>
+          <div class="sci-en">Notifications</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'lang')" id="cat-lang">
+        <div class="sci-icon icon-lang">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">ভাষা</div>
+          <div class="sci-en">Language</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'block')" id="cat-block">
+        <div class="sci-icon icon-block">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">ব্লক তালিকা</div>
+          <div class="sci-en">Blocked List</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-cat-section">
+      <div class="sb-cat-lbl">Creator</div>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'money')" id="cat-money">
+        <div class="sci-icon icon-money">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">মনিটাইজেশন</div>
+          <div class="sci-en">Monetization</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-cat-section">
+      <div class="sb-cat-lbl">Support</div>
+
+      <button class="sb-cat-item" onclick="setCategory(this,'help')" id="cat-help">
+        <div class="sci-icon icon-help">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="sci-text">
+          <div class="sci-bn">সাহায্য কেন্দ্র</div>
+          <div class="sci-en">Help Center</div>
+        </div>
+        <svg class="sci-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ════════════ CONTENT AREA ════════════ -->
+  <div class="content-area">
+
+    <!-- ─── MAIN PANEL ─── -->
+    <main class="main-panel">
+
+      <!-- Page title -->
+      <div class="page-title-row">
+        <div class="pt-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="pt-title-bn">অ্যাকাউন্ট সেটিংস</div>
+          <div class="pt-title-en">Account Settings · Manage your Jolshaa account</div>
+        </div>
+      </div>
+
+      <!-- ── Section 1: Account Information ── -->
+      <div class="settings-card">
+        <div class="sc-header">
+          <div class="sc-header-icon" style="background:var(--teal-pale)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.3" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="sc-title-bn">অ্যাকাউন্ট তথ্য</div>
+            <div class="sc-title-en">Account Information</div>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="field-row" id="fr-name">
+          <div class="fr-icon fri-account">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="fr-content">
+            <div class="fr-label-bn">পুরো নাম</div>
+            <div class="fr-label-en">Full Name</div>
+            <div class="fr-value-bn">আরিফ হোসেন</div>
+            <input type="text" class="fr-input" value="আরিফ হোসেন" id="input-name"/>
+          </div>
+          <div class="fr-edit-wrap">
+            <button class="btn-edit" onclick="startEdit('fr-name','input-name')">সম্পাদনা / Edit</button>
+            <button class="btn-save" onclick="saveEdit('fr-name','input-name')">সংরক্ষণ</button>
+            <button class="btn-cancel-edit" onclick="cancelEdit('fr-name')">বাতিল</button>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field-row" id="fr-email">
+          <div class="fr-icon fri-mail">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="fr-content">
+            <div class="fr-label-bn">ইমেইল</div>
+            <div class="fr-label-en">Email Address</div>
+            <div class="fr-value">arif.hossain@gmail.com</div>
+            <input type="email" class="fr-input" value="arif.hossain@gmail.com" id="input-email"/>
+          </div>
+          <div class="fr-edit-wrap">
+            <button class="btn-edit" onclick="startEdit('fr-email','input-email')">সম্পাদনা / Edit</button>
+            <button class="btn-save" onclick="saveEdit('fr-email','input-email')">সংরক্ষণ</button>
+            <button class="btn-cancel-edit" onclick="cancelEdit('fr-email')">বাতিল</button>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="field-row" id="fr-phone">
+          <div class="fr-icon fri-phone">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81 19.79 19.79 0 01.1 2.18a2 2 0 012-2.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-.89a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div class="fr-content">
+            <div class="fr-label-bn">ফোন নম্বর</div>
+            <div class="fr-label-en">Phone Number</div>
+            <div class="fr-value">+880 1700-000000</div>
+            <input type="tel" class="fr-input" value="+880 1700-000000" id="input-phone"/>
+          </div>
+          <div class="fr-edit-wrap">
+            <button class="btn-edit" onclick="startEdit('fr-phone','input-phone')">সম্পাদনা / Edit</button>
+            <button class="btn-save" onclick="saveEdit('fr-phone','input-phone')">সংরক্ষণ</button>
+            <button class="btn-cancel-edit" onclick="cancelEdit('fr-phone')">বাতিল</button>
+          </div>
+        </div>
+
+        <!-- Password action row -->
+        <div class="action-row" onclick="showToast('পাসওয়ার্ড পরিবর্তনের পেজ খুলছে...')">
+          <div class="ar-icon" style="background:var(--amber-pale)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div class="ar-content">
+            <div class="ar-bn">পাসওয়ার্ড পরিবর্তন করো</div>
+            <div class="ar-en">Change Password · Last changed 3 months ago</div>
+          </div>
+          <svg class="ar-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- ── Section 2: Profile Settings (toggles) ── -->
+      <div class="settings-card">
+        <div class="sc-header">
+          <div class="sc-header-icon" style="background:#ede9fe">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.3" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="sc-title-bn">প্রোফাইল সেটিংস</div>
+            <div class="sc-title-en">Profile Settings</div>
+          </div>
+        </div>
+
+        <!-- Lock Profile -->
+        <div class="toggle-row">
+          <div class="tr-left">
+            <div class="tr-icon" style="background:var(--amber-pale)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <div class="tr-content">
+              <div class="tr-bn">প্রোফাইল লক করো</div>
+              <div class="tr-en">Lock Profile</div>
+              <div class="tr-desc">অপরিচিতরা তোমার পোস্ট ও ছবি দেখতে পাবে না</div>
+            </div>
+          </div>
+          <div class="toggle-switch" onclick="flipToggle(this)">
+            <div class="toggle-track on" id="toggle-lock"></div>
+            <span class="toggle-state-lbl">চালু</span>
+          </div>
+        </div>
+
+        <!-- Show Active Status -->
+        <div class="toggle-row">
+          <div class="tr-left">
+            <div class="tr-icon" style="background:#f0fdf4">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="tr-content">
+              <div class="tr-bn">সক্রিয় অবস্থা দেখাও</div>
+              <div class="tr-en">Show Active Status</div>
+              <div class="tr-desc">বন্ধুরা দেখতে পাবে তুমি অনলাইনে আছো কিনা</div>
+            </div>
+          </div>
+          <div class="toggle-switch" onclick="flipToggle(this)">
+            <div class="toggle-track" id="toggle-active"></div>
+            <span class="toggle-state-lbl">বন্ধ</span>
+          </div>
+        </div>
+
+        <!-- Follow suggestions -->
+        <div class="toggle-row">
+          <div class="tr-left">
+            <div class="tr-icon" style="background:var(--teal-xpale)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="tr-content">
+              <div class="tr-bn">পরিচিতদের সাজেশন দেখাও</div>
+              <div class="tr-en">Show to People You May Know</div>
+              <div class="tr-desc">তোমার প্রোফাইল সাজেস্টেড লিস্টে দেখা যাবে</div>
+            </div>
+          </div>
+          <div class="toggle-switch" onclick="flipToggle(this)">
+            <div class="toggle-track on" id="toggle-suggest"></div>
+            <span class="toggle-state-lbl">চালু</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Section 3: Post Privacy ── -->
+      <div class="settings-card">
+        <div class="sc-header">
+          <div class="sc-header-icon" style="background:#f0f9ff">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.3" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div>
+            <div class="sc-title-bn">পোস্ট প্রাইভেসি</div>
+            <div class="sc-title-en">Post Privacy · Default visibility</div>
+          </div>
+        </div>
+
+        <div class="dropdown-row">
+          <div class="dr-left">
+            <div class="dr-icon" style="background:#f0f9ff">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            </div>
+            <div>
+              <div class="dr-bn">ডিফল্ট পোস্ট দৃশ্যমানতা</div>
+              <div class="dr-en">Default Post Visibility</div>
+            </div>
+          </div>
+          <select class="styled-select" onchange="markChanged()">
+            <option value="public">সবার জন্য / Public</option>
+            <option value="friends" selected>বন্ধুদের জন্য / Friends</option>
+            <option value="only_me">শুধু আমার জন্য / Only Me</option>
+          </select>
+        </div>
+
+        <div class="dropdown-row">
+          <div class="dr-left">
+            <div class="dr-icon" style="background:#fdf5f4">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            </div>
+            <div>
+              <div class="dr-bn">কে আমাকে ট্যাগ করতে পারবে</div>
+              <div class="dr-en">Who Can Tag You</div>
+            </div>
+          </div>
+          <select class="styled-select" onchange="markChanged()">
+            <option value="all">সবাই / Everyone</option>
+            <option value="friends" selected>বন্ধুরা / Friends</option>
+            <option value="none">কেউ না / No One</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── Danger Zone ── -->
+      <div class="danger-card">
+        <div class="dc-header">
+          <div class="dc-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="dc-title-bn">বিপজ্জনক অঞ্চল</div>
+            <div class="dc-title-en">Danger Zone · Irreversible actions</div>
+          </div>
+        </div>
+
+        <div class="danger-row">
+          <div class="dang-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2" stroke-linecap="round"><path d="M18.36 6.64A9 9 0 115.64 17.36"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+          </div>
+          <div style="flex:1">
+            <div class="dang-bn">অ্যাকাউন্ট নিষ্ক্রিয় করো</div>
+            <div class="dang-en">Deactivate Account</div>
+            <div class="dang-desc">সাময়িকভাবে নিষ্ক্রিয় করলে তোমার প্রোফাইল আর দেখা যাবে না। পরে আবার সক্রিয় করা যাবে।</div>
+          </div>
+          <button class="btn-danger" onclick="showToast('নিশ্চিত করার জন্য একটি ডায়ালগ দেখাবে')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18.36 6.64A9 9 0 115.64 17.36"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+            নিষ্ক্রিয় করো
+          </button>
+        </div>
+
+        <div class="danger-row">
+          <div class="dang-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </div>
+          <div style="flex:1">
+            <div class="dang-bn">অ্যাকাউন্ট স্থায়ীভাবে মুছে ফেলো</div>
+            <div class="dang-en">Delete Account Permanently</div>
+            <div class="dang-desc">একবার মুছলে আর ফিরিয়ে আনা সম্ভব হবে না। সমস্ত পোস্ট, বার্তা এবং ডেটা চিরতরে মুছে যাবে।</div>
+          </div>
+          <button class="btn-danger-hard" onclick="showToast('স্থায়ী মুছে ফেলার জন্য পাসওয়ার্ড নিশ্চিতকরণ প্রয়োজন')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+            মুছে ফেলো
+          </button>
+        </div>
+      </div>
+
+      <!-- Save bar (shows when changes are pending) -->
+      <div class="save-bar" id="saveBar" style="display:none">
+        <div class="save-bar-msg">তোমার পরিবর্তনগুলো <span>সংরক্ষিত হয়নি</span> — এখনই সংরক্ষণ করো</div>
+        <div class="save-bar-actions">
+          <button class="btn-discard" onclick="discardChanges()">বাতিল করো</button>
+          <button class="btn-save-settings" onclick="saveAllSettings()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            সেটিংস সংরক্ষণ করো
+          </button>
+        </div>
+      </div>
+
+    </main><!-- /main-panel -->
+
+    <!-- ─── LANGUAGE PANEL (supporting) ─── -->
+    <aside class="lang-panel" aria-label="Language settings preview">
+
+      <div class="lang-panel-title">
+        <div class="lpt-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div>
+          <div class="lpt-bn">ভাষা নির্বাচন</div>
+          <div class="lpt-en">Language · উদাহরণ / Preview</div>
+        </div>
+      </div>
+
+      <div class="lang-card">
+
+        <div class="lang-item selected" onclick="selectLang(this)">
+          <div class="lang-radio"><div class="lang-radio-dot"></div></div>
+          <span class="lang-flag">🇧🇩</span>
+          <div>
+            <div class="lang-name-native">বাংলা</div>
+            <div class="lang-name-en">Bengali · বর্তমান ভাষা</div>
+          </div>
+          <div class="lang-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <div class="lang-item" onclick="selectLang(this)">
+          <div class="lang-radio"><div class="lang-radio-dot"></div></div>
+          <span class="lang-flag">🇬🇧</span>
+          <div>
+            <div class="lang-name-native">English</div>
+            <div class="lang-name-en">English (UK)</div>
+          </div>
+          <div class="lang-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <div class="lang-item" onclick="selectLang(this)">
+          <div class="lang-radio"><div class="lang-radio-dot"></div></div>
+          <span class="lang-flag">🇮🇳</span>
+          <div>
+            <div class="lang-name-native">हिंदी</div>
+            <div class="lang-name-en">Hindi · हिंदी</div>
+          </div>
+          <div class="lang-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <div class="lang-item" onclick="selectLang(this)">
+          <div class="lang-radio"><div class="lang-radio-dot"></div></div>
+          <span class="lang-flag">🇸🇦</span>
+          <div>
+            <div class="lang-name-native">العربية</div>
+            <div class="lang-name-en">Arabic · عربی</div>
+          </div>
+          <div class="lang-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <div class="lang-item" onclick="selectLang(this)">
+          <div class="lang-radio"><div class="lang-radio-dot"></div></div>
+          <span class="lang-flag">🇵🇰</span>
+          <div>
+            <div class="lang-name-native">اردو</div>
+            <div class="lang-name-en">Urdu · اردو</div>
+          </div>
+          <div class="lang-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+      </div><!-- /lang-card -->
+
+      <!-- App info -->
+      <div class="app-version">
+        <div class="av-label">APP VERSION</div>
+        <div class="av-value">Jolshaa v2.4.1 · Beta</div>
+        <div class="av-note">সর্বশেষ আপডেট: ১০ জুলাই ২০২৫</div>
+      </div>
+
+    </aside>
+
+  </div><!-- /content-area -->
+</div><!-- /page-body -->
+
+<!-- Toast notification -->
+<div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:white;padding:10px 20px;border-radius:12px;font-family:'Hind Siliguri',sans-serif;font-size:13px;z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap"></div>
+
+<script>
+  /* ─── Category navigation ─── */
+  function setCategory(el, id) {
+    document.querySelectorAll('.sb-cat-item').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ─── Field edit ─── */
+  function startEdit(rowId, inputId) {
+    document.getElementById(rowId).classList.add('editing');
+    document.getElementById(inputId).focus();
+    markChanged();
+  }
+  function saveEdit(rowId, inputId) {
+    const row = document.getElementById(rowId);
+    const input = document.getElementById(inputId);
+    const val = input.value.trim();
+    if (!val) return;
+    // Update displayed value
+    const valueEl = row.querySelector('.fr-value') || row.querySelector('.fr-value-bn');
+    if (valueEl) valueEl.textContent = val;
+    row.classList.remove('editing');
+    showToast('সংরক্ষিত হয়েছে ✓');
+  }
+  function cancelEdit(rowId) {
+    document.getElementById(rowId).classList.remove('editing');
+  }
+
+  /* ─── Toggle switches ─── */
+  function flipToggle(wrapper) {
+    const track = wrapper.querySelector('.toggle-track');
+    const label = wrapper.querySelector('.toggle-state-lbl');
+    const isOn = track.classList.contains('on');
+    track.classList.toggle('on');
+    label.textContent = isOn ? 'বন্ধ' : 'চালু';
+    markChanged();
+  }
+
+  /* ─── Language selector ─── */
+  function selectLang(item) {
+    document.querySelectorAll('.lang-item').forEach(l => l.classList.remove('selected'));
+    item.classList.add('selected');
+    markChanged();
+  }
+
+  /* ─── Save bar ─── */
+  let hasChanges = false;
+  function markChanged() {
+    hasChanges = true;
+    document.getElementById('saveBar').style.display = 'flex';
+  }
+  function discardChanges() {
+    hasChanges = false;
+    document.getElementById('saveBar').style.display = 'none';
+    showToast('পরিবর্তনগুলো বাতিল করা হয়েছে');
+  }
+  function saveAllSettings() {
+    hasChanges = false;
+    document.getElementById('saveBar').style.display = 'none';
+    showToast('সেটিংস সফলভাবে সংরক্ষিত হয়েছে ✓');
+  }
+
+  /* ─── Toast ─── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2600);
+  }
+</script>
+</body>
+</html>

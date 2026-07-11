@@ -874,9 +874,10 @@
     if (!valid) return false;
 
     var btn = document.getElementById('submitBtn');
-    btn.textContent = '✓ হয়ে গেছে!';
+    btn.textContent = '✓ হয়ে গেছে! রিডাইরেক্ট হচ্ছে...';
     btn.style.background = 'linear-gradient(135deg, #15553F, #1B6B5A)';
     btn.disabled = true;
+    setTimeout(function() { window.location = 'newsfeed.html'; }, 800);
     return false;
   }
 

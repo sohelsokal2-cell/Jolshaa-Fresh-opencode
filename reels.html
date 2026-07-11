@@ -439,31 +439,58 @@
     @keyframes fadeIn { from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)} }
     .video-frame-wrap { animation: fadeIn 0.5s ease; }
     .action-column { animation: fadeIn 0.5s ease 0.1s both; }
+
+    /* ===================== RESPONSIVE AUTO-ADJUST ===================== */
+    @media (max-width: 1100px) {
+      :root { --sidebar-w: 220px; }
+    }
+    @media (max-width: 900px) {
+      :root { --sidebar-w: 190px; }
+      .video-frame-wrap { width: 300px; }
+    }
+    @media (max-width: 760px) {
+      .reels-sidebar { display: none; }
+      .reels-center { width: 100%; }
+      .video-frame-wrap { width: 320px; }
+    }
+    @media (max-width: 480px) {
+      .nav-wordmark { display: none; }
+      .video-frame-wrap { width: calc(100vw - 40px); max-height: 75vh; }
+    }
   </style>
 </head>
 <body>
 
 <!-- ========================= DARK NAVBAR ========================= -->
 <nav class="navbar">
-  <a href="#" class="nav-logo" aria-label="জলশা হোম — Jolshaa Home">
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম — Jolshaa Home">
     <div class="nav-logo-badge"><span>জ</span></div>
     <span class="nav-wordmark">Jolshaa</span>
   </a>
   <div class="nav-search">
     <span class="nav-search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></span>
-    <input type="text" placeholder="রিলস খুঁজুন... / Search Reels..." aria-label="Search reels" />
+    <input type="text" placeholder="রিলস খুঁজুন... / Search Reels..." aria-label="Search reels"
+      onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='search.html'" />
   </div>
   <div class="nav-center">
-    <button class="nav-icon-btn" title="হোম / Home" aria-label="Home">
+    <button class="nav-icon-btn" title="হোম / Home" aria-label="Home" onclick="window.location='newsfeed.html'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
     </button>
-    <button class="nav-icon-btn" title="গ্রুপ / Groups" aria-label="Groups">
+    <button class="nav-icon-btn" title="গ্রুপ / Groups" aria-label="Groups" onclick="window.location='groups.html'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg>
+    </button>
+    <!-- Watch -->
+    <button class="nav-icon-btn" title="ভিডিও / Watch" aria-label="Watch" onclick="window.location='watch.html'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7" stroke="none"/></svg>
+    </button>
+    <!-- Events -->
+    <button class="nav-icon-btn" title="ইভেন্ট / Events" aria-label="Events" onclick="window.location='events.html'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>
     </button>
     <button class="nav-icon-btn active" title="রিলস / Reels" aria-label="Reels">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/><rect x="19" y="3" width="2" height="18" rx="1"/></svg>
     </button>
-    <button class="nav-icon-btn" title="বার্তা / Messages" aria-label="Messages">
+    <button class="nav-icon-btn" title="বার্তা / Messages" aria-label="Messages" onclick="window.location='messenger.html'">
       <div class="nav-badge">5</div>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
     </button>
@@ -472,13 +499,13 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
     </button>
   </div>
-  <button class="nav-sahajjo" aria-label="সাহায্য চাই">
+  <button class="nav-sahajjo" aria-label="সাহায্য চাই" onclick="window.location='sahajjo.html'">
     <span class="nav-sahajjo-dot"></span>
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     <span>সাহায্য চাই</span>
   </button>
   <div style="flex-shrink:0;">
-    <div class="nav-avatar" title="প্রোফাইল / Profile" tabindex="0" role="button" aria-label="Profile">আ</div>
+    <div class="nav-avatar" title="প্রোফাইল / Profile" tabindex="0" role="button" aria-label="Profile" onclick="window.location='profile.html'" style="cursor:pointer">আ</div>
   </div>
 </nav>
 

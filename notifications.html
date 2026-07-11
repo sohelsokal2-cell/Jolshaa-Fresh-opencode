@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>নোটিফিকেশন — জলশা | Jolshaa Notifications</title>
+  <meta name="description" content="জলশা নোটিফিকেশন প্যানেল — তোমার সব আপডেট এক জায়গায়। Jolshaa Notifications." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --off-white:    #F5F0E8;
+      --card-bg:      #FFFFFF;
+      --coral:        #E85C4A;
+      --coral-pale:   #fef3f1;
+      --coral-dark:   #c94030;
+      --amber:        #D97706;
+      --amber-pale:   #fffbeb;
+      --amber-border: rgba(217,119,6,0.22);
+      --gold:         #D4A04A;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #888;
+      --text-xlight:  #bbb;
+      --border:       #E8E2DA;
+      --border-light: #F0EBE3;
+      --shadow-sm:    0 2px 10px rgba(0,0,0,0.08);
+      --shadow-md:    0 8px 32px rgba(0,0,0,0.14);
+      --shadow-lg:    0 16px 52px rgba(0,0,0,0.20);
+      --radius-md:    14px;
+      --radius-lg:    18px;
+      --font-bn:      'Hind Siliguri', sans-serif;
+      --font-en:      'Inter', sans-serif;
+      --nav-h:        58px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-bn);
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ═══════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h); background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28); flex-shrink: 0;
+    }
+    .nav-logo-badge span { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: white; line-height: 1; }
+    .nav-wordmark { font-family: var(--font-en); font-size: 18px; font-weight: 700; color: var(--teal); letter-spacing: -0.3px; }
+    .nav-search { flex: 1; max-width: 280px; position: relative; margin-left: 4px; }
+    .nav-search input {
+      width: 100%; padding: 9px 16px 9px 38px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--off-white);
+      font-family: var(--font-en); font-size: 13px; color: var(--text-dark);
+      outline: none; transition: all 0.2s;
+    }
+    .nav-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); pointer-events: none; }
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 46px; border-radius: 10px; border: none;
+      background: transparent; cursor: pointer; color: var(--text-light); transition: all 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); background: var(--teal-xpale); }
+    .nav-icon-btn.active::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 3px; background: var(--teal); border-radius: 2px 2px 0 0;
+    }
+    .nav-badge {
+      position: absolute; top: 5px; right: 7px;
+      background: var(--coral); color: white; font-family: var(--font-en);
+      font-size: 9px; font-weight: 700; min-width: 16px; height: 16px;
+      border-radius: 8px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center; border: 2px solid white;
+    }
+    .nav-icon-btn.ring-active .nav-badge { animation: ringPulse 2s ease-in-out infinite; }
+    @keyframes ringPulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,92,74,0.5)}50%{box-shadow:0 0 0 5px rgba(232,92,74,0)} }
+    .nav-sahajjo {
+      display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 50px;
+      background: var(--coral); color: white; border: none; cursor: pointer; flex-shrink: 0;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      box-shadow: 0 3px 12px rgba(232,92,74,0.35); transition: all 0.2s;
+      animation: sahajjoPulse 3s ease-in-out infinite;
+    }
+    .nav-sahajjo:hover { background: var(--coral-dark); }
+    .nav-sahajjo-dot { width: 7px; height: 7px; border-radius: 50%; background: white; animation: dotPulse 1.5s ease-in-out infinite; }
+    @keyframes sahajjoPulse { 0%,100%{box-shadow:0 3px 12px rgba(232,92,74,0.35)}50%{box-shadow:0 3px 20px rgba(232,92,74,0.55)} }
+    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.45;transform:scale(0.75)} }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      cursor: pointer; border: 2px solid var(--teal-pale); transition: all 0.2s;
+    }
+
+    /* ═══════════════════════════════════════════
+       DIMMED FEED BACKGROUND
+    ═══════════════════════════════════════════ */
+    .feed-backdrop {
+      position: fixed; inset: 0; top: var(--nav-h);
+      background: rgba(30, 24, 18, 0.38);
+      backdrop-filter: blur(3px) saturate(0.7);
+      -webkit-backdrop-filter: blur(3px) saturate(0.7);
+      z-index: 200;
+    }
+
+    /* Fake feed ghost (purely decorative, sits behind overlay) */
+    .feed-ghost {
+      padding-top: calc(var(--nav-h) + 24px);
+      display: flex; gap: 20px; max-width: 980px; margin: 0 auto; padding-left: 24px; padding-right: 24px;
+    }
+    .fg-sidebar {
+      width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 4px;
+    }
+    .fg-sb-card { height: 200px; background: var(--card-bg); border-radius: 16px; opacity: 0.55; }
+    .fg-sb-card2 { height: 140px; background: var(--card-bg); border-radius: 16px; opacity: 0.55; }
+    .fg-feed { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .fg-post { border-radius: 16px; background: var(--card-bg); opacity: 0.55; }
+    .fg-post-top { height: 52px; display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
+    .fg-avatar-ph { width: 36px; height: 36px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .fg-name-ph { height: 11px; width: 110px; border-radius: 6px; background: var(--border); }
+    .fg-sub-ph { height: 9px; width: 70px; border-radius: 6px; background: var(--border-light); margin-top: 4px; }
+    .fg-img-ph { height: 180px; background: linear-gradient(135deg, #ddd8ce, #c8c1b6); }
+    .fg-img-ph2 { height: 100px; background: linear-gradient(135deg, #e6e1d9, #d5cdc3); }
+    .fg-post-bottom { height: 44px; background: var(--border-light); display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+    .fg-action-ph { height: 9px; border-radius: 6px; background: var(--border); }
+    .fg-right { width: 280px; flex-shrink: 0; }
+    .fg-rc { height: 220px; background: var(--card-bg); border-radius: 16px; opacity: 0.55; }
+
+    /* ═══════════════════════════════════════════
+       NOTIFICATION PANEL ANCHOR
+    ═══════════════════════════════════════════ */
+    .notif-anchor {
+      position: fixed; top: var(--nav-h); right: 120px; z-index: 400;
+      display: flex; flex-direction: column; align-items: flex-end;
+    }
+    /* small caret pointing up */
+    .notif-caret {
+      width: 0; height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 9px solid var(--card-bg);
+      margin-right: 20px; margin-top: 4px;
+      filter: drop-shadow(0 -2px 3px rgba(0,0,0,0.07));
+    }
+
+    /* ═══════════════════════════════════════════
+       NOTIFICATION PANEL
+    ═══════════════════════════════════════════ */
+    .notif-panel {
+      width: 400px; max-height: calc(100vh - var(--nav-h) - 60px);
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: var(--shadow-lg), 0 2px 8px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden;
+      animation: panelIn 0.28s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(-14px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* --- Panel Header --- */
+    .np-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px 0; flex-shrink: 0;
+    }
+    .np-title { display: flex; flex-direction: column; }
+    .np-title-bn { font-family: var(--font-bn); font-size: 20px; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
+    .np-title-en { font-family: var(--font-en); font-size: 10.5px; color: var(--text-light); margin-top: 2px; letter-spacing: 0.4px; }
+    .np-options-btn {
+      width: 34px; height: 34px; border-radius: 10px; border: 1.5px solid var(--border-light);
+      background: var(--off-white); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid); transition: all 0.18s; flex-shrink: 0;
+    }
+    .np-options-btn:hover { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+
+    /* --- Tab Row --- */
+    .np-tabs {
+      display: flex; gap: 7px; padding: 12px 18px 10px; flex-shrink: 0;
+    }
+    .np-tab {
+      display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 50px;
+      border: 1.5px solid transparent; cursor: pointer; transition: all 0.2s; position: relative;
+      background: transparent;
+    }
+    .np-tab-bn { font-family: var(--font-bn); font-size: 13.5px; font-weight: 500; color: var(--text-light); line-height: 1; }
+    .np-tab-en { font-family: var(--font-en); font-size: 9px; color: var(--text-xlight); }
+    .np-tab-count {
+      font-family: var(--font-en); font-size: 10px; font-weight: 700;
+      background: var(--border-light); color: var(--text-mid);
+      min-width: 18px; height: 18px; border-radius: 9px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    /* Active tab */
+    .np-tab.active {
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border-color: transparent;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .np-tab.active .np-tab-bn { color: white; font-weight: 700; }
+    .np-tab.active .np-tab-en { color: rgba(255,255,255,0.72); }
+    .np-tab.active .np-tab-count { background: rgba(255,255,255,0.22); color: white; }
+    .np-tab:not(.active):hover { border-color: var(--border); background: var(--off-white); }
+
+    /* Mark all read */
+    .np-mark-all {
+      margin-left: auto; font-family: var(--font-en); font-size: 11px; font-weight: 500;
+      color: var(--teal); background: none; border: none; cursor: pointer;
+      padding: 5px 8px; border-radius: 7px; transition: background 0.15s; flex-shrink: 0; align-self: center;
+    }
+    .np-mark-all:hover { background: var(--teal-xpale); }
+
+    /* divider under tabs */
+    .np-divider { height: 1px; background: var(--border-light); flex-shrink: 0; }
+
+    /* --- Scrollable list --- */
+    .np-list { overflow-y: auto; flex: 1; padding-bottom: 8px; }
+    .np-list::-webkit-scrollbar { width: 4px; }
+    .np-list::-webkit-scrollbar-thumb { background: #ddd7cf; border-radius: 4px; }
+
+    /* Section label */
+    .np-section-label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 18px 6px; position: sticky; top: 0; z-index: 10;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(6px);
+    }
+    .np-section-bn { font-family: var(--font-bn); font-size: 12px; font-weight: 700; color: var(--text-mid); }
+    .np-section-en { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); }
+    .np-section-line { flex: 1; height: 1px; background: var(--border-light); }
+
+    /* ═══════════════════════════════════════════
+       NOTIFICATION ITEM
+    ═══════════════════════════════════════════ */
+    .np-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 11px 16px 11px 18px; position: relative;
+      transition: background 0.16s; cursor: pointer;
+    }
+    .np-item:hover { background: var(--off-white); }
+    .np-item.is-unread { background: #f7faf9; }
+    .np-item.is-unread:hover { background: var(--teal-xpale); }
+
+    /* Unread left strip */
+    .np-item.is-unread::before {
+      content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+      width: 3px; border-radius: 0 3px 3px 0; background: var(--coral);
+    }
+
+    /* Avatar column */
+    .np-avatar-wrap { position: relative; flex-shrink: 0; }
+    .np-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 18px; font-weight: 700; color: white;
+      flex-shrink: 0; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .np-avatar.sm { width: 44px; height: 44px; font-size: 16px; }
+
+    /* Type badge on avatar */
+    .np-type-badge {
+      position: absolute; bottom: -3px; right: -3px;
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    }
+    .ntb-friend  { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .ntb-suggest { background: linear-gradient(135deg, var(--gold), #f59e0b); }
+    .ntb-comment { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+    .ntb-react   { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+    .ntb-photo   { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+    .ntb-page    { background: linear-gradient(135deg, var(--amber), #f59e0b); }
+
+    /* Unread dot (top right of item) */
+    .np-unread-dot {
+      position: absolute; top: 16px; right: 14px;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--coral); border: 2px solid white;
+      box-shadow: 0 0 0 2px rgba(232,92,74,0.2);
+      flex-shrink: 0;
+      animation: dotAppear 0.4s ease both;
+    }
+    @keyframes dotAppear { from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)} }
+
+    /* Body column */
+    .np-body { flex: 1; min-width: 0; }
+    .np-text {
+      font-family: var(--font-bn); font-size: 13.5px; line-height: 1.5; color: var(--text-dark);
+    }
+    .np-text.read-text { color: var(--text-mid); }
+    .np-name { font-weight: 700; color: var(--text-dark); }
+    .np-action { font-weight: 400; }
+    .np-en-sub {
+      font-family: var(--font-en); font-size: 10px; color: var(--text-light);
+      display: block; margin-top: 1px; font-style: italic;
+    }
+    .np-time { font-family: var(--font-en); font-size: 10.5px; color: var(--text-xlight); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .np-time-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-xlight); }
+
+    /* Meta chip (comment count, etc) */
+    .np-meta-chip {
+      display: inline-flex; align-items: center; gap: 3px; margin-top: 5px;
+      padding: 3px 8px 3px 5px; border-radius: 20px;
+      background: var(--teal-xpale); border: 1px solid var(--teal-pale);
+    }
+    .np-meta-chip span { font-family: var(--font-en); font-size: 10px; font-weight: 600; color: var(--teal); }
+
+    /* Inline action buttons (friend request) */
+    .np-inline-actions { display: flex; gap: 7px; margin-top: 9px; }
+    .btn-confirm {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border: none; color: white; cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28); transition: all 0.18s;
+    }
+    .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(27,107,90,0.38); }
+    .btn-confirm-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 700; line-height: 1.1; }
+    .btn-confirm-en { font-family: var(--font-en); font-size: 8.5px; opacity: 0.82; }
+    .btn-delete {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 9px;
+      background: var(--off-white); border: 1.5px solid var(--border);
+      color: var(--text-mid); cursor: pointer; flex-shrink: 0; transition: all 0.18s;
+    }
+    .btn-delete:hover { background: #f0ebe3; border-color: #ccc; }
+    .btn-delete-bn { font-family: var(--font-bn); font-size: 12.5px; font-weight: 600; line-height: 1.1; }
+    .btn-delete-en { font-family: var(--font-en); font-size: 8.5px; color: var(--text-light); }
+
+    /* Admin / serious notification accent */
+    .np-item.is-admin {
+      background: linear-gradient(to right, rgba(217,119,6,0.05) 0%, transparent 60%);
+      border-left: none;
+    }
+    .np-item.is-admin::before { background: var(--amber); }
+    .np-item.is-admin:hover { background: linear-gradient(to right, rgba(217,119,6,0.10) 0%, rgba(217,119,6,0.02) 60%); }
+    .np-admin-tag {
+      display: inline-flex; align-items: center; gap: 3px; margin-top: 5px;
+      padding: 3px 8px 3px 5px; border-radius: 20px;
+      background: var(--amber-pale); border: 1px solid var(--amber-border);
+    }
+    .np-admin-tag span { font-family: var(--font-en); font-size: 9.5px; font-weight: 600; color: var(--amber); }
+    .np-admin-unread-dot {
+      position: absolute; top: 16px; right: 14px;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--amber); border: 2px solid white;
+      box-shadow: 0 0 0 2px rgba(217,119,6,0.22);
+    }
+
+    /* suggestion "You may know" chip */
+    .np-suggest-chip {
+      display: inline-flex; align-items: center; gap: 5px; margin-top: 7px;
+      padding: 4px 10px; border-radius: 9px;
+      background: var(--off-white); border: 1.5px solid var(--border);
+    }
+    .btn-follow-bn { font-family: var(--font-bn); font-size: 12px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .btn-follow-en { font-family: var(--font-en); font-size: 8.5px; color: var(--teal-light); }
+
+    /* Reaction avatars stack */
+    .np-reactors {
+      display: flex; align-items: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .np-reactor-av {
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid white;
+      margin-left: -6px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 9px; font-weight: 700; color: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+    .np-reactor-av:first-child { margin-left: 0; }
+
+    /* Photo thumbnail inline */
+    .np-thumb {
+      width: 52px; height: 52px; border-radius: 11px; flex-shrink: 0;
+      overflow: hidden; border: 1.5px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; background: linear-gradient(135deg,#e8ddd0,#d5c8b8);
+      color: transparent;
+    }
+
+    /* ═══════════════════════════════════════════
+       PANEL FOOTER
+    ═══════════════════════════════════════════ */
+    .np-footer {
+      border-top: 1px solid var(--border-light); padding: 10px 18px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: var(--card-bg);
+    }
+    .np-see-all-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-en); font-size: 12.5px; font-weight: 600; color: var(--teal);
+      background: none; border: none; cursor: pointer; padding: 6px 14px; border-radius: 9px;
+      transition: all 0.18s;
+    }
+    .np-see-all-btn:hover { background: var(--teal-xpale); gap: 9px; }
+    .np-see-all-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; color: var(--text-mid); margin-right: 6px; }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 700px) {
+      .notif-anchor { right: 10px; left: 10px; align-items: stretch; }
+      .notif-panel { width: 100%; }
+      .notif-caret { margin-right: 80px; }
+      .fg-right, .fg-sidebar { display: none; }
+    }
+    @media (max-width: 480px) {
+      .np-thumb { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar" role="navigation">
+  <a href="newsfeed.html" class="nav-logo">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" placeholder="খুঁজুন... / Search..." />
+  </div>
+  <div class="nav-center">
+    <button class="nav-icon-btn" title="হোম" onclick="window.location='newsfeed.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="গ্রুপ" onclick="window.location='groups.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M1 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 21c0-2.5-1.5-4.5-4-5.5"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="ভিডিও / Watch" onclick="window.location='watch.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7" stroke="none"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="ইভেন্ট / Events" onclick="window.location='events.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="বার্তা" onclick="window.location='messenger.html'">
+      <div class="nav-badge">5</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+    </button>
+    <!-- Bell — active/open state -->
+    <button class="nav-icon-btn active ring-active" id="bellBtn" title="বিজ্ঞপ্তি" onclick="togglePanel()">
+      <div class="nav-badge" id="bellBadge">৭</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    </button>
+  </div>
+  <button class="nav-sahajjo" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>সাহায্য চাই</span>
+  </button>
+  <div class="nav-avatar" onclick="window.location='profile.html'" title="প্রোফাইল">আ</div>
+</nav>
+
+<!-- ═══ DIMMED FEED BACKDROP ═══ -->
+<div class="feed-backdrop" id="feedBackdrop" onclick="closePanel()"></div>
+
+<!-- ═══ FAKE FEED SKELETON (decorative background) ═══ -->
+<div class="feed-ghost">
+  <div class="fg-sidebar">
+    <div class="fg-sb-card"></div>
+    <div class="fg-sb-card2"></div>
+  </div>
+  <div class="fg-feed">
+    <!-- Post 1 -->
+    <div class="fg-post">
+      <div class="fg-post-top">
+        <div class="fg-avatar-ph"></div>
+        <div><div class="fg-name-ph"></div><div class="fg-sub-ph"></div></div>
+      </div>
+      <div class="fg-img-ph"></div>
+      <div class="fg-post-bottom">
+        <div class="fg-action-ph" style="width:55px"></div>
+        <div class="fg-action-ph" style="width:55px"></div>
+        <div class="fg-action-ph" style="width:55px"></div>
+      </div>
+    </div>
+    <!-- Post 2 -->
+    <div class="fg-post">
+      <div class="fg-post-top">
+        <div class="fg-avatar-ph"></div>
+        <div><div class="fg-name-ph"></div><div class="fg-sub-ph"></div></div>
+      </div>
+      <div class="fg-img-ph2"></div>
+      <div class="fg-post-bottom">
+        <div class="fg-action-ph" style="width:50px"></div>
+        <div class="fg-action-ph" style="width:50px"></div>
+      </div>
+    </div>
+    <!-- Post 3 -->
+    <div class="fg-post">
+      <div class="fg-post-top">
+        <div class="fg-avatar-ph"></div>
+        <div><div class="fg-name-ph" style="width:90px"></div><div class="fg-sub-ph"></div></div>
+      </div>
+      <div class="fg-img-ph" style="height:130px"></div>
+      <div class="fg-post-bottom">
+        <div class="fg-action-ph" style="width:60px"></div>
+        <div class="fg-action-ph" style="width:60px"></div>
+        <div class="fg-action-ph" style="width:60px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fg-right">
+    <div class="fg-rc"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     NOTIFICATION PANEL
+═══════════════════════════════════════════ -->
+<div class="notif-anchor" id="notifAnchor">
+  <div class="notif-caret"></div>
+  <div class="notif-panel" id="notifPanel" role="dialog" aria-label="নোটিফিকেশন / Notifications">
+
+    <!-- Header -->
+    <div class="np-header">
+      <div class="np-title">
+        <span class="np-title-bn">নোটিফিকেশন</span>
+        <span class="np-title-en">Notifications</span>
+      </div>
+      <button class="np-options-btn" aria-label="Options" title="বিকল্প / Options">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="np-tabs" role="tablist">
+      <button class="np-tab active" role="tab" aria-selected="true" id="tabAll" onclick="switchTab('all')">
+        <div>
+          <div class="np-tab-bn">সব</div>
+          <div class="np-tab-en">All</div>
+        </div>
+        <div class="np-tab-count">৭</div>
+      </button>
+      <button class="np-tab" role="tab" aria-selected="false" id="tabUnread" onclick="switchTab('unread')">
+        <div>
+          <div class="np-tab-bn">না পড়া</div>
+          <div class="np-tab-en">Unread</div>
+        </div>
+        <div class="np-tab-count">৪</div>
+      </button>
+      <button class="np-mark-all" onclick="markAllRead()" title="সব পড়া হিসেবে চিহ্নিত করো">সব পড়া ✓</button>
+    </div>
+
+    <div class="np-divider"></div>
+
+    <!-- ─── LIST ─── -->
+    <div class="np-list" id="npList">
+
+      <!-- ══ SECTION: নতুন / New ══ -->
+      <div class="np-section-label">
+        <span class="np-section-bn">নতুন</span>
+        <span class="np-section-en">/ New</span>
+        <div class="np-section-line"></div>
+      </div>
+
+      <!-- Item 1: Friend Request — UNREAD -->
+      <div class="np-item is-unread" role="button" tabindex="0" aria-label="Friend request notification">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">র</div>
+          <div class="np-type-badge ntb-friend">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text">
+            <span class="np-name">রাফি আহমেদ</span>
+            <span class="np-action"> আপনাকে বন্ধুত্বের অনুরোধ পাঠিয়েছে।</span>
+            <span class="np-en-sub">Rafi Ahmed sent you a friend request.</span>
+          </div>
+          <div class="np-time">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ২৩ মিনিট আগে
+            <div class="np-time-dot"></div>
+            <span style="font-family:var(--font-en)">23 mins ago</span>
+          </div>
+          <div class="np-inline-actions">
+            <button class="btn-confirm" onclick="event.stopPropagation()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <div><div class="btn-confirm-bn">নিশ্চিত করো</div><div class="btn-confirm-en">Confirm</div></div>
+            </button>
+            <button class="btn-delete" onclick="event.stopPropagation()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <div><div class="btn-delete-bn">মুছো</div><div class="btn-delete-en">Delete</div></div>
+            </button>
+          </div>
+        </div>
+        <div class="np-unread-dot"></div>
+      </div>
+
+      <!-- Item 2: Friend Suggestion — UNREAD -->
+      <div class="np-item is-unread" role="button" tabindex="0">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">ন</div>
+          <div class="np-type-badge ntb-suggest">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 15H11v-2h2v2zm0-4H11V7h2v6z"/></svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text">
+            <span class="np-action">নতুন বন্ধুর পরামর্শ: </span>
+            <span class="np-name">নাফিসা ইসলাম</span>
+            <span class="np-en-sub">New friend suggestion: Nafisa Islam</span>
+          </div>
+          <div class="np-time">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ১ ঘন্টা আগে · 1 hour ago
+          </div>
+          <div class="np-suggest-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <div><div class="btn-follow-bn">বন্ধু যোগ করো</div><div class="btn-follow-en">Add Friend</div></div>
+          </div>
+        </div>
+        <div class="np-unread-dot"></div>
+      </div>
+
+      <!-- ══ SECTION: আগের / Earlier ══ -->
+      <div class="np-section-label">
+        <span class="np-section-bn">আগের</span>
+        <span class="np-section-en">/ Earlier</span>
+        <div class="np-section-line"></div>
+      </div>
+
+      <!-- Item 3: Comment — UNREAD -->
+      <div class="np-item is-unread" role="button" tabindex="0">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar sm" style="background:linear-gradient(135deg,var(--teal),#34d399)">স</div>
+          <div class="np-type-badge ntb-comment">
+            <!-- Original: rounded speech corner with small tick lines inside -->
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/>
+            </svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text">
+            <span class="np-name">সামিরা রহমান</span>
+            <span class="np-action"> আপনার পোস্টে মন্তব্য করেছে।</span>
+            <span class="np-en-sub">Samira Rahman commented on your post.</span>
+          </div>
+          <div class="np-time">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ৩ ঘন্টা আগে · 3 hrs ago
+          </div>
+          <div class="np-meta-chip">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>৫টি মন্তব্য · 5 comments</span>
+          </div>
+        </div>
+        <div class="np-unread-dot"></div>
+      </div>
+
+      <!-- Item 4: Reactions — READ -->
+      <div class="np-item" role="button" tabindex="0">
+        <div class="np-avatar-wrap" style="display:flex; flex-direction:column; gap:4px;">
+          <div class="np-reactors" style="margin-top:2px">
+            <div class="np-reactor-av" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">ক</div>
+            <div class="np-reactor-av" style="background:linear-gradient(135deg,#f97316,#ea580c)">ম</div>
+            <div class="np-reactor-av" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">র</div>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text read-text">
+            <span class="np-name" style="color:var(--text-mid)">করিম, মিনারা</span>
+            <span class="np-action"> এবং আরও ৮ জন আপনার পোস্টে প্রতিক্রিয়া জানিয়েছে।</span>
+            <span class="np-en-sub">Karim, Minara & 8 others reacted to your post.</span>
+          </div>
+          <div class="np-time" style="color:var(--text-xlight)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ৬ ঘন্টা আগে · 6 hrs ago
+          </div>
+          <div class="np-meta-chip" style="background:var(--coral-pale); border-color:rgba(232,92,74,0.12)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="var(--coral)"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span style="color:var(--coral-dark)">১০টি প্রতিক্রিয়া · 10 reactions</span>
+          </div>
+        </div>
+        <!-- no dot — read -->
+      </div>
+
+      <!-- Item 5: Photo tag — READ -->
+      <div class="np-item" role="button" tabindex="0" style="align-items:center">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar sm" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">ত</div>
+          <div class="np-type-badge ntb-photo">
+            <!-- Camera-like original icon: circle inside square with lens cap lines -->
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+              <rect x="2" y="7" width="20" height="14" rx="3"/>
+              <path d="M16 3H8l-1 4h10z"/>
+              <circle cx="12" cy="14" r="3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text read-text">
+            <span class="np-name" style="color:var(--text-mid)">তানিয়া সুলতানা</span>
+            <span class="np-action"> নতুন ছবি যোগ করেছে — তুমি ট্যাগড।</span>
+            <span class="np-en-sub">Tania Sultana added new photos — you're tagged.</span>
+          </div>
+          <div class="np-time" style="color:var(--text-xlight)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            গতকাল · Yesterday
+          </div>
+        </div>
+        <!-- Small thumbnail -->
+        <div class="np-thumb" style="font-size:24px">🌿</div>
+      </div>
+
+      <!-- Item 6: Admin/Page — SERIOUS, UNREAD -->
+      <div class="np-item is-unread is-admin" role="button" tabindex="0" aria-label="Admin page notification">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar sm" style="background:linear-gradient(135deg,#d97706,#fbbf24); font-size:20px">📋</div>
+          <div class="np-type-badge ntb-page">
+            <!-- Page/document icon — slightly file-with-flag shape -->
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text" style="color:var(--text-dark)">
+            <span class="np-action">তোমার পেজ </span>
+            <span class="np-name">দৈনিক বাংলাদেশ টাইমস</span>
+            <span class="np-action">-এর পূর্ণ নিয়ন্ত্রণ সরানো হয়েছে।</span>
+            <span class="np-en-sub">Your full admin control of 'Daily Bangladesh Times' page was removed.</span>
+          </div>
+          <div class="np-time">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            গতকাল · Yesterday
+          </div>
+          <div class="np-admin-tag">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>পেজ অ্যাডমিন · Page Admin Action</span>
+          </div>
+        </div>
+        <div class="np-admin-unread-dot"></div>
+      </div>
+
+      <!-- Item 7: Read filler -->
+      <div class="np-item" role="button" tabindex="0">
+        <div class="np-avatar-wrap">
+          <div class="np-avatar sm" style="background:linear-gradient(135deg,#10b981,#34d399)">আ</div>
+          <div class="np-type-badge ntb-comment">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              <line x1="9" y1="10" x2="15" y2="10"/>
+            </svg>
+          </div>
+        </div>
+        <div class="np-body">
+          <div class="np-text read-text">
+            <span class="np-name" style="color:var(--text-mid)">আরিফ হোসেন</span>
+            <span class="np-action"> আপনার ছবিতে মন্তব্য করেছে।</span>
+            <span class="np-en-sub">Arif Hossain commented on your photo.</span>
+          </div>
+          <div class="np-time" style="color:var(--text-xlight)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ২ দিন আগে · 2 days ago
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /np-list -->
+
+    <!-- Footer -->
+    <div class="np-footer">
+      <button class="np-see-all-btn" onclick="window.location='newsfeed.html'">
+        <span class="np-see-all-bn">সব দেখো</span>
+        See All Notifications
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div><!-- /notif-panel -->
+</div>
+
+<script>
+  // Panel open/close
+  function closePanel() {
+    document.getElementById('feedBackdrop').style.display = 'none';
+    document.getElementById('notifAnchor').style.display = 'none';
+    document.getElementById('bellBtn').classList.remove('active','ring-active');
+  }
+  function togglePanel() {
+    const anchor  = document.getElementById('notifAnchor');
+    const backdrop = document.getElementById('feedBackdrop');
+    const bell    = document.getElementById('bellBtn');
+    const isOpen  = anchor.style.display !== 'none' && anchor.style.display !== '';
+    if (isOpen) {
+      anchor.style.display = 'none';
+      backdrop.style.display = 'none';
+      bell.classList.remove('active');
+    } else {
+      anchor.style.display = '';
+      backdrop.style.display = '';
+      bell.classList.add('active');
+    }
+  }
+
+  // Tab switch
+  function switchTab(tab) {
+    const allBtn    = document.getElementById('tabAll');
+    const unreadBtn = document.getElementById('tabUnread');
+    allBtn.classList.toggle('active', tab === 'all');
+    unreadBtn.classList.toggle('active', tab === 'unread');
+    if (tab === 'unread') {
+      document.querySelectorAll('.np-item:not(.is-unread)').forEach(el => { el.style.display = 'none'; });
+    } else {
+      document.querySelectorAll('.np-item').forEach(el => { el.style.display = ''; });
+    }
+  }
+
+  // Mark all read
+  function markAllRead() {
+    document.querySelectorAll('.np-unread-dot, .np-admin-unread-dot').forEach(d => {
+      d.style.opacity = '0'; d.style.transform = 'scale(0)'; d.style.transition = 'all 0.25s';
+    });
+    setTimeout(() => {
+      document.querySelectorAll('.np-item.is-unread').forEach(el => {
+        el.classList.remove('is-unread');
+        el.style.removeProperty('background');
+      });
+    }, 260);
+    document.getElementById('bellBadge').textContent = '০';
+    document.getElementById('tabAll').querySelector('.np-tab-count').textContent = '৭';
+    document.getElementById('tabUnread').querySelector('.np-tab-count').textContent = '০';
+  }
+
+  // Keyboard close
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  // Auto-open on load for demo
+  document.getElementById('bellBtn').classList.add('active','ring-active');
+</script>
+</body>
+</html>

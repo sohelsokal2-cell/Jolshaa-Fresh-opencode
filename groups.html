@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>গ্রুপ — জলশা | Jolshaa Groups</title>
+  <meta name="description" content="জলশা গ্রুপ — তোমার কমিউনিটির সাথে যুক্ত হও। Jolshaa Groups — connect with your community." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Brand palette */
+      --teal:         #1B6B5A;
+      --teal-hover:   #165a4b;
+      --teal-mid:     #217a68;
+      --teal-light:   #2a9678;
+      --teal-pale:    #E8F2EF;
+      --teal-xpale:   #f2faf7;
+      --off-white:    #F5F0E8;
+      --warm-white:   #FDFAF5;
+      --card-bg:      #FFFFFF;
+      --coral:        #E85C4A;
+      --coral-pale:   #fef3f1;
+      --coral-dark:   #c94030;
+      --gold:         #D4A04A;
+      --gold-pale:    #fdf6eb;
+      --fact-green:   #15803d;
+      --fact-green-bg:#f0fdf4;
+      --text-dark:    #1a1a1a;
+      --text-mid:     #4a4a4a;
+      --text-light:   #888;
+      --text-xlight:  #b0a89e;
+      --border:       #E8E2DA;
+      --border-light: #F0EBE3;
+
+      /* Shadows */
+      --shadow-xs:    0 1px 4px rgba(0,0,0,0.06);
+      --shadow-sm:    0 2px 10px rgba(0,0,0,0.07);
+      --shadow-md:    0 5px 20px rgba(0,0,0,0.10);
+      --shadow-lg:    0 10px 36px rgba(0,0,0,0.13);
+
+      /* Border radii — slightly different from newsfeed for originality */
+      --radius-xs:    8px;
+      --radius-sm:    11px;
+      --radius-md:    15px;
+      --radius-lg:    20px;
+      --radius-xl:    24px;
+
+      /* Layout */
+      --nav-h:        58px;
+      --sidebar-w:    288px;
+      --feed-max:     612px;
+
+      /* Typography */
+      --font-bn: 'Hind Siliguri', sans-serif;
+      --font-en: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-bn);
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ───────────────── SCROLLBAR ───────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cfc8be; border-radius: 4px; }
+
+    /* ═══════════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      height: var(--nav-h);
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-light);
+      box-shadow: var(--shadow-xs);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+
+    /* Logo */
+    .nav-logo {
+      display: flex; align-items: center; gap: 9px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-logo-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(145deg, var(--teal), var(--teal-light));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(27,107,90,0.28); flex-shrink: 0;
+    }
+    .nav-logo-badge span {
+      font-family: var(--font-bn); font-size: 20px;
+      font-weight: 700; color: white; line-height: 1;
+    }
+    .nav-wordmark {
+      font-family: var(--font-en); font-size: 18px; font-weight: 700;
+      color: var(--teal); letter-spacing: -0.3px;
+    }
+
+    /* Search */
+    .nav-search { flex: 1; max-width: 280px; position: relative; margin-left: 4px; }
+    .nav-search input {
+      width: 100%; padding: 9px 16px 9px 38px;
+      border-radius: 50px; border: 1.5px solid var(--border);
+      background: var(--off-white); font-family: var(--font-bn);
+      font-size: 14px; color: var(--text-dark);
+      outline: none; transition: all 0.2s;
+    }
+    .nav-search input:focus {
+      border-color: var(--teal); background: white;
+      box-shadow: 0 0 0 3px rgba(27,107,90,0.1);
+    }
+    .nav-search input::placeholder { color: var(--text-light); font-family: var(--font-en); font-size: 13px; }
+    .nav-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text-light); pointer-events: none;
+    }
+
+    /* Center icons */
+    .nav-center { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .nav-icon-btn {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 52px; height: 46px; border-radius: var(--radius-sm);
+      border: none; background: transparent; cursor: pointer;
+      color: var(--text-light); transition: all 0.2s;
+    }
+    .nav-icon-btn:hover { background: var(--off-white); color: var(--teal); }
+    .nav-icon-btn.active { color: var(--teal); }
+    .nav-icon-btn.active::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 32px; height: 3px; background: var(--teal); border-radius: 2px 2px 0 0;
+    }
+    .nav-badge {
+      position: absolute; top: 5px; right: 7px;
+      background: var(--coral); color: white;
+      font-family: var(--font-en); font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid white;
+    }
+
+    /* Sahajjo Chai button */
+    .nav-sahajjo {
+      position: relative; display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px; border-radius: 50px;
+      background: var(--coral); color: white;
+      border: none; cursor: pointer; flex-shrink: 0;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      box-shadow: 0 3px 12px rgba(232,92,74,0.35);
+      transition: all 0.2s;
+      animation: sahajjoPulse 3s ease-in-out infinite;
+    }
+    .nav-sahajjo:hover {
+      background: var(--coral-dark); transform: translateY(-1px);
+      box-shadow: 0 5px 18px rgba(232,92,74,0.45);
+    }
+    .nav-sahajjo-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: white;
+      animation: dotPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes sahajjoPulse {
+      0%,100% { box-shadow: 0 3px 12px rgba(232,92,74,0.35); }
+      50% { box-shadow: 0 3px 20px rgba(232,92,74,0.55); }
+    }
+    @keyframes dotPulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.45; transform:scale(0.75); }
+    }
+
+    /* Avatar */
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      cursor: pointer; border: 2px solid var(--teal-pale); transition: all 0.2s;
+    }
+    .nav-avatar:hover { border-color: var(--teal); }
+
+    /* ═══════════════════════════════════════════════
+       PAGE BODY
+    ═══════════════════════════════════════════════ */
+    .page-body {
+      display: flex;
+      padding-top: var(--nav-h);
+      min-height: 100vh;
+    }
+
+    /* ═══════════════════════════════════════════════
+       LEFT SIDEBAR
+    ═══════════════════════════════════════════════ */
+    .sidebar-left {
+      width: var(--sidebar-w);
+      position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+      overflow-y: auto; padding: 16px 12px 32px;
+      background: transparent;
+    }
+
+    /* ── Sidebar Header ── */
+    .sb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 6px 14px;
+    }
+    .sb-header-titles {}
+    .sb-header-title-bn {
+      font-family: var(--font-bn); font-size: 22px; font-weight: 700;
+      color: var(--text-dark); line-height: 1;
+    }
+    .sb-header-title-en {
+      font-family: var(--font-en); font-size: 11px; color: var(--text-light);
+      font-weight: 400; margin-top: 2px;
+    }
+    .sb-settings-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: none; background: var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid);
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .sb-settings-btn:hover { background: var(--teal-pale); color: var(--teal); transform: rotate(30deg); }
+
+    /* ── Search Bar ── */
+    .sb-search {
+      position: relative; margin-bottom: 14px;
+    }
+    .sb-search input {
+      width: 100%; padding: 10px 16px 10px 40px;
+      border-radius: 12px;
+      border: 1.5px solid var(--teal-pale);
+      background: var(--teal-xpale);
+      font-family: var(--font-bn); font-size: 14px; color: var(--text-dark);
+      outline: none; transition: all 0.2s;
+    }
+    .sb-search input:focus {
+      border-color: var(--teal);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(27,107,90,0.1);
+    }
+    .sb-search input::placeholder { color: var(--text-light); font-family: var(--font-bn); font-size: 13px; }
+    .sb-search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--teal-light); pointer-events: none;
+    }
+
+    /* ── Navigation Items ── */
+    .sb-nav-block {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xs);
+      overflow: hidden; margin-bottom: 10px;
+    }
+    .sb-nav-item {
+      display: flex; align-items: center; gap: 13px;
+      padding: 12px 14px; cursor: pointer; text-decoration: none;
+      transition: all 0.18s;
+      position: relative;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .sb-nav-item:last-child { border-bottom: none; }
+    .sb-nav-item::before {
+      content: '';
+      position: absolute; left: 0; top: 20%; bottom: 20%;
+      width: 3px; border-radius: 0 3px 3px 0;
+      background: var(--teal);
+      transform: scaleY(0); transform-origin: center;
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+    }
+    .sb-nav-item:hover::before { transform: scaleY(1); }
+    .sb-nav-item:hover { background: var(--teal-xpale); padding-left: 17px; }
+    .sb-nav-item.active { background: var(--teal-xpale); padding-left: 17px; }
+    .sb-nav-item.active::before { transform: scaleY(1); }
+
+    /* Icon squares with gradient backgrounds */
+    .sb-nav-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: transform 0.2s;
+    }
+    .sb-nav-item:hover .sb-nav-icon { transform: scale(1.08); }
+    .icon-feed    { background: linear-gradient(135deg, #E8F2EF, #d4ede5); }
+    .icon-discover{ background: linear-gradient(135deg, #fef6eb, #fdefd5); }
+    .icon-mygroup { background: linear-gradient(135deg, #fef3f1, #fde4e0); }
+
+    .sb-nav-text-bn {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 600; color: var(--text-dark);
+    }
+    .sb-nav-text-en {
+      font-family: var(--font-en); font-size: 10px; color: var(--text-light); margin-top: 1px;
+    }
+
+    /* ── Create Group Button ── */
+    .sb-create-btn {
+      width: 100%; padding: 14px 18px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+      color: white; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 4px 16px rgba(27,107,90,0.28);
+      transition: all 0.2s; margin-bottom: 18px;
+    }
+    .sb-create-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(27,107,90,0.38);
+      background: linear-gradient(135deg, #1d7564, #25a07f);
+    }
+    .sb-create-btn:active { transform: translateY(0); }
+    .sb-create-plus {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: transform 0.2s;
+    }
+    .sb-create-btn:hover .sb-create-plus { transform: rotate(90deg); }
+    .sb-create-text-bn {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 700;
+    }
+    .sb-create-text-en {
+      font-family: var(--font-en); font-size: 10px; font-weight: 400; opacity: 0.8;
+    }
+
+    /* ── Joined Groups Section ── */
+    .sb-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4px 8px;
+    }
+    .sb-section-titles {}
+    .sb-section-title-bn {
+      font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: var(--text-dark);
+    }
+    .sb-section-title-en {
+      font-family: var(--font-en); font-size: 10px; color: var(--text-light);
+    }
+    .sb-see-all {
+      font-family: var(--font-en); font-size: 11px; font-weight: 600;
+      color: var(--teal); background: none; border: none; cursor: pointer;
+      padding: 3px 8px; border-radius: 6px; transition: background 0.15s;
+      text-decoration: none;
+    }
+    .sb-see-all:hover { background: var(--teal-pale); }
+
+    /* ── Group List ── */
+    .sb-group-list {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+    }
+    .sb-group-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.18s;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .sb-group-item:last-child { border-bottom: none; }
+    .sb-group-item:hover { background: var(--teal-xpale); }
+    .sb-group-item:hover .sb-group-thumb { transform: scale(1.05); }
+
+    .sb-group-thumb {
+      width: 50px; height: 50px;
+      border-radius: 13px; /* Angular rounded square — original choice */
+      overflow: hidden; flex-shrink: 0;
+      border: 2px solid var(--border-light);
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: var(--shadow-xs);
+    }
+    .sb-group-thumb-inner {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+
+    .sb-group-info { flex: 1; min-width: 0; }
+    .sb-group-name-bn {
+      font-family: var(--font-bn); font-size: 13.5px; font-weight: 600;
+      color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sb-group-status {
+      display: flex; align-items: center; gap: 5px; margin-top: 3px;
+    }
+    .sb-status-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .status-active-now .sb-status-dot { background: #22c55e; animation: statusPulse 2s infinite; }
+    .status-recent     .sb-status-dot { background: var(--teal); }
+    .status-hours      .sb-status-dot { background: var(--text-light); }
+    .status-days       .sb-status-dot { background: #d4cdc5; }
+    @keyframes statusPulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(0.8); }
+    }
+    .sb-status-text-bn {
+      font-family: var(--font-bn); font-size: 11px; color: var(--text-light);
+    }
+    .sb-status-text-en {
+      font-family: var(--font-en); font-size: 10px; color: var(--text-xlight);
+    }
+    /* override color for active now */
+    .status-active-now .sb-status-text-bn { color: var(--fact-green); font-weight: 600; }
+
+    /* ═══════════════════════════════════════════════
+       CENTER FEED
+    ═══════════════════════════════════════════════ */
+    .feed-center {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: calc(100vh - var(--nav-h));
+      display: flex;
+      justify-content: center;
+      padding: 22px 16px 48px;
+    }
+    .feed-inner {
+      width: 100%; max-width: 680px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* ── Feed Header ── */
+    .feed-section-header {
+      padding: 0 2px 2px;
+    }
+    .feed-title-bn {
+      font-family: var(--font-bn); font-size: 20px; font-weight: 700;
+      color: var(--text-dark);
+    }
+    .feed-title-en {
+      font-family: var(--font-en); font-size: 12px; color: var(--text-light);
+      font-weight: 400; margin-top: 2px;
+    }
+
+    /* ── Filter Tabs (floating pills — original) ── */
+    .feed-filters {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px;
+    }
+    .feed-filters::-webkit-scrollbar { height: 0; }
+    .filter-pill {
+      padding: 9px 20px; border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg); cursor: pointer;
+      white-space: nowrap; transition: all 0.2s;
+      flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .filter-pill:hover { border-color: var(--teal-pale); background: var(--teal-xpale); }
+    .filter-pill.active {
+      background: var(--teal); border-color: var(--teal);
+      box-shadow: 0 3px 12px rgba(27,107,90,0.28);
+    }
+    .filter-pill-bn {
+      font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+      color: var(--text-mid); line-height: 1.2;
+    }
+    .filter-pill-en {
+      font-family: var(--font-en); font-size: 9.5px; color: var(--text-xlight);
+      font-weight: 400;
+    }
+    .filter-pill.active .filter-pill-bn { color: white; }
+    .filter-pill.active .filter-pill-en { color: rgba(255,255,255,0.7); }
+
+    /* ═══════════════════════════════════════════════
+       POST CARD — Groups variant
+    ═══════════════════════════════════════════════ */
+    .post-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg); /* 20px — distinct from 18px in newsfeed */
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden; transition: box-shadow 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .post-card:hover { box-shadow: var(--shadow-md); }
+    .post-card:nth-child(2) { animation-delay: 0.08s; }
+    .post-card:nth-child(3) { animation-delay: 0.16s; }
+    .post-card:nth-child(4) { animation-delay: 0.24s; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* Group context header (top of each post card) */
+    .post-group-ctx {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 0; gap: 10px;
+    }
+    .post-group-left { display: flex; align-items: center; gap: 10px; }
+    .post-group-thumb {
+      width: 42px; height: 42px; border-radius: 11px;
+      overflow: hidden; flex-shrink: 0;
+      border: 1.5px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .post-group-name-bn {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 700; color: var(--text-dark);
+      cursor: pointer;
+    }
+    .post-group-name-bn:hover { color: var(--teal); }
+    .post-group-meta {
+      display: flex; align-items: center; gap: 5px; margin-top: 1px;
+    }
+    .post-group-members {
+      font-family: var(--font-en); font-size: 10.5px; color: var(--text-light);
+    }
+    .post-group-sep { color: var(--border); font-size: 9px; }
+    .post-group-privacy {
+      display: flex; align-items: center; gap: 3px;
+      font-family: var(--font-en); font-size: 10.5px; color: var(--text-light);
+    }
+
+    .post-more-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-light); transition: background 0.15s;
+    }
+    .post-more-btn:hover { background: var(--off-white); color: var(--text-mid); }
+
+    /* Author row */
+    .post-author {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px 0;
+    }
+    .post-avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 15px; font-weight: 700; color: white;
+      border: 2px solid var(--border-light);
+    }
+    .av-1 { background: linear-gradient(135deg, #f97316, #dc2626); }
+    .av-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .av-3 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .av-4 { background: linear-gradient(135deg, #10b981, #059669); }
+    .av-5 { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+    .post-author-name {
+      font-family: var(--font-bn); font-size: 13.5px; font-weight: 700; color: var(--text-dark);
+      cursor: pointer;
+    }
+    .post-author-name:hover { color: var(--teal); }
+    .post-author-time {
+      font-family: var(--font-en); font-size: 10.5px; color: var(--text-light); margin-top: 1px;
+    }
+
+    /* Post body */
+    .post-text {
+      padding: 10px 16px 12px;
+      font-family: var(--font-bn); font-size: 15px;
+      line-height: 1.7; color: var(--text-dark);
+    }
+    .post-text.large {
+      font-size: 20px; line-height: 1.5; font-weight: 500;
+    }
+
+    /* Post media */
+    .post-media-wrap {
+      width: 100%; overflow: hidden;
+    }
+    .post-media-placeholder {
+      width: 100%; height: 260px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 56px;
+    }
+    .media-grad-1 { background: linear-gradient(135deg, #fde68a, #f97316); }
+    .media-grad-2 { background: linear-gradient(135deg, #bfdbfe, #60a5fa); }
+    .media-grad-3 { background: linear-gradient(135deg, #bbf7d0, #34d399); }
+
+    /* Reaction summary */
+    .post-react-summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .react-emoji-row { display: flex; align-items: center; gap: 2px; }
+    .react-bubble {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; background: var(--off-white);
+      border: 1.5px solid white; margin-left: -5px;
+    }
+    .react-bubble:first-child { margin-left: 0; }
+    .react-count {
+      font-family: var(--font-en); font-size: 12px;
+      color: var(--text-light); margin-left: 7px; cursor: pointer;
+    }
+    .react-count:hover { text-decoration: underline; color: var(--text-mid); }
+    .comment-share-count {
+      font-family: var(--font-en); font-size: 12px; color: var(--text-light);
+      cursor: pointer;
+    }
+    .comment-share-count:hover { text-decoration: underline; color: var(--text-mid); }
+
+    /* Reaction bar */
+    .post-reaction-bar {
+      display: flex; align-items: center; padding: 4px 8px; gap: 2px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .react-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 9px 6px; border-radius: 11px; border: none; background: transparent;
+      cursor: pointer; transition: background 0.15s; color: var(--text-mid);
+    }
+    .react-btn:hover { background: var(--off-white); }
+    .react-btn.liked { color: var(--coral); }
+    .react-btn-bn { font-family: var(--font-bn); font-size: 13px; font-weight: 600; }
+    .react-btn-en { font-family: var(--font-en); font-size: 9.5px; color: var(--text-xlight); }
+
+    /* Comment input row */
+    .post-comment-row {
+      display: flex; align-items: center; gap: 9px;
+      padding: 12px 16px;
+    }
+    .comment-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #4ECDC4, var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-bn); font-size: 13px; font-weight: 700; color: white;
+      border: 2px solid var(--teal-pale);
+    }
+    .comment-input-wrap {
+      flex: 1; display: flex; align-items: center;
+      background: var(--off-white);
+      border: 1.5px solid var(--border);
+      border-radius: 50px; padding: 7px 12px 7px 16px;
+      gap: 6px; transition: all 0.2s;
+      cursor: text;
+    }
+    .comment-input-wrap:focus-within {
+      border-color: var(--teal); background: white;
+      box-shadow: 0 0 0 3px rgba(27,107,90,0.08);
+    }
+    .comment-input {
+      flex: 1; border: none; background: transparent; outline: none;
+      font-family: var(--font-bn); font-size: 13.5px; color: var(--text-dark);
+    }
+    .comment-input::placeholder { color: var(--text-light); }
+    .comment-icon-row { display: flex; align-items: center; gap: 2px; }
+    .comment-icon-btn {
+      width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-light);
+      transition: color 0.15s, background 0.15s;
+    }
+    .comment-icon-btn:hover { color: var(--teal); background: var(--teal-pale); }
+
+    /* ═══════════════════════════════════════════════
+       POLL CARD (special variant)
+    ═══════════════════════════════════════════════ */
+    .poll-question-block {
+      padding: 10px 16px 14px;
+    }
+    .poll-question-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold-pale); border: 1px solid rgba(212,160,74,0.25);
+      border-radius: 6px; padding: 4px 10px; margin-bottom: 10px;
+    }
+    .poll-label-text {
+      font-family: var(--font-en); font-size: 10px; font-weight: 700;
+      color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .poll-question-bn {
+      font-family: var(--font-bn); font-size: 16px; font-weight: 700;
+      color: var(--text-dark); line-height: 1.45; margin-bottom: 4px;
+    }
+    .poll-question-en {
+      font-family: var(--font-en); font-size: 11.5px; color: var(--text-light);
+      font-style: italic;
+    }
+
+    .poll-options { display: flex; flex-direction: column; gap: 9px; padding: 0 16px 4px; }
+    .poll-option {
+      position: relative; border-radius: 12px; overflow: hidden;
+      border: 2px solid var(--border-light);
+      background: white; cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+      padding: 12px 14px;
+    }
+    .poll-option:hover { border-color: var(--teal-pale); transform: scale(1.01); }
+    .poll-option.voted { border-color: var(--teal); }
+    .poll-option.voted.leading { border-color: var(--teal); }
+
+    /* Progress fill behind the option */
+    .poll-fill {
+      position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(90deg, var(--teal-xpale) 0%, transparent 100%);
+      transform-origin: left;
+      transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    }
+    .poll-option.coral-fill .poll-fill { background: linear-gradient(90deg, var(--coral-pale) 0%, transparent 100%); }
+    .poll-option.gold-fill  .poll-fill { background: linear-gradient(90deg, var(--gold-pale) 0%, transparent 100%); }
+    .poll-option.green-fill .poll-fill { background: linear-gradient(90deg, #f0fdf4 0%, transparent 100%); }
+
+    .poll-option-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .poll-emoji { font-size: 22px; flex-shrink: 0; }
+    .poll-texts { flex: 1; }
+    .poll-opt-bn {
+      font-family: var(--font-bn); font-size: 14px; font-weight: 600; color: var(--text-dark);
+    }
+    .poll-opt-en {
+      font-family: var(--font-en); font-size: 10.5px; color: var(--text-light);
+    }
+    .poll-pct {
+      font-family: var(--font-en); font-size: 15px; font-weight: 700;
+      color: var(--teal); flex-shrink: 0;
+    }
+    .poll-option.coral-fill .poll-pct { color: var(--coral); }
+    .poll-option.gold-fill  .poll-pct { color: #b07a00; }
+    .poll-option.green-fill .poll-pct { color: var(--fact-green); }
+
+    .poll-meta {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px 4px;
+    }
+    .poll-meta-item {
+      display: flex; align-items: center; gap: 5px;
+      font-family: var(--font-bn); font-size: 12px; color: var(--text-light);
+    }
+    .poll-meta-item svg { flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE AUTO-ADJUST
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 1280px) {
+      :root { --sidebar-w: 260px; }
+    }
+    @media (max-width: 1100px) {
+      :root { --sidebar-w: 240px; }
+    }
+    @media (max-width: 960px) {
+      :root { --sidebar-w: 210px; }
+    }
+    @media (max-width: 860px) {
+      .sidebar-left { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar-left.open { transform: translateX(0); }
+      .feed-center { margin-left: 0 !important; }
+      .feed-inner { max-width: 100%; }
+      :root { --sidebar-w: 280px; }
+      .mobile-menu-btn { display: flex !important; }
+    }
+    @media (max-width: 620px) {
+      .nav-wordmark { display: none; }
+      .nav-search { max-width: 180px; }
+      .filter-pill { padding: 8px 14px; }
+      .feed-center { padding: 12px 8px 32px; }
+    }
+
+    .mobile-menu-btn {
+      display: none; width: 36px; height: 36px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: var(--card-bg);
+      align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-mid); flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════ -->
+<nav class="navbar" role="navigation" aria-label="Jolshaa main navigation">
+
+  <!-- Logo -->
+  <a href="newsfeed.html" class="nav-logo" aria-label="জলশা হোম — Jolshaa Home">
+    <div class="nav-logo-badge"><span>জ</span></div>
+    <span class="nav-wordmark">Jolshaa</span>
+  </a>
+
+  <!-- Mobile menu toggle (hidden on desktop) -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open groups sidebar">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+
+  <!-- Search -->
+  <div class="nav-search">
+    <span class="nav-search-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="text" id="navSearchInput" placeholder="খুঁজুন... / Search..." aria-label="Search Jolshaa"
+      onkeydown="if(event.key==='Enter'&&this.value.trim())window.location='search.html'" />
+  </div>
+
+  <!-- Center nav icons -->
+  <div class="nav-center" role="menubar">
+    <button class="nav-icon-btn" title="হোম / Home" aria-label="Home" role="menuitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M9 22V12h6v10"/></svg>
+    </button>
+    <!-- Groups — active -->
+    <button class="nav-icon-btn active" title="গ্রুপ / Groups" aria-label="Groups — currently active" aria-current="page" role="menuitem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="9" height="9" rx="2.5"/><rect x="13" y="3" width="9" height="9" rx="2.5"/><rect x="2" y="14" width="9" height="9" rx="2.5"/><rect x="13" y="14" width="9" height="9" rx="2.5"/></svg>
+    </button>
+    <!-- Watch -->
+    <button class="nav-icon-btn" title="ভিডিও / Watch" aria-label="Watch" onclick="window.location='watch.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="15" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" opacity="0.7" stroke="none"/></svg>
+    </button>
+    <!-- Events -->
+    <button class="nav-icon-btn" title="ইভেন্ট / Events" aria-label="Events" onclick="window.location='events.html'">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="8" cy="15" r="1.5" fill="currentColor"/><circle cx="12" cy="15" r="1.5" fill="currentColor"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>
+    </button>
+    <!-- Messages -->
+    <button class="nav-icon-btn" title="বার্তা / Messages" aria-label="Messages — 5 unread" role="menuitem">
+      <div class="nav-badge" aria-label="5 unread messages">5</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/></svg>
+    </button>
+    <!-- Notifications -->
+    <button class="nav-icon-btn" title="বিজ্ঞপ্তি / Notifications" aria-label="Notifications" role="menuitem" onclick="window.location='notifications.html'">
+      <div class="nav-badge">৭</div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    </button>
+  </div>
+
+  <!-- Sahajjo Chai button -->
+  <button class="nav-sahajjo" id="navSahajjoBtn" aria-label="সাহায্য চাই — Emergency Help Request" onclick="window.location='sahajjo.html'">
+    <span class="nav-sahajjo-dot" aria-hidden="true"></span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span>সাহায্য চাই</span>
+  </button>
+
+  <!-- Avatar -->
+  <div class="nav-right">
+    <div class="nav-avatar" title="আমার প্রোফাইল / My Profile" tabindex="0" role="button" aria-label="Profile menu">আ</div>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE BODY
+═══════════════════════════════════════════════ -->
+<div class="page-body">
+
+  <!-- ═══════════════════════════════════════════════
+       LEFT SIDEBAR
+  ═══════════════════════════════════════════════ -->
+  <aside class="sidebar-left" id="sidebarLeft" aria-label="Groups navigation sidebar">
+
+    <!-- Header -->
+    <div class="sb-header">
+      <div class="sb-header-titles">
+        <div class="sb-header-title-bn">গ্রুপ</div>
+        <div class="sb-header-title-en">Groups</div>
+      </div>
+      <button class="sb-settings-btn" aria-label="Group settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="sb-search">
+      <span class="sb-search-icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </span>
+      <input
+        type="text"
+        id="groupSearchInput"
+        placeholder="গ্রুপ খুঁজুন... / Search groups..."
+        aria-label="Search groups"
+      />
+    </div>
+
+    <!-- Navigation items -->
+    <nav class="sb-nav-block" aria-label="Groups sub-navigation">
+      <a href="#" class="sb-nav-item active" aria-current="page" id="navFeed">
+        <div class="sb-nav-icon icon-feed">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1B6B5A" stroke-width="2.2" stroke-linecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">তোমার ফিড</div>
+          <div class="sb-nav-text-en">Your Feed</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item" id="navDiscover">
+        <div class="sb-nav-icon icon-discover">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2.2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+          </svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">আবিষ্কার করো</div>
+          <div class="sb-nav-text-en">Discover</div>
+        </div>
+      </a>
+      <a href="#" class="sb-nav-item" id="navMyGroups">
+        <div class="sb-nav-icon icon-mygroup">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#E85C4A" stroke-width="2.2" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div>
+          <div class="sb-nav-text-bn">তোমার গ্রুপ</div>
+          <div class="sb-nav-text-en">Your Groups</div>
+        </div>
+      </a>
+    </nav>
+
+    <!-- Create Group button -->
+    <button class="sb-create-btn" id="createGroupBtn" aria-label="নতুন গ্রুপ তৈরি করো — Create New Group">
+      <div class="sb-create-plus" aria-hidden="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div>
+        <div class="sb-create-text-bn">নতুন গ্রুপ তৈরি করো</div>
+        <div class="sb-create-text-en">Create New Group</div>
+      </div>
+    </button>
+
+    <!-- Joined Groups header -->
+    <div class="sb-section-header">
+      <div class="sb-section-titles">
+        <div class="sb-section-title-bn">যে গ্রুপে যোগ দিয়েছো</div>
+        <div class="sb-section-title-en">Groups You've Joined</div>
+      </div>
+      <a href="#" class="sb-see-all" aria-label="See all joined groups">সব দেখো</a>
+    </div>
+
+    <!-- Joined group list -->
+    <div class="sb-group-list" role="list">
+
+      <!-- Group 1 — Active now -->
+      <a href="#" class="sb-group-item status-active-now" role="listitem" aria-label="বাংলাদেশ ট্রাভেল ক্লাব — এখনই সক্রিয়">
+        <div class="sb-group-thumb">
+          <div class="sb-group-thumb-inner" style="background: linear-gradient(135deg,#22d3ee,#0891b2);">✈️</div>
+        </div>
+        <div class="sb-group-info">
+          <div class="sb-group-name-bn">বাংলাদেশ ট্রাভেল ক্লাব</div>
+          <div class="sb-group-status">
+            <span class="sb-status-dot" aria-hidden="true"></span>
+            <div>
+              <div class="sb-status-text-bn">এখনই সক্রিয়</div>
+              <div class="sb-status-text-en">Active now</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Group 2 — Recent (< 1h) -->
+      <a href="#" class="sb-group-item status-recent" role="listitem" aria-label="রান্নাঘর — ৩৫ মিনিট আগে সক্রিয়">
+        <div class="sb-group-thumb">
+          <div class="sb-group-thumb-inner" style="background: linear-gradient(135deg,#fde68a,#f59e0b);">🍛</div>
+        </div>
+        <div class="sb-group-info">
+          <div class="sb-group-name-bn">রান্নাঘর</div>
+          <div class="sb-group-status">
+            <span class="sb-status-dot" aria-hidden="true"></span>
+            <div>
+              <div class="sb-status-text-bn">৩৫ মিনিট আগে সক্রিয়</div>
+              <div class="sb-status-text-en">Active 35m ago</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Group 3 — Hours ago -->
+      <a href="#" class="sb-group-item status-hours" role="listitem" aria-label="ঢাকা ফটোগ্রাফি — ২ ঘণ্টা আগে সক্রিয়">
+        <div class="sb-group-thumb">
+          <div class="sb-group-thumb-inner" style="background: linear-gradient(135deg,#c4b5fd,#7c3aed);">📷</div>
+        </div>
+        <div class="sb-group-info">
+          <div class="sb-group-name-bn">ঢাকা ফটোগ্রাফি</div>
+          <div class="sb-group-status">
+            <span class="sb-status-dot" aria-hidden="true"></span>
+            <div>
+              <div class="sb-status-text-bn">২ ঘণ্টা আগে সক্রিয়</div>
+              <div class="sb-status-text-en">Active 2h ago</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Group 4 — Hours ago -->
+      <a href="#" class="sb-group-item status-hours" role="listitem" aria-label="খেলাধুলার আসর — ৫ ঘণ্টা আগে সক্রিয়">
+        <div class="sb-group-thumb">
+          <div class="sb-group-thumb-inner" style="background: linear-gradient(135deg,#bbf7d0,#16a34a);">⚽</div>
+        </div>
+        <div class="sb-group-info">
+          <div class="sb-group-name-bn">খেলাধুলার আসর</div>
+          <div class="sb-group-status">
+            <span class="sb-status-dot" aria-hidden="true"></span>
+            <div>
+              <div class="sb-status-text-bn">৫ ঘণ্টা আগে সক্রিয়</div>
+              <div class="sb-status-text-en">Active 5h ago</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Group 5 — Days -->
+      <a href="#" class="sb-group-item status-days" role="listitem" aria-label="বই পড়ুয়া — ২ দিন আগে সক্রিয়">
+        <div class="sb-group-thumb">
+          <div class="sb-group-thumb-inner" style="background: linear-gradient(135deg,#fde2c5,#f97316);">📚</div>
+        </div>
+        <div class="sb-group-info">
+          <div class="sb-group-name-bn">বই পড়ুয়া</div>
+          <div class="sb-group-status">
+            <span class="sb-status-dot" aria-hidden="true"></span>
+            <div>
+              <div class="sb-status-text-bn">২ দিন আগে সক্রিয়</div>
+              <div class="sb-status-text-en">Active 2 days ago</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div><!-- /sb-group-list -->
+  </aside>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CENTER FEED
+  ═══════════════════════════════════════════════ -->
+  <main class="feed-center" aria-label="Groups feed — সাম্প্রতিক কার্যকলাপ">
+    <div class="feed-inner">
+
+      <!-- Feed section label -->
+      <div class="feed-section-header">
+        <div class="feed-title-bn">সাম্প্রতিক কার্যকলাপ</div>
+        <div class="feed-title-en">Recent Activity · তোমার গ্রুপগুলো থেকে</div>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="feed-filters" role="tablist" aria-label="Feed filter tabs">
+        <button class="filter-pill active" role="tab" aria-selected="true" id="filterAll" aria-controls="feedContent">
+          <span class="filter-pill-bn">সব পোস্ট</span>
+          <span class="filter-pill-en">All Posts</span>
+        </button>
+        <button class="filter-pill" role="tab" aria-selected="false" id="filterMyGroups">
+          <span class="filter-pill-bn">তোমার গ্রুপ</span>
+          <span class="filter-pill-en">Your Groups</span>
+        </button>
+        <button class="filter-pill" role="tab" aria-selected="false" id="filterPopular">
+          <span class="filter-pill-bn">জনপ্রিয়</span>
+          <span class="filter-pill-en">Popular</span>
+        </button>
+        <button class="filter-pill" role="tab" aria-selected="false" id="filterNew">
+          <span class="filter-pill-bn">নতুন পোস্ট</span>
+          <span class="filter-pill-en">New</span>
+        </button>
+      </div>
+
+
+      <!-- ── POST CARD 1: Text post with media ── -->
+      <article class="post-card" id="feedContent" aria-label="Post in বাংলাদেশ ট্রাভেল ক্লাব by রাহেলা বেগম">
+
+        <!-- Group context -->
+        <div class="post-group-ctx">
+          <div class="post-group-left">
+            <div class="post-group-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#22d3ee,#0891b2);">✈️</div>
+            <div>
+              <div class="post-group-name-bn" tabindex="0" role="link">বাংলাদেশ ট্রাভেল ক্লাব</div>
+              <div class="post-group-meta">
+                <span class="post-group-members">৮,৪২৩ সদস্য</span>
+                <span class="post-group-sep">·</span>
+                <span class="post-group-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                  Public
+                </span>
+              </div>
+            </div>
+          </div>
+          <button class="post-more-btn" aria-label="Post options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+          </button>
+        </div>
+
+        <!-- Author -->
+        <div class="post-author">
+          <div class="post-avatar av-1" aria-hidden="true">র</div>
+          <div>
+            <div class="post-author-name" tabindex="0" role="link">রাহেলা বেগম</div>
+            <div class="post-author-time">১৫ মিনিট আগে · 15 minutes ago</div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="post-text">
+          সুন্দরবনের বনের ভেতর দিয়ে নৌকায় যাওয়ার অনুভূতিটা কোনো ভাষায় বোঝানো যায় না 🌿 গত সপ্তাহে পরিবারসহ গেলাম — এত সুন্দর লেগেছে যে ফিরতে মন চায়নি। তোমরা কি কেউ সুন্দরবন গেছ?
+          <span style="font-family:var(--font-en);font-size:12px;color:var(--text-light);display:block;margin-top:5px;">Just returned from Sundarbans — words can't describe how beautiful it was 🌿 Has anyone else visited?</span>
+        </div>
+
+        <!-- Media -->
+        <div class="post-media-wrap">
+          <div class="post-media-placeholder media-grad-3" role="img" aria-label="Sundarbans forest photo">
+            🌿
+          </div>
+        </div>
+
+        <!-- Reaction summary -->
+        <div class="post-react-summary">
+          <div style="display:flex;align-items:center;">
+            <div class="react-emoji-row" aria-label="Reactions">
+              <div class="react-bubble">❤️</div>
+              <div class="react-bubble">🎉</div>
+              <div class="react-bubble">😮</div>
+            </div>
+            <span class="react-count" tabindex="0" role="button">২৮৪ জন</span>
+          </div>
+          <span class="comment-share-count" tabindex="0" role="button">৪৭টি মন্তব্য · ১৬ শেয়ার</span>
+        </div>
+
+        <!-- Reaction buttons -->
+        <div class="post-reaction-bar" role="group" aria-label="React to post">
+          <button class="react-btn liked" id="likeBtn1" aria-pressed="true" aria-label="Like post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#E85C4A" stroke="#E85C4A" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span>
+              <div class="react-btn-bn" style="color:var(--coral)">পছন্দ</div>
+              <div class="react-btn-en">Like</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Comment on post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>
+              <div class="react-btn-bn">মন্তব্য</div>
+              <div class="react-btn-en">Comment</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Share post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>
+              <div class="react-btn-bn">শেয়ার</div>
+              <div class="react-btn-en">Share</div>
+            </span>
+          </button>
+        </div>
+
+        <!-- Comment input -->
+        <div class="post-comment-row">
+          <div class="comment-avatar" aria-hidden="true">আ</div>
+          <div class="comment-input-wrap">
+            <input
+              class="comment-input"
+              id="commentInput1"
+              type="text"
+              placeholder="মন্তব্য করো... / Comment..."
+              aria-label="Write a comment"
+            />
+            <div class="comment-icon-row" aria-label="Comment attachments">
+              <button class="comment-icon-btn" aria-label="Add emoji">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add GIF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M10 9v6M7 12h3M14 9v3h3M14 12v3"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add photo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+
+      <!-- ── POST CARD 2: INTERACTIVE POLL ── -->
+      <article class="post-card" aria-label="Poll post in রান্নাঘর by তানভীর আহমেদ">
+
+        <!-- Group context -->
+        <div class="post-group-ctx">
+          <div class="post-group-left">
+            <div class="post-group-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#fde68a,#f59e0b);">🍛</div>
+            <div>
+              <div class="post-group-name-bn" tabindex="0" role="link">রান্নাঘর</div>
+              <div class="post-group-meta">
+                <span class="post-group-members">১২,০৫৮ সদস্য</span>
+                <span class="post-group-sep">·</span>
+                <span class="post-group-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  Private
+                </span>
+              </div>
+            </div>
+          </div>
+          <button class="post-more-btn" aria-label="Post options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+          </button>
+        </div>
+
+        <!-- Author -->
+        <div class="post-author">
+          <div class="post-avatar av-2" aria-hidden="true">ত</div>
+          <div>
+            <div class="post-author-name" tabindex="0" role="link">তানভীর আহমেদ</div>
+            <div class="post-author-time">৪৫ মিনিট আগে · 45 minutes ago</div>
+          </div>
+        </div>
+
+        <!-- Poll question block -->
+        <div class="poll-question-block">
+          <div class="poll-question-label" aria-label="Poll">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <span class="poll-label-text">ভোট করুন · Poll</span>
+          </div>
+          <div class="poll-question-bn" role="heading" aria-level="3">তোমার প্রিয় বাংলাদেশি খাবার কোনটি?</div>
+          <div class="poll-question-en">What's your favorite Bangladeshi dish?</div>
+        </div>
+
+        <!-- Poll options -->
+        <div class="poll-options" role="group" aria-label="Poll options — click to vote">
+
+          <!-- Option 1 — leading, teal fill -->
+          <div class="poll-option voted" role="button" tabindex="0" aria-pressed="true" aria-label="বিরিয়ানি — ৪২%, voted" id="pollOpt1" onclick="selectPollOption(1)">
+            <div class="poll-fill" style="width:42%" aria-hidden="true"></div>
+            <div class="poll-option-inner">
+              <span class="poll-emoji" aria-hidden="true">🍚</span>
+              <div class="poll-texts">
+                <div class="poll-opt-bn">বিরিয়ানি</div>
+                <div class="poll-opt-en">Biryani</div>
+              </div>
+              <div class="poll-pct" aria-label="42 percent">৪২%</div>
+            </div>
+          </div>
+
+          <!-- Option 2 — coral fill -->
+          <div class="poll-option coral-fill" role="button" tabindex="0" aria-pressed="false" aria-label="ইলিশ মাছ — ২৮%" id="pollOpt2" onclick="selectPollOption(2)">
+            <div class="poll-fill" style="width:28%" aria-hidden="true"></div>
+            <div class="poll-option-inner">
+              <span class="poll-emoji" aria-hidden="true">🐟</span>
+              <div class="poll-texts">
+                <div class="poll-opt-bn">ইলিশ মাছ</div>
+                <div class="poll-opt-en">Hilsa Fish</div>
+              </div>
+              <div class="poll-pct" aria-label="28 percent">২৮%</div>
+            </div>
+          </div>
+
+          <!-- Option 3 — gold fill -->
+          <div class="poll-option gold-fill" role="button" tabindex="0" aria-pressed="false" aria-label="খিচুড়ি — ১৮%" id="pollOpt3" onclick="selectPollOption(3)">
+            <div class="poll-fill" style="width:18%" aria-hidden="true"></div>
+            <div class="poll-option-inner">
+              <span class="poll-emoji" aria-hidden="true">🍲</span>
+              <div class="poll-texts">
+                <div class="poll-opt-bn">খিচুড়ি</div>
+                <div class="poll-opt-en">Khichuri</div>
+              </div>
+              <div class="poll-pct" aria-label="18 percent">১৮%</div>
+            </div>
+          </div>
+
+          <!-- Option 4 — green fill -->
+          <div class="poll-option green-fill" role="button" tabindex="0" aria-pressed="false" aria-label="চাটপটি — ১২%" id="pollOpt4" onclick="selectPollOption(4)">
+            <div class="poll-fill" style="width:12%" aria-hidden="true"></div>
+            <div class="poll-option-inner">
+              <span class="poll-emoji" aria-hidden="true">🥗</span>
+              <div class="poll-texts">
+                <div class="poll-opt-bn">চাটপটি</div>
+                <div class="poll-opt-en">Chatpati</div>
+              </div>
+              <div class="poll-pct" aria-label="12 percent">১২%</div>
+            </div>
+          </div>
+
+        </div><!-- /poll-options -->
+
+        <!-- Poll meta -->
+        <div class="poll-meta">
+          <div class="poll-meta-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            <span>১২৫ জন ভোট দিয়েছে · <span style="font-family:var(--font-en)">125 votes</span></span>
+          </div>
+          <div class="poll-meta-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>২ দিন বাকি · <span style="font-family:var(--font-en)">2 days left</span></span>
+          </div>
+        </div>
+
+        <!-- Reaction summary -->
+        <div class="post-react-summary">
+          <div style="display:flex;align-items:center;">
+            <div class="react-emoji-row" aria-label="Reactions">
+              <div class="react-bubble">😂</div>
+              <div class="react-bubble">❤️</div>
+            </div>
+            <span class="react-count" tabindex="0" role="button">৯৬ জন</span>
+          </div>
+          <span class="comment-share-count" tabindex="0" role="button">২৩টি মন্তব্য</span>
+        </div>
+
+        <!-- Reaction bar -->
+        <div class="post-reaction-bar" role="group" aria-label="React to poll post">
+          <button class="react-btn" id="likeBtn2" aria-pressed="false" aria-label="Like post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span>
+              <div class="react-btn-bn">পছন্দ</div>
+              <div class="react-btn-en">Like</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Comment on post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>
+              <div class="react-btn-bn">মন্তব্য</div>
+              <div class="react-btn-en">Comment</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Share post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>
+              <div class="react-btn-bn">শেয়ার</div>
+              <div class="react-btn-en">Share</div>
+            </span>
+          </button>
+        </div>
+
+        <!-- Comment input -->
+        <div class="post-comment-row">
+          <div class="comment-avatar" aria-hidden="true">আ</div>
+          <div class="comment-input-wrap">
+            <input
+              class="comment-input"
+              id="commentInput2"
+              type="text"
+              placeholder="মন্তব্য করো... / Comment..."
+              aria-label="Write a comment on this poll"
+            />
+            <div class="comment-icon-row" aria-label="Comment attachments">
+              <button class="comment-icon-btn" aria-label="Add emoji">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add GIF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M10 9v6M7 12h3M14 9v3h3M14 12v3"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add photo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+
+      <!-- ── POST CARD 3: Text-only larger post ── -->
+      <article class="post-card" aria-label="Post in ঢাকা ফটোগ্রাফি by নাজমুল করিম">
+
+        <!-- Group context -->
+        <div class="post-group-ctx">
+          <div class="post-group-left">
+            <div class="post-group-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#c4b5fd,#7c3aed);">📷</div>
+            <div>
+              <div class="post-group-name-bn" tabindex="0" role="link">ঢাকা ফটোগ্রাফি</div>
+              <div class="post-group-meta">
+                <span class="post-group-members">৩,৭৯৪ সদস্য</span>
+                <span class="post-group-sep">·</span>
+                <span class="post-group-privacy">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                  Public
+                </span>
+              </div>
+            </div>
+          </div>
+          <button class="post-more-btn" aria-label="Post options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+          </button>
+        </div>
+
+        <!-- Author -->
+        <div class="post-author">
+          <div class="post-avatar av-3" aria-hidden="true">ন</div>
+          <div>
+            <div class="post-author-name" tabindex="0" role="link">নাজমুল করিম</div>
+            <div class="post-author-time">২ ঘণ্টা আগে · 2 hours ago</div>
+          </div>
+        </div>
+
+        <!-- Large text post -->
+        <div class="post-text large">
+          বৃষ্টির পরে পুরান ঢাকার সরু গলিতে আলো-ছায়ার খেলা 🌧️
+        </div>
+        <div class="post-text" style="padding-top:0;">
+          আজকের ছবিটা তুলেছি সন্ধ্যা নামার ঠিক আগে। পুরান ঢাকার জীবন এতটাই বৈচিত্র্যময় যে প্রতিবার ক্যামেরা নিয়ে বেরোলে নতুন কিছু চোখে পড়ে। এই মুহূর্তটা ধরে রাখতে পেরেছি বলে মনে হচ্ছে।
+        </div>
+
+        <!-- Media -->
+        <div class="post-media-wrap">
+          <div class="post-media-placeholder media-grad-2" role="img" aria-label="Old Dhaka alley photo">
+            📸
+          </div>
+        </div>
+
+        <!-- Reaction summary -->
+        <div class="post-react-summary">
+          <div style="display:flex;align-items:center;">
+            <div class="react-emoji-row" aria-label="Reactions">
+              <div class="react-bubble">❤️</div>
+              <div class="react-bubble">😮</div>
+              <div class="react-bubble">👏</div>
+            </div>
+            <span class="react-count" tabindex="0" role="button">৫৩১ জন</span>
+          </div>
+          <span class="comment-share-count" tabindex="0" role="button">৮৯টি মন্তব্য · ৩৪ শেয়ার</span>
+        </div>
+
+        <!-- Reaction bar -->
+        <div class="post-reaction-bar" role="group" aria-label="React to post">
+          <button class="react-btn" id="likeBtn3" aria-pressed="false" aria-label="Like post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span>
+              <div class="react-btn-bn">পছন্দ</div>
+              <div class="react-btn-en">Like</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Comment on post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>
+              <div class="react-btn-bn">মন্তব্য</div>
+              <div class="react-btn-en">Comment</div>
+            </span>
+          </button>
+          <button class="react-btn" aria-label="Share post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>
+              <div class="react-btn-bn">শেয়ার</div>
+              <div class="react-btn-en">Share</div>
+            </span>
+          </button>
+        </div>
+
+        <!-- Comment input -->
+        <div class="post-comment-row">
+          <div class="comment-avatar" aria-hidden="true">আ</div>
+          <div class="comment-input-wrap">
+            <input
+              class="comment-input"
+              id="commentInput3"
+              type="text"
+              placeholder="মন্তব্য করো... / Comment..."
+              aria-label="Write a comment"
+            />
+            <div class="comment-icon-row" aria-label="Comment attachments">
+              <button class="comment-icon-btn" aria-label="Add emoji">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add GIF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M10 9v6M7 12h3M14 9v3h3M14 12v3"/></svg>
+              </button>
+              <button class="comment-icon-btn" aria-label="Add photo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /feed-inner -->
+  </main>
+
+</div><!-- /page-body -->
+
+
+<script>
+  /* ── Mobile sidebar toggle ── */
+  var mobileBtn = document.getElementById('mobileMenuBtn');
+  var sidebar   = document.getElementById('sidebarLeft');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+    });
+  }
+
+  /* ── Filter pill switching ── */
+  document.querySelectorAll('.filter-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.filter-pill').forEach(function(p) {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
+      });
+      pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
+    });
+  });
+
+  /* ── Sidebar nav switching ── */
+  ['navFeed','navDiscover','navMyGroups'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.sb-nav-item').forEach(function(n) { n.classList.remove('active'); n.removeAttribute('aria-current'); });
+      el.classList.add('active');
+      el.setAttribute('aria-current', 'page');
+    });
+  });
+
+  /* ── Like button toggle ── */
+  ['likeBtn1','likeBtn2','likeBtn3'].forEach(function(id) {
+    var btn = document.getElementById(id);
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var liked = btn.classList.toggle('liked');
+      btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+      var svg = btn.querySelector('svg');
+      if (liked) {
+        svg.setAttribute('fill', '#E85C4A');
+        svg.setAttribute('stroke', '#E85C4A');
+        btn.querySelector('.react-btn-bn').style.color = 'var(--coral)';
+      } else {
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        btn.querySelector('.react-btn-bn').style.color = '';
+      }
+    });
+  });
+
+  /* ── Poll option selection ── */
+  function selectPollOption(n) {
+    var opts = document.querySelectorAll('.poll-option');
+    opts.forEach(function(o, i) {
+      var isThis = (i + 1 === n);
+      o.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+      if (isThis) {
+        o.classList.add('voted');
+      } else {
+        o.classList.remove('voted');
+      }
+    });
+  }
+
+  /* ── Settings btn hover rotation is handled via CSS ── */
+
+  /* ── Search bar auto-focus group search on click ── */
+  document.getElementById('navSearchInput').addEventListener('focus', function() {
+    var grpSearch = document.getElementById('groupSearchInput');
+    // Don't redirect focus, just a UX note
+  });
+</script>
+
+</body>
+</html>
