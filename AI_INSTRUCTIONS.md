@@ -79,6 +79,26 @@
 
 ---
 
+## ⚠️ UI নিয়ে গুরুত্বপূর্ণ আপডেট — Tailwind না, Custom CSS
+
+প্রতিটা page-এর জন্য ইতিমধ্যে সম্পূর্ণ, পালিশড, standalone HTML/CSS/JS ফাইল বানানো আছে 
+(Claude Sonnet 4.6 দিয়ে বানানো, Stitch ডিজাইনের ভিত্তিতে)। এই HTML ফাইলগুলো:
+- **Plain custom CSS** ব্যবহার করে (CSS variables/custom properties দিয়ে — `:root { --teal: #1B6B5A; }` স্টাইলে), **Tailwind CSS না**
+- প্রতিটা page নিজস্ব `<style>` ব্লকে সম্পূর্ণ CSS ধারণ করে
+- Vanilla JS দিয়ে interactivity আছে (demo/static purpose-এ), যেটা React-এ convert করার সময় state/hooks-এ বদলাতে হবে
+- Navigation বর্তমানে `window.location='page.html'` — React Router-এ `navigate('/page')`-এ বদলাতে হবে
+
+**নিয়ম — React-এ কনভার্ট করার সময়:**
+1. **CSS নতুন করে Tailwind-এ লিখবে না** — বিদ্যমান `<style>` ব্লকের CSS হুবহু একটা আলাদা `.css` ফাইলে (page-অনুযায়ী, যেমন `Messenger.css`) কপি করে সেই component-এ import করবে
+2. HTML structure JSX-এ রূপান্তর করবে (class→className, self-closing tags ঠিক করা, inline event handler React-style-এ বদলানো) — কিন্তু ভিজুয়াল ডিজাইন হুবহু অক্ষত রাখবে, নতুন করে ডিজাইন করবে না
+3. CSS variable-ভিত্তিক color system (--teal, --coral ইত্যাদি) অক্ষত রাখবে — এটাই এখন প্রজেক্টের প্রকৃত design system, আগে থেকে যে Tailwind theme.js বানানো হয়েছিল সেটা এখন আর ব্যবহার হবে না
+4. Static/demo ডেটা (hardcoded conversation list, post list ইত্যাদি) চিহ্নিত করে বলবে কোনগুলো backend/Supabase থেকে dynamic ডেটা দিয়ে replace করতে হবে
+5. Vanilla JS interactivity (toggleAttach, setTab ইত্যাদি ফাংশন) React useState/useEffect দিয়ে পুনর্লিখবে, একই আচরণ বজায় রেখে
+
+**যখন কোনো HTML ফাইল দেওয়া হবে convert করার জন্য, প্রথমে পুরো ফাইলটা মনোযোগ দিয়ে পড়বে — CSS variables, animation, structure বুঝে নিয়ে তারপর কাজ শুরু করবে, আন্দাজে কিছু বাদ দেবে না।**
+
+---
+
 ## Real-time ফিচার নিয়ম
 
 - Chat, notification, online status — সব **Supabase Realtime channels** দিয়ে হবে, Socket.io দিয়ে না

@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
+    "axios": "^1.18.1",
     "i18next": "^26.3.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-hook-form": "^7.81.0",
     "react-i18next": "^17.0.9",
     "react-router-dom": "^7.18.1"
   },
