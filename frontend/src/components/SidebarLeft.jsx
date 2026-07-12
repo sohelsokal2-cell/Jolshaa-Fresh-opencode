@@ -50,7 +50,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
 
         <Link to="/groups" className={`sb-nav-item ${currentPath === '/groups' ? 'active' : ''}`}>
           <div className="sb-nav-icon teal-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" strokeLinecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <rect x="3" y="3" width="7" height="7" rx="2" />
               <rect x="14" y="3" width="7" height="7" rx="2" />
               <rect x="3" y="14" width="7" height="7" rx="2" />
@@ -65,7 +65,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
 
         <Link to="/pages" className={`sb-nav-item ${currentPath === '/pages' ? 'active' : ''}`}>
           <div className="sb-nav-icon blue-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" strokeLinecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <path d="M4 4h10l4 4v14H4z" />
               <path d="M14 4v4h4" />
               <path d="M8 11h6M8 15h4" />
@@ -79,7 +79,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
 
         <Link to="/reels" className={`sb-nav-item ${currentPath === '/reels' ? 'active' : ''}`}>
           <div className="sb-nav-icon purple-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
@@ -116,7 +116,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
       <div className="sb-secondary-group">
         <Link to="/saved" className={`sb-nav-item ${currentPath === '/saved' ? 'active' : ''}`}>
           <div className="sb-nav-icon gold-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
             </svg>
           </div>
@@ -127,7 +127,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
         </Link>
         <Link to="/memories" className={`sb-nav-item ${currentPath === '/memories' ? 'active' : ''}`}>
           <div className="sb-nav-icon teal-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <circle cx="12" cy="8" r="4" />
               <path d="M2 20c0-4 4.5-7 10-7s10 3 10 7" />
               <path d="M8 8 Q12 5 16 8" />
@@ -140,7 +140,7 @@ export default function SidebarLeft({ userName = 'আমিনুল হক' }) 
         </Link>
         <Link to="/creator-hub" className={`sb-nav-item ${currentPath === '/creator-hub' ? 'active' : ''}`}>
           <div className="sb-nav-icon gold-bg">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </div>

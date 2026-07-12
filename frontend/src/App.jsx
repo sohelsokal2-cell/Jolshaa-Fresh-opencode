@@ -1,11 +1,26 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ToastProvider } from './components/Toast';
 import ConnectionTest from './pages/ConnectionTest';
 import DesignSystemDemo from './pages/DesignSystemDemo';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import NewsFeed from './pages/NewsFeed';
+import Messenger from './pages/Messenger';
+import Profile from './pages/Profile';
+import Groups from './pages/Groups';
+import PagesManagement from './pages/PagesManagement';
+import SearchResults from './pages/SearchResults';
+import Reels from './pages/Reels';
+import Watch from './pages/Watch';
+import Events from './pages/Events';
+import SahajjoChai from './pages/SahajjoChai';
+import FactCheckPreview from './pages/FactCheckPreview';
+import Settings from './pages/Settings';
+import CreatorDashboard from './pages/CreatorDashboard';
+import AdminPanel from './pages/AdminPanel';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
 
 function PlaceholderPage({ title }) {
   return (
@@ -22,6 +37,7 @@ function PlaceholderPage({ title }) {
 function App() {
   return (
     <AuthProvider>
+      <ToastProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -38,27 +54,122 @@ function App() {
             }
           />
 
+          {/* Protected Messenger */}
+          <Route
+            path="/messenger"
+            element={
+              <ProtectedRoute>
+                <Messenger />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Profile */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Groups */}
+          <Route
+            path="/groups"
+            element={
+              <ProtectedRoute>
+                <Groups />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Pages Management */}
+          <Route
+            path="/pages"
+            element={
+              <ProtectedRoute>
+                <PagesManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Search Results */}
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <SearchResults />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Placeholders for Nav & Sidebar items to prevent broken routing */}
-          <Route path="/groups" element={<PlaceholderPage title="Groups / গ্রুপসমূহ" />} />
-          <Route path="/watch" element={<PlaceholderPage title="Watch / ভিডিও" />} />
-          <Route path="/events" element={<PlaceholderPage title="Events / ইভেন্ট" />} />
-          <Route path="/messenger" element={<PlaceholderPage title="Messages / বার্তা" />} />
+          <Route
+            path="/watch"
+            element={
+              <ProtectedRoute>
+                <Watch />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute>
+                <Events />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/notifications" element={<PlaceholderPage title="Notifications / বিজ্ঞপ্তি" />} />
-          <Route path="/sahajjo" element={<PlaceholderPage title="Sahajjo Chai / সাহায্য চাই" />} />
-          <Route path="/search" element={<PlaceholderPage title="Search / খুঁজুন" />} />
-          <Route path="/profile" element={<PlaceholderPage title="Profile / প্রোফাইল" />} />
+          <Route
+            path="/sahajjo"
+            element={
+              <ProtectedRoute>
+                <SahajjoChai />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/friends" element={<PlaceholderPage title="Friends / বন্ধুরা" />} />
-          <Route path="/pages" element={<PlaceholderPage title="Pages / পেইজ" />} />
-          <Route path="/reels" element={<PlaceholderPage title="Reels & Shorts / রিলস ও শর্টস" />} />
+          <Route path="/reels" element={
+            <ProtectedRoute>
+              <Reels />
+            </ProtectedRoute>
+          } />
           <Route path="/saved" element={<PlaceholderPage title="Saved Posts / সেভ করা পোস্ট" />} />
           <Route path="/memories" element={<PlaceholderPage title="Memories / স্মৃতি" />} />
-          <Route path="/creator-hub" element={<PlaceholderPage title="Creator Hub / ক্রিয়েটর হাব" />} />
+          <Route path="/creator-hub" element={
+            <ProtectedRoute>
+              <CreatorDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Admin Panel — admin-only protected */}
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminProtectedRoute>
+                <AdminPanel />
+              </AdminProtectedRoute>
+            </ProtectedRoute>
+          } />
+
+          {/* Real Settings page */}
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Developer Testing Routes */}
           <Route path="/test" element={<ConnectionTest />} />
           <Route path="/design" element={<DesignSystemDemo />} />
+          <Route path="/factcheck-preview" element={<FactCheckPreview />} />
         </Routes>
       </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 }

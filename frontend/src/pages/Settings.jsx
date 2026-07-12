@@ -1,0 +1,74 @@
+import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
+import SettingsSidebar from '../components/SettingsSidebar';
+import AccountSettingsPanel from '../components/AccountSettingsPanel';
+import LanguageSettingsPanel from '../components/LanguageSettingsPanel';
+import './Settings.css';
+
+const CATEGORY_META = {
+  account:  { bn: 'অ্যাকাউন্ট সেটিংস',  en: 'Account Settings' },
+  privacy:  { bn: 'গোপনীয়তা',          en: 'Privacy' },
+  security: { bn: 'নিরাপত্তা',          en: 'Security' },
+  notif:    { bn: 'বিজ্ঞপ্তি',          en: 'Notifications' },
+  lang:     { bn: 'ভাষা',               en: 'Language' },
+  block:    { bn: 'ব্লক তালিকা',        en: 'Blocked List' },
+  money:    { bn: 'পেমেন্ট ও উপার্জন',  en: 'Payments & Earnings' },
+  help:     { bn: 'সাহায্য ও সাপোর্ট',  en: 'Help & Support' },
+};
+
+export default function Settings() {
+  const [activeCategory, setActiveCategory] = useState('account');
+  const isLanguageView = activeCategory === 'lang';
+
+  const handleCategoryChange = (cat) => setActiveCategory(cat);
+
+  const renderPanel = () => {
+    switch (activeCategory) {
+      case 'account':
+        return <AccountSettingsPanel />;
+      default:
+        return (
+          <div className="settings-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{ fontSize: 22 }}>শীঘ্রই আসছে</div>
+            <div style={{ fontFamily: 'var(--font-en)', fontSize: 12, color: 'var(--text-light)', marginTop: 6 }}>
+              {CATEGORY_META[activeCategory].bn} — Coming soon
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="settings-page">
+      <Navbar />
+
+      <div className="page-body">
+        <SettingsSidebar
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+        />
+
+        <div className="content-area">
+          <div className="main-panel">
+            <div className="page-title-row">
+              <div className="pt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round"><path d="M12 15v2"/><path d="M9 9a3 3 0 116 0c0 1.5-1 2-1.5 2.5L12 15h-1l-1.5-1.5C9 13 8 12.5 8 11z"/></svg>
+              </div>
+              <div>
+                <div className="pt-title-bn">{CATEGORY_META[activeCategory].bn}</div>
+                <div className="pt-title-en">{CATEGORY_META[activeCategory].en}</div>
+              </div>
+            </div>
+            {isLanguageView ? <LanguageSettingsPanel /> : renderPanel()}
+          </div>
+
+          {!isLanguageView && (
+            <aside className="lang-panel">
+              <LanguageSettingsPanel className="lang-panel-inner" />
+            </aside>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,657 @@
+/* ═══════════════════════════════════════════════════════
+   FactCheckVoteModal.css
+   Extracted from factcheck.html — PART A: Vote Modal
+   Used as modal overlay (not inline card)
+   ═══════════════════════════════════════════════════════ */
+
+.fcm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fcmFadeIn 0.25s ease both;
+}
+
+@keyframes fcmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fcm-modal {
+  background: var(--card-bg, #fff);
+  border-radius: var(--radius-xl, 24px);
+  border: 1px solid var(--border-light, #F0EBE3);
+  box-shadow: var(--shadow-lg, 0 16px 52px rgba(0,0,0,0.15));
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fcmSlideIn 0.4s ease both;
+}
+
+@keyframes fcmSlideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal header */
+.fcm-header {
+  background: linear-gradient(135deg, #f8fffe 0%, #f2faf7 100%);
+  border-bottom: 1px solid var(--border-light, #F0EBE3);
+  padding: 18px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fcm-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  flex-shrink: 0;
+  background: white;
+  border: 1.5px solid var(--teal-pale, #E8F2EF);
+  box-shadow: 0 3px 12px rgba(27,107,90,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fcm-title-wrap {
+  flex: 1;
+}
+
+.fcm-title-bn {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-dark, #1a1a1a);
+}
+
+.fcm-title-en {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10.5px;
+  color: var(--text-light, #888);
+  margin-top: 2px;
+}
+
+.fcm-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  background: var(--off-white, #F5F0E8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-light, #888);
+  transition: all 0.18s;
+}
+
+.fcm-close:hover {
+  background: var(--false-pale, #fdf0ef);
+  color: var(--false-coral, #d9534f);
+}
+
+/* Post preview inside modal */
+.fcm-post-preview {
+  margin: 16px 20px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-md, 14px);
+  border: 1.5px solid var(--border, #E8E2DA);
+  background: var(--off-white, #F5F0E8);
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.fcm-post-av {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.fcm-post-name {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark, #1a1a1a);
+}
+
+.fcm-post-time {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-light, #888);
+  margin-top: 1px;
+}
+
+.fcm-post-text {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 12.5px;
+  color: var(--text-mid, #4a4a4a);
+  line-height: 1.55;
+  margin-top: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fcm-preview-flag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.fcm-flag-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(27,107,90,0.08);
+  border: 1px solid rgba(27,107,90,0.12);
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--teal, #1B6B5A);
+}
+
+/* Vote instruction */
+.fcm-instruction {
+  margin: 16px 20px 0;
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13.5px;
+  color: var(--text-mid, #4a4a4a);
+  line-height: 1.5;
+}
+
+.fcm-instruction-en {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--text-xlight, #bbb);
+  margin-top: 2px;
+  display: block;
+}
+
+/* Vote buttons */
+.fcm-vote-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 0;
+}
+
+.fcm-vote-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md, 14px);
+  border: 2px solid transparent;
+  background: var(--off-white, #F5F0E8);
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+
+.fcm-vote-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+
+.fcm-vote-btn:hover::before {
+  opacity: 1;
+}
+
+.fcm-vote-btn:focus {
+  outline: none;
+}
+
+/* True vote button */
+.fcm-vb-true {
+  border-color: var(--true-border, rgba(26,158,92,0.20));
+}
+
+.fcm-vb-true::before {
+  background: linear-gradient(135deg, rgba(26,158,92,0.05), rgba(26,158,92,0.03));
+}
+
+.fcm-vb-true:hover {
+  border-color: var(--true-green, #1a9e5c);
+  box-shadow: 0 4px 16px rgba(26,158,92,0.18);
+  transform: translateY(-1px);
+}
+
+.fcm-vb-true.selected {
+  border-color: var(--true-green, #1a9e5c);
+  background: var(--true-xpale, #f3fdf8);
+  box-shadow: 0 4px 16px rgba(26,158,92,0.22);
+}
+
+/* False vote button */
+.fcm-vb-false {
+  border-color: var(--false-border, rgba(217,83,79,0.20));
+}
+
+.fcm-vb-false::before {
+  background: linear-gradient(135deg, rgba(217,83,79,0.05), rgba(217,83,79,0.03));
+}
+
+.fcm-vb-false:hover {
+  border-color: var(--false-coral, #d9534f);
+  box-shadow: 0 4px 16px rgba(217,83,79,0.18);
+  transform: translateY(-1px);
+}
+
+.fcm-vb-false.selected {
+  border-color: var(--false-coral, #d9534f);
+  background: var(--false-xpale, #fef7f7);
+  box-shadow: 0 4px 16px rgba(217,83,79,0.22);
+}
+
+/* Mislead vote button */
+.fcm-vb-mislead {
+  border-color: var(--mislead-border, rgba(212,135,10,0.20));
+}
+
+.fcm-vb-mislead::before {
+  background: linear-gradient(135deg, rgba(212,135,10,0.05), rgba(212,135,10,0.03));
+}
+
+.fcm-vb-mislead:hover {
+  border-color: var(--mislead-amb, #d4870a);
+  box-shadow: 0 4px 16px rgba(212,135,10,0.18);
+  transform: translateY(-1px);
+}
+
+.fcm-vb-mislead.selected {
+  border-color: var(--mislead-amb, #d4870a);
+  background: var(--mislead-xpale, #fffdf5);
+  box-shadow: 0 4px 16px rgba(212,135,10,0.22);
+}
+
+/* Vote button icon badge */
+.fcm-vb-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.fcm-vote-btn:hover .fcm-vb-icon-badge {
+  transform: scale(1.07);
+}
+
+.fcm-vbi-true {
+  background: linear-gradient(135deg, #22c55e, var(--true-green, #1a9e5c));
+  box-shadow: 0 3px 10px rgba(26,158,92,0.30);
+}
+
+.fcm-vbi-false {
+  background: linear-gradient(135deg, #ef4444, var(--false-coral, #d9534f));
+  box-shadow: 0 3px 10px rgba(217,83,79,0.30);
+}
+
+.fcm-vbi-mislead {
+  background: linear-gradient(135deg, #f59e0b, var(--mislead-amb, #d4870a));
+  box-shadow: 0 3px 10px rgba(212,135,10,0.30);
+}
+
+.fcm-vb-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.fcm-vb-main-bn {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fcm-vb-true .fcm-vb-main-bn {
+  color: var(--true-mid, #15864e);
+}
+
+.fcm-vb-false .fcm-vb-main-bn {
+  color: var(--false-mid, #c0392b);
+}
+
+.fcm-vb-mislead .fcm-vb-main-bn {
+  color: var(--mislead-mid, #b8720a);
+}
+
+.fcm-vb-main-en {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10.5px;
+  margin-top: 3px;
+}
+
+.fcm-vb-true .fcm-vb-main-en {
+  color: var(--true-green, #1a9e5c);
+}
+
+.fcm-vb-false .fcm-vb-main-en {
+  color: var(--false-coral, #d9534f);
+}
+
+.fcm-vb-mislead .fcm-vb-main-en {
+  color: var(--mislead-amb, #d4870a);
+}
+
+.fcm-vb-desc {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 12px;
+  color: var(--text-light, #888);
+  margin-top: 4px;
+}
+
+/* Selected check mark */
+.fcm-vb-selected-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.22s;
+}
+
+.fcm-vote-btn.selected .fcm-vb-selected-mark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fcm-vb-true .fcm-vb-selected-mark {
+  background: var(--true-green, #1a9e5c);
+}
+
+.fcm-vb-false .fcm-vb-selected-mark {
+  background: var(--false-coral, #d9534f);
+}
+
+.fcm-vb-mislead .fcm-vb-selected-mark {
+  background: var(--mislead-amb, #d4870a);
+}
+
+/* Distribution bar */
+.fcm-dist-wrap {
+  margin: 20px 20px 0;
+}
+
+.fcm-dist-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.fcm-dist-lbn {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-mid, #4a4a4a);
+}
+
+.fcm-vote-count {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10.5px;
+  color: var(--text-light, #888);
+}
+
+.fcm-dist-bar {
+  height: 10px;
+  border-radius: 10px;
+  background: var(--border-light, #F0EBE3);
+  overflow: hidden;
+  display: flex;
+}
+
+.fcm-db-seg {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+
+.fcm-db-true {
+  background: linear-gradient(to right, var(--true-green, #1a9e5c), #22c55e);
+}
+
+.fcm-db-false {
+  background: linear-gradient(to right, var(--false-coral, #d9534f), #ef4444);
+}
+
+.fcm-db-mislead {
+  background: linear-gradient(to right, var(--mislead-amb, #d4870a), #f59e0b);
+}
+
+.fcm-dist-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 9px;
+  flex-wrap: wrap;
+}
+
+.fcm-dl-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fcm-dl-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.fcm-dl-true {
+  background: var(--true-green, #1a9e5c);
+}
+
+.fcm-dl-false {
+  background: var(--false-coral, #d9534f);
+}
+
+.fcm-dl-mislead {
+  background: var(--mislead-amb, #d4870a);
+}
+
+.fcm-dl-text-bn {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 11px;
+  color: var(--text-mid, #4a4a4a);
+}
+
+.fcm-dl-pct {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dark, #1a1a1a);
+  margin-left: 2px;
+}
+
+/* Reason textarea */
+.fcm-reason-wrap {
+  margin: 16px 20px 0;
+}
+
+.fcm-reason-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.18s;
+}
+
+.fcm-reason-toggle:hover {
+  color: var(--teal, #1B6B5A);
+}
+
+.fcm-reason-toggle-bn {
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13px;
+  color: var(--teal, #1B6B5A);
+  font-weight: 500;
+}
+
+.fcm-reason-toggle-en {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10px;
+  color: var(--teal-light, #2a9678);
+}
+
+.fcm-reason-toggle svg {
+  transition: transform 0.22s;
+}
+
+.fcm-reason-toggle.open svg {
+  transform: rotate(180deg);
+}
+
+.fcm-reason-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.fcm-reason-body.open {
+  max-height: 140px;
+}
+
+.fcm-reason-textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  border: 1.5px solid var(--border, #E8E2DA);
+  background: var(--off-white, #F5F0E8);
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13px;
+  color: var(--text-dark, #1a1a1a);
+  resize: none;
+  outline: none;
+  transition: border-color 0.18s, background 0.18s;
+  min-height: 76px;
+}
+
+.fcm-reason-textarea:focus {
+  border-color: var(--teal, #1B6B5A);
+  background: white;
+}
+
+.fcm-reason-textarea::placeholder {
+  color: var(--text-xlight, #bbb);
+}
+
+/* Footer */
+.fcm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 20px;
+  gap: 10px;
+  border-top: 1px solid var(--border-light, #F0EBE3);
+  margin-top: 18px;
+}
+
+.fcm-vote-stats {
+  font-family: var(--font-en, 'Inter', sans-serif);
+  font-size: 10.5px;
+  color: var(--text-light, #888);
+}
+
+.fcm-vote-stats strong {
+  color: var(--text-mid, #4a4a4a);
+  font-weight: 700;
+}
+
+.fcm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.fcm-btn-cancel {
+  padding: 9px 16px;
+  border-radius: 11px;
+  border: 1.5px solid var(--border, #E8E2DA);
+  background: var(--off-white, #F5F0E8);
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13px;
+  color: var(--text-mid, #4a4a4a);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.fcm-btn-cancel:hover {
+  background: var(--border-light, #F0EBE3);
+}
+
+.fcm-btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--teal, #1B6B5A), var(--teal-light, #2a9678));
+  border: none;
+  color: white;
+  font-family: var(--font-bn, 'Hind Siliguri', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(27,107,90,0.26);
+  transition: all 0.2s;
+}
+
+.fcm-btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 18px rgba(27,107,90,0.36);
+}
+
+.fcm-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Submit success state */
+.fcm-btn-submit.success {
+  background: linear-gradient(135deg, var(--true-green, #1a9e5c), #22c55e);
+}

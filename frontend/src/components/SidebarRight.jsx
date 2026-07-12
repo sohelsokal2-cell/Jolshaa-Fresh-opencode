@@ -129,7 +129,7 @@ export default function SidebarRight({
             <div className="widget-title-bn">পরিচিত হতে পারেন</div>
             <div className="widget-title-en">People You May Know</div>
           </div>
-          <button class="widget-action" aria-label="See all suggestions">See all</button>
+          <button className="widget-action" aria-label="See all suggestions">See all</button>
         </div>
 
         {suggestions.map(p => {

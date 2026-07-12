@@ -1,0 +1,38 @@
+import { useState } from 'react';
+
+const SahajjoFilterBar = ({ activeFilter, onFilterChange }) => {
+  const filters = [
+    { id: 'all', icon: '🔍', bn: 'সব', en: 'All' },
+    { id: 'medical', icon: '🏥', bn: 'চিকিৎসা', en: 'Medical' },
+    { id: 'flood', icon: '🌊', bn: 'বন্যা', en: 'Flood' },
+    { id: 'fire', icon: '🔥', bn: 'আগুন', en: 'Fire' },
+    { id: 'lost', icon: '👤', bn: 'হারানো', en: 'Lost' },
+    { id: 'food', icon: '🍚', bn: 'খাবার', en: 'Food' },
+    { id: 'shelter', icon: '🏠', bn: 'আশ্রয়', en: 'Shelter' },
+  ];
+
+  return (
+    <div className="filter-sort-row">
+      <div className="filter-chips">
+        {filters.map((filter) => (
+          <button
+            key={filter.id}
+            className={`chip-filter ${activeFilter === filter.id ? 'active' : ''}`}
+            onClick={() => onFilterChange(filter.id)}
+          >
+            <span className="chip-icon">{filter.icon}</span>
+            {filter.bn}
+            <span className="chip-filter-en">/ {filter.en}</span>
+          </button>
+        ))}
+      </div>
+      <select className="sort-select" aria-label="Sort requests">
+        <option>সবচেয়ে জরুরি</option>
+        <option>নতুন / Newest</option>
+        <option>কাছে / Near Me</option>
+      </select>
+    </div>
+  );
+};
+
+export default SahajjoFilterBar;

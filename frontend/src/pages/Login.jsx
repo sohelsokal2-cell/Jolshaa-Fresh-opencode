@@ -159,7 +159,7 @@ export default function Login() {
             <span style={{ fontSize: '10px', opacity: 0.75 }}>লাইভ</span>
           </div>
           <div className="float-badge badge-verified" style={{ top: '70%', left: '38%' }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1B6B5A" stroke-width="2.5">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1B6B5A" strokeWidth="2.5">
               <path d="M9 12l2 2 4-4" />
               <circle cx="12" cy="12" r="10" />
             </svg>
@@ -219,7 +219,7 @@ export default function Login() {
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: '#aaa', fontWeight: 400 }}> · need help</span>
           </div>
           <div className="float-badge badge-clock" style={{ top: '32%', left: '5%' }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 6v6l4 2" />
             </svg>
@@ -227,7 +227,7 @@ export default function Login() {
             <span style={{ fontSize: '10px', opacity: 0.75 }}>লাইভ</span>
           </div>
           <div className="float-badge badge-verified" style={{ top: '72%', left: '22%' }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1B6B5A" stroke-width="2.5">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1B6B5A" strokeWidth="2.5">
               <path d="M9 12l2 2 4-4" />
               <circle cx="12" cy="12" r="10" />
             </svg>
@@ -256,16 +256,16 @@ export default function Login() {
           <div className="headline-bn">তোমার মানুষদের<br />কাছাকাছি থাকো</div>
           <div className="headline-en">Stay close to the people who matter most</div>
           <div className="subline">
-            <span class="subline-bn">বাংলাদেশের নিজের সোশ্যাল মিডিয়া</span>
-            <span class="subline-sep">·</span>
-            <span class="subline-en">Bangladesh's own community platform</span>
+            <span className="subline-bn">বাংলাদেশের নিজের সোশ্যাল মিডিয়া</span>
+            <span className="subline-sep">·</span>
+            <span className="subline-en">Bangladesh's own community platform</span>
           </div>
         </div>
       </div>
 
       {/* ===== RIGHT LOGIN SIDE ===== */}
       <div className="login-side">
-        <div class="login-card">
+        <div className="login-card">
           {/* Logo */}
           <div className="logo-badge" role="img" aria-label="Jolshaa logo">
             <span className="j-mark">জ</span>
