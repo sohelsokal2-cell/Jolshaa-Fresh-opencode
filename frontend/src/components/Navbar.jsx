@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import NotificationPanel from './NotificationPanel';
 
 export default function Navbar({
@@ -13,9 +14,12 @@ export default function Navbar({
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { logoutUser } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [searchVal, setSearchVal] = useState(initialSearchQuery);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef(null);
 
   const toggleNotificationPanel = useCallback(() => {
     setIsNotificationPanelOpen((prev) => !prev);
@@ -36,6 +40,16 @@ export default function Navbar({
   useEffect(() => {
     setSearchVal(initialSearchQuery);
   }, [initialSearchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+    if (isProfileOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isProfileOpen]);
 
   const handleSearchKeyDown = (e) => {
     if (e.key === 'Enter' && searchVal.trim()) {
@@ -230,10 +244,87 @@ export default function Navbar({
       </button>
 
       {/* Right: profile */}
-      <div className="nav-right" onClick={() => navigate('/profile')}>
-        <div className="nav-avatar" title="আমার প্রোফাইল / My Profile" tabIndex="0" role="button" aria-label="Profile menu">
+      <div className="nav-right" ref={profileRef} style={{ position: 'relative' }}>
+        <div
+          className="nav-avatar"
+          title="আমার প্রোফাইল / My Profile"
+          tabIndex="0"
+          role="button"
+          aria-label="Profile menu"
+          onClick={() => setIsProfileOpen((p) => !p)}
+          style={{ cursor: 'pointer' }}
+        >
           আ
         </div>
+
+        {isProfileOpen && (
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            right: 0,
+            marginTop: 8,
+            width: 200,
+            background: 'white',
+            borderRadius: 12,
+            boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+            border: '1px solid #e5e7eb',
+            zIndex: 999,
+            overflow: 'hidden',
+          }}>
+            <button
+              onClick={() => { setIsProfileOpen(false); navigate('/profile'); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '10px 14px', border: 'none', background: 'transparent',
+                cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-en)',
+                color: '#1a1a1a', textAlign: 'left',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              প্রোফাইল / Profile
+            </button>
+            <button
+              onClick={() => { setIsProfileOpen(false); navigate('/settings'); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '10px 14px', border: 'none', background: 'transparent',
+                cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-en)',
+                color: '#1a1a1a', textAlign: 'left', borderTop: '1px solid #f3f4f6',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+              </svg>
+              সেটিংস / Settings
+            </button>
+            <button
+              onClick={() => { setIsProfileOpen(false); logoutUser(); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                width: '100%', padding: '10px 14px', border: 'none', background: 'transparent',
+                cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-en)',
+                color: '#DC2626', textAlign: 'left', borderTop: '1px solid #f3f4f6',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#fef2f2'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              লগআউট / Logout
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Notification Panel */}
