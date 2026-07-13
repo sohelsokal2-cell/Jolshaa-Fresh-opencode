@@ -39,37 +39,53 @@ export async function fetchPosts(limit = POSTS_PER_PAGE, offset = 0, currentUser
 }
 
 export async function createPost(content, imageFile = null, userId = null) {
+  console.log('[createPost] called with:', { content, hasImage: !!imageFile, userId });
   let imageUrl = null;
 
   if (imageFile) {
+    console.log('[createPost] Step 1: Uploading image to Supabase Storage...');
     const fileExt = imageFile.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
     const filePath = `post-images/${fileName}`;
+    console.log('[createPost] Upload path:', filePath, 'file size:', imageFile.size, 'type:', imageFile.type);
 
-    const { error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
       .from('post-images')
       .upload(filePath, imageFile);
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('[createPost] Upload FAILED:', uploadError);
+      throw uploadError;
+    }
+    console.log('[createPost] Upload succeeded:', uploadData);
 
     const { data: urlData } = supabase.storage
       .from('post-images')
       .getPublicUrl(filePath);
 
     imageUrl = urlData.publicUrl;
+    console.log('[createPost] Step 2: Public URL obtained:', imageUrl);
   }
+
+  console.log('[createPost] Step 3: Inserting into posts table...');
+  const insertPayload = { content, image_url: imageUrl, author_id: userId };
+  console.log('[createPost] Insert payload:', insertPayload);
 
   const { data, error } = await supabase
     .from('posts')
-    .insert({ content, image_url: imageUrl, author_id: userId })
+    .insert(insertPayload)
     .select(`
       *,
       author:profiles(id, name, profile_photo_url)
     `)
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error('[createPost] Insert FAILED:', error);
+    throw error;
+  }
 
+  console.log('[createPost] Step 4: Post created successfully:', data.id);
   return {
     ...data,
     authorName: data.author?.name || 'অজানা ব্যবহারকারী',

@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { fetchFriendRequests, respondToFriendRequest } from '../lib/friendsApi';
+import { useToast } from './Toast';
 
 export default function SidebarRight({
-  friendRequests: initialFriendRequests = [
-    { id: 1, name: 'নাবিলা ইসলাম', mutual: '২ জন পারস্পরিক বন্ধু · 2 mutual friends', avClass: 'fr-avatar-1', avChar: 'না' },
-    { id: 2, name: 'জাফর সাদিক', mutual: '৫ জন পারস্পরিক বন্ধু · 5 mutual friends', avClass: 'fr-avatar-2', avChar: 'জা' },
-  ],
   birthdays = [
     { id: 1, name: 'তানভীর আহমেদ', textBn: 'তানভীর আহমেদের আজ জন্মদিন।', textEn: 'Send Tanvir Ahmed a birthday wish! · শুভেচ্ছা পাঠান' },
   ],
@@ -28,26 +27,51 @@ export default function SidebarRight({
     { id: 5, name: 'সামিয়া আক্তার', status: '32 min ago · ৩২ মিনিট আগে', avClass: 'av-e', away: true, avChar: 'স' },
   ],
 }) {
-  // Local states to handle accept/delete animation states
-  const [friendReqs, setFriendReqs] = useState(
-    initialFriendRequests.map(req => ({ ...req, state: 'visible' })) // 'visible' | 'accepting' | 'deleting' | 'hidden'
-  );
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const [friendReqs, setFriendReqs] = useState([]);
+  const [loadingReqs, setLoadingReqs] = useState(true);
+  const [sentRequests, setSentRequests] = useState({});
 
-  // Local state to track pymk request status
-  const [sentRequests, setSentRequests] = useState({}); // { [pymkId]: true }
+  useEffect(() => {
+    if (!user) return;
+    setLoadingReqs(true);
+    fetchFriendRequests(user.id)
+      .then(data => setFriendReqs(data.map(r => ({ ...r, state: 'visible' }))))
+      .catch(err => {
+        console.error('Failed to load friend requests:', err);
+        showToast('বন্ধু অনুরোধ লোড হয়নি।');
+      })
+      .finally(() => setLoadingReqs(false));
+  }, [user]);
 
-  const handleRequestAction = (id, action) => {
-    // Transition state
-    setFriendReqs(prev =>
-      prev.map(req => (req.id === id ? { ...req, state: action } : req))
-    );
+  const handleAccept = async (req) => {
+    setFriendReqs(prev => prev.map(r => r.id === req.id ? { ...r, state: 'accepting' } : r));
+    try {
+      await respondToFriendRequest(req.id, 'accepted', user.id);
+      setTimeout(() => {
+        setFriendReqs(prev => prev.filter(r => r.id !== req.id));
+      }, 300);
+      showToast('বন্ধু অনুরোধ গ্রহণ করা হয়েছে!');
+    } catch (err) {
+      console.error('Accept failed:', err);
+      setFriendReqs(prev => prev.map(r => r.id === req.id ? { ...r, state: 'visible' } : r));
+      showToast('গ্রহণ করা যায়নি। আবার চেষ্টা করো।');
+    }
+  };
 
-    // Hide from DOM after animation completes
-    setTimeout(() => {
-      setFriendReqs(prev =>
-        prev.map(req => (req.id === id ? { ...req, state: 'hidden' } : req))
-      );
-    }, action === 'accepting' ? 300 : 250);
+  const handleDelete = async (req) => {
+    setFriendReqs(prev => prev.map(r => r.id === req.id ? { ...r, state: 'deleting' } : r));
+    try {
+      await respondToFriendRequest(req.id, 'rejected', user.id);
+      setTimeout(() => {
+        setFriendReqs(prev => prev.filter(r => r.id !== req.id));
+      }, 250);
+    } catch (err) {
+      console.error('Delete failed:', err);
+      setFriendReqs(prev => prev.map(r => r.id === req.id ? { ...r, state: 'visible' } : r));
+      showToast('মুছে ফেলা যায়নি। আবার চেষ্টা করো।');
+    }
   };
 
   const handleAddFriend = (id) => {
@@ -69,35 +93,47 @@ export default function SidebarRight({
             <button className="widget-action" aria-label="See all friend requests">See all</button>
           </div>
 
-          {friendReqs.map(req => {
-            if (req.state === 'hidden') return null;
+          {loadingReqs ? (
+            <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-light)', fontSize: 13, fontFamily: 'var(--font-bn)' }}>
+              লোড হচ্ছে...
+            </div>
+          ) : (
+            visibleReqs.map(req => {
+              if (req.state === 'hidden') return null;
 
-            const transitionStyle = {
-              opacity: req.state === 'accepting' || req.state === 'deleting' ? 0 : 1,
-              transform: req.state === 'accepting' ? 'translateX(20px)' : 'none',
-              transition: req.state === 'accepting' ? 'all 0.3s ease' : req.state === 'deleting' ? 'opacity 0.25s ease' : 'none',
-            };
+              const transitionStyle = {
+                opacity: req.state === 'accepting' || req.state === 'deleting' ? 0 : 1,
+                transform: req.state === 'accepting' ? 'translateX(20px)' : 'none',
+                transition: req.state === 'accepting' ? 'all 0.3s ease' : req.state === 'deleting' ? 'opacity 0.25s ease' : 'none',
+              };
 
-            return (
-              <div key={req.id} className="friend-req-item" style={transitionStyle}>
-                <div className={`fr-avatar ${req.avClass}`} aria-hidden="true">
-                  {req.avChar}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div className="fr-name">{req.name}</div>
-                  <div className="fr-mutual">{req.mutual}</div>
-                  <div className="fr-actions">
-                    <button className="fr-accept" onClick={() => handleRequestAction(req.id, 'accepting')}>
-                      গ্রহণ করুন · Accept
-                    </button>
-                    <button className="fr-delete" onClick={() => handleRequestAction(req.id, 'deleting')}>
-                      মুছুন · Delete
-                    </button>
+              const avatarChar = req.requesterName?.charAt(0) || '?';
+
+              return (
+                <div key={req.id} className="friend-req-item" style={transitionStyle}>
+                  {req.requesterAvatar ? (
+                    <img src={req.requesterAvatar} className="fr-avatar" style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover' }} alt="" />
+                  ) : (
+                    <div className="fr-avatar fr-avatar-1" aria-hidden="true">
+                      {avatarChar}
+                    </div>
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <div className="fr-name">{req.requesterName}</div>
+                    <div className="fr-mutual">বন্ধু অনুরোধ · Friend request</div>
+                    <div className="fr-actions">
+                      <button className="fr-accept" onClick={() => handleAccept(req)}>
+                        গ্রহণ করুন · Accept
+                      </button>
+                      <button className="fr-delete" onClick={() => handleDelete(req)}>
+                        মুছুন · Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       )}
 

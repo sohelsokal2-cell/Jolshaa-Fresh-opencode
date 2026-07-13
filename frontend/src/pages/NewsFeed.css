@@ -766,9 +766,9 @@ body {
 .comment-input::placeholder { color: var(--text-light); }
 .comment-submit-btn {
   width: 32px; height: 32px; border-radius: 50%; border: none;
-  background: var(--teal); color: white; font-size: 16px; line-height: 1;
+  background: var(--teal); color: white;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s;
+  transition: background 0.15s; flex-shrink: 0;
 }
 .comment-submit-btn:hover { background: var(--teal-hover); }
 .comment-submit-btn:disabled { background: #ccc; cursor: not-allowed; }

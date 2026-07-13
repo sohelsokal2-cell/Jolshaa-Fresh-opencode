@@ -18,6 +18,7 @@ import Events from './pages/Events';
 import SahajjoChai from './pages/SahajjoChai';
 import FactCheckPreview from './pages/FactCheckPreview';
 import Settings from './pages/Settings';
+import Friends from './pages/Friends';
 import CreatorDashboard from './pages/CreatorDashboard';
 import AdminPanel from './pages/AdminPanel';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
@@ -130,7 +131,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/friends" element={<PlaceholderPage title="Friends / বন্ধুরা" />} />
+          <Route
+            path="/friends"
+            element={
+              <ProtectedRoute>
+                <Friends />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/reels" element={
             <ProtectedRoute>
               <Reels />

@@ -42,16 +42,18 @@ export default function CreatePostBox({ onPostCreated }) {
   const handleSubmit = async () => {
     if (!content.trim() && !imageFile) return;
 
+    console.log('[CreatePostBox] handleSubmit — content:', content.trim(), 'imageFile:', imageFile ? imageFile.name : null, 'user.id:', user?.id);
     setIsSubmitting(true);
     try {
       const newPost = await createPost(content.trim(), imageFile, user.id);
+      console.log('[CreatePostBox] createPost returned:', newPost);
       onPostCreated(newPost);
       setContent('');
       removeImage();
       setIsExpanded(false);
       showToast('পোস্ট তৈরি হয়েছে! / Post created!');
     } catch (err) {
-      console.error('Post creation error:', err);
+      console.error('[CreatePostBox] Post creation FAILED:', err.message || err);
       showToast('পোস্ট তৈরি করা যায়নি। আবার চেষ্টা করো।');
     } finally {
       setIsSubmitting(false);

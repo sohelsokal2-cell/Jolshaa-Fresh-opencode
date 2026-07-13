@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { fetchUnreadCount, subscribeToNotifications } from '../lib/notificationsApi';
 import NotificationPanel from './NotificationPanel';
 
 export default function Navbar({
   messageCount = 5,
-  notificationCount = 7,
   showReels = false,
   showProfile = false,
   initialSearchQuery = '',
@@ -14,11 +14,12 @@ export default function Navbar({
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-  const { logoutUser } = useAuth();
+  const { logoutUser, user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [searchVal, setSearchVal] = useState(initialSearchQuery);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const profileRef = useRef(null);
 
   const toggleNotificationPanel = useCallback(() => {
@@ -50,6 +51,15 @@ export default function Navbar({
     if (isProfileOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isProfileOpen]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchUnreadCount(user.id).then(count => setNotificationCount(count)).catch(() => {});
+    const unsubscribe = subscribeToNotifications(user.id, () => {
+      setNotificationCount(prev => prev + 1);
+    }, 'notifications-navbar');
+    return unsubscribe;
+  }, [user]);
 
   const handleSearchKeyDown = (e) => {
     if (e.key === 'Enter' && searchVal.trim()) {
@@ -331,6 +341,7 @@ export default function Navbar({
       <NotificationPanel
         isOpen={isNotificationPanelOpen}
         onClose={closeNotificationPanel}
+        onUnreadCountChange={setNotificationCount}
       />
     </nav>
   );
