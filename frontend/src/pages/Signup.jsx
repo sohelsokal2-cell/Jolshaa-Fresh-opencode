@@ -1,10 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import './Signup.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Regexes (exact same as original HTML)
 const BD_PHONE_REGEX = /^(\+?880|0)1[0-9]{9}$/;
@@ -33,6 +31,7 @@ function getStrength(pw) {
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
 
   // --- DOB options generated once ---
   const dayOptions  = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
@@ -96,7 +95,6 @@ export default function Signup() {
   const onSubmit = async (data) => {
     setApiError('');
 
-    // Manual contact validation before submit
     const cv = data.contactInfo?.trim() || '';
     const isEmail = EMAIL_REGEX.test(cv);
     if (!cv || !isEmail) {
@@ -107,12 +105,10 @@ export default function Signup() {
       return;
     }
 
-    // Password length check
     if (!data.password || data.password.length < 8) return;
 
     setIsSubmitting(true);
 
-    // Build payload for backend
     const fullName    = `${data.firstName.trim()} ${data.lastName.trim()}`;
     const dobDay      = data.dobDay   || '';
     const dobMonth    = data.dobMonth || '';
@@ -121,33 +117,23 @@ export default function Signup() {
       ? `${dobYear}-${String(dobMonth).padStart(2, '0')}-${String(dobDay).padStart(2, '0')}`
       : null;
 
-    const payload = {
-      name:        fullName,
-      email:       cv,
-      password:    data.password,
-      gender:      data.gender || null,
-      dateOfBirth: dateOfBirth,
-    };
-
     try {
-      const res = await axios.post(`${API_URL}/auth/signup`, payload);
-
-      if (res.data.success) {
-        setSubmitSuccess(true);
-        // Brief visual success, then redirect to login
-        setTimeout(() => navigate('/login'), 1200);
-      } else {
-        setApiError(res.data.message || 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করো।');
-      }
+      await signUp(cv, data.password, fullName, dateOfBirth, data.gender || null);
+      setSubmitSuccess(true);
+      setTimeout(() => navigate('/feed'), 1200);
     } catch (err) {
-      const msg = err.response?.data?.message || 'সার্ভার ত্রুটি। পরে আবার চেষ্টা করো।';
-      const code = err.response?.data?.error || '';
+      const msg = err.message || '';
 
-      if (code === 'EMAIL_ALREADY_EXISTS') {
+      if (msg.includes('already') || msg.includes('already registered')) {
         setContactValid(false);
         setContactError('এই ইমেইলে ইতিমধ্যে একটি অ্যাকাউন্ট আছে। / An account with this email already exists.');
+      } else if (msg.includes('valid email')) {
+        setContactValid(false);
+        setContactError('সঠিক ইমেইল লিখো / Please enter a valid email address');
+      } else if (msg.includes('Password')) {
+        setApiError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে। / Password must be at least 6 characters.');
       } else {
-        setApiError(msg);
+        setApiError(msg || 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করো।');
       }
     } finally {
       setIsSubmitting(false);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
 
@@ -11,11 +10,9 @@ import rickshawImg from '../assets/card_rickshaw_1783598075647.png';
 import videoCallImg from '../assets/card_video_call_1783598116850.png';
 import teaShopImg from '../assets/card_tea_shop_1783598165220.png';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
 export default function Login() {
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { signIn } = useAuth();
   const [variation, setVariation] = useState(1);
   const [time, setTime] = useState('--:--');
   const [activeLang, setActiveLang] = useState('bn');
@@ -61,21 +58,19 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
-        email: formData.emailPhone,
-        password: formData.password,
-      });
-
-      if (res.data.success) {
-        loginUser(res.data.session, res.data.user);
-        navigate('/feed');
-      } else {
-        setSubmitError(res.data.message || 'Login failed. Please try again.');
-      }
+      await signIn(formData.emailPhone, formData.password);
+      navigate('/feed');
     } catch (err) {
       console.error('Login error:', err);
-      const msg = err.response?.data?.message || 'Server error. Please verify your connection.';
-      setSubmitError(msg);
+      const msg = err.message || '';
+
+      if (msg.includes('Invalid login credentials') || msg.includes('invalid')) {
+        setSubmitError('ভুল ইমেইল বা পাসওয়ার্ড। আবার চেষ্টা করো। / Invalid email or password. Please try again.');
+      } else if (msg.includes('Email not confirmed')) {
+        setSubmitError('ইমেইল যাচাই করা হয়নি। ইনবক্স চেক করো। / Email not confirmed. Please check your inbox.');
+      } else {
+        setSubmitError(msg || 'সার্ভার ত্রুটি। পরে আবার চেষ্টা করো।');
+      }
     } finally {
       setIsSubmitting(false);
     }
