@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
         .from('profiles')
         .select('*')
         .eq('id', authUser.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Failed to load profile:', error.message);
@@ -49,7 +49,13 @@ export function AuthProvider({ children }) {
           isAdmin: false,
         });
       } else {
-        setUser({ ...authUser, ...profile });
+        setUser({
+          ...authUser,
+          ...profile,
+          full_name: profile?.name || authUser.user_metadata?.full_name || '',
+          avatar_url: profile?.profile_photo_url || null,
+          isAdmin: profile?.is_admin || false,
+        });
       }
     } catch (err) {
       console.error('Profile load error:', err.message);
@@ -82,11 +88,11 @@ export function AuthProvider({ children }) {
         .from('profiles')
         .insert({
           id: data.user.id,
-          full_name: fullName,
+          name: fullName,
           gender: gender || null,
           date_of_birth: dob || null,
-          avatar_url: null,
-          isAdmin: false,
+          profile_photo_url: null,
+          is_admin: false,
         });
 
       if (profileError) {

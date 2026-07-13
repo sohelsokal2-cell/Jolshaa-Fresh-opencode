@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { fetchPosts } from '../lib/postsApi';
 import Navbar from '../components/Navbar';
 import SidebarLeft from '../components/SidebarLeft';
 import SidebarRight from '../components/SidebarRight';
@@ -7,93 +9,102 @@ import CreatePostBox from '../components/CreatePostBox';
 import PostCard from '../components/PostCard';
 import './NewsFeed.css';
 
-// Import images to ensure Vite bundles them
-import postCommunityImg from '../assets/post_community_1783606546707.png';
-import postFactcheckImg from '../assets/post_factcheck_1783606561350.png';
-
-const DUMMY_POSTS = [
-  {
-    id: 1,
-    authorName: 'রহিম আহমেদ',
-    avatarClass: 'post-avatar-1',
-    timeString: '৩ ঘণ্টা আগে · 3h ago',
-    privacy: 'Public',
-    textBn: 'আজকের ইফতার পার্টিতে পুরো মহল্লা একসাথে! 🍛❤️ এই মুহূর্তগুলোই জীবনকে সুন্দর করে।',
-    textEn: 'The whole neighborhood came together for iftar today! These moments make life beautiful.',
-    mediaSrc: postCommunityImg,
-    mediaAlt: 'Community gathering — সামাজিক অনুষ্ঠান',
-    mediaPlaceholderClass: 'img-placeholder-1',
-    mediaPlaceholderIcon: '🍛',
-    reactionsList: ['❤️', '😊', '🔥'],
-    reactionsCount: '১৮৪ জন · 184',
-    commentsCount: '৩৭ মন্তব্য · 37 comments',
-    initiallyReacted: false,
-  },
-  {
-    id: 2,
-    authorName: 'প্রিয়া রানী দাস',
-    avatarClass: 'post-avatar-2',
-    timeString: '৫ ঘণ্টা আগে · 5h ago',
-    privacy: 'Public',
-    factCheckStatus: 'amber',
-    factCheckInfoText: 'এই পোস্টের তথ্য এখনো যাচাই করা হয়নি। জলশা কমিউনিটি এটি নিয়ে কাজ করছে।',
-    factCheckInfoTextEn: 'This post\'s claim is under community fact-check review. Jolshaa community reviewers are verifying it.',
-    factCheckVoters: '🔍 ৪৭ জন যাচাইকারী কাজ করছেন · 47 community reviewers checking',
-    textBn: 'শুনলাম আমাদের মহল্লার পুরানো পুকুরটা নাকি ভরাট হয়ে যাচ্ছে? কেউ জানেন এটা সত্যি কিনা?',
-    textEn: 'Heard the old pond in our neighbourhood is being filled in. Does anyone know if this is true?',
-    mediaSrc: postFactcheckImg,
-    mediaAlt: 'Neighbourhood street — মহল্লার রাস্তা',
-    mediaPlaceholderClass: 'img-placeholder-2',
-    mediaPlaceholderIcon: '🏘️',
-    reactionsList: ['😮', '😟'],
-    reactionsCount: '৯২ জন · 92',
-    commentsCount: '৬৮ মন্তব্য · 68 comments',
-    initiallyReacted: false,
-  },
-  {
-    id: 3,
-    authorName: 'করিম উদ্দিন',
-    avatarClass: 'post-avatar-3',
-    timeString: '৮ ঘণ্টা আগে · 8h ago',
-    privacy: 'Public',
-    postType: 'quote',
-    textBn: 'আপন মানুষের হাসি দেখার জন্য হাজার মাইল পার করা যায়।',
-    textEn: 'You can cross a thousand miles just to see the smile of someone you love.',
-    reactionsList: ['❤️', '😊'],
-    reactionsCount: '৪৪৭ জন · 447',
-    commentsCount: '১০৩ মন্তব্য · 103 comments',
-    initiallyReacted: true,
-  },
-];
-
 export default function NewsFeed() {
+  const { user } = useAuth();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadPosts = async (pageNum = 0, append = false) => {
+    try {
+      const offset = pageNum * 10;
+      const data = await fetchPosts(10, offset, user?.id || null);
+
+      if (append) {
+        setPosts(prev => [...prev, ...data]);
+      } else {
+        setPosts(data);
+      }
+
+      setHasMore(data.length === 10);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load posts:', err);
+      setError('পোস্ট লোড হয়নি। আবার চেষ্টা করো।');
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts(0, false);
+  }, [user]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    setLoadingMore(true);
+    loadPosts(nextPage, true);
+  };
+
+  const handlePostCreated = (newPost) => {
+    setPosts(prev => [newPost, ...prev]);
+  };
+
   return (
     <div style={{ background: 'var(--off-white)', minHeight: '100vh' }}>
-      {/* Navbar */}
       <Navbar messageCount={5} notificationCount={7} />
 
-      {/* Main Layout Area */}
       <div className="page-body">
-        {/* Left Sidebar */}
-        <SidebarLeft userName="আমিনুল হক" />
+        <SidebarLeft userName={user?.full_name || 'ব্যবহারকারী'} />
 
-        {/* Center News Feed Content */}
         <main className="feed-center" aria-label="News Feed">
           <div className="feed-inner">
-            {/* Stories */}
             <StoriesBar />
 
-            {/* Create Post Field */}
-            <CreatePostBox userName="আমিনুল" />
+            <CreatePostBox onPostCreated={handlePostCreated} />
 
-            {/* Dynamic posts rendering */}
-            {DUMMY_POSTS.map(post => (
-              <PostCard key={post.id} post={post} />
-            ))}
+            {loading ? (
+              <div className="feed-loading">
+                <div className="feed-spinner"></div>
+                <p>পোস্ট লোড হচ্ছে...</p>
+              </div>
+            ) : error ? (
+              <div className="feed-error">
+                <p>{error}</p>
+                <button onClick={() => { setLoading(true); loadPosts(0, false); }}>
+                  আবার চেষ্টা করো
+                </button>
+              </div>
+            ) : posts.length === 0 ? (
+              <div className="feed-empty">
+                <p>এখনো কোনো পোস্ট নেই। প্রথম পোস্ট করো!</p>
+              </div>
+            ) : (
+              <>
+                {posts.map(post => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+
+                {hasMore && (
+                  <div className="feed-load-more">
+                    <button
+                      onClick={handleLoadMore}
+                      disabled={loadingMore}
+                    >
+                      {loadingMore ? 'লোড হচ্ছে...' : 'আরও দেখাও'}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </main>
 
-        {/* Right Sidebar Widgets */}
         <SidebarRight />
       </div>
     </div>
