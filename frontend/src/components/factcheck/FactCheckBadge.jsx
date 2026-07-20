@@ -5,12 +5,14 @@ import './FactCheckBadge.css';
  * FactCheckBadge — Small badge used inside PostCard to show verification status.
  *
  * Props:
+ *   enabled: boolean — whether fact-check is enabled on this post (if false, renders nothing)
  *   status: 'unverified' | 'true' | 'false' | 'mislead'
  *   onClick: callback when unverified badge is clicked (opens vote modal)
  *   voteCount: number of votes (for display)
  *   percentage: percentage of majority verdict (for true/mislead display)
  */
-export default function FactCheckBadge({ status = 'unverified', onClick, voteCount = 0, percentage }) {
+export default function FactCheckBadge({ enabled = false, status = 'unverified', onClick, voteCount = 0, percentage }) {
+  if (!enabled) return null;
   if (status === 'true') {
     return (
       <div className="fcbadge-true">

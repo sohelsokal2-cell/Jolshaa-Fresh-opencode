@@ -1,403 +1,789 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useAuth } from '../context/AuthContext';
+import {
+  fetchMessages,
+  sendMessage,
+  uploadChatImage,
+  uploadChatFile,
+  uploadVoiceNote,
+  markAsRead,
+  subscribeToConversation,
+  fetchMessageReactions,
+  fetchPinnedMessages,
+  subscribeToPinnedMessages,
+  unpinMessage,
+  subscribeToTyping,
+  subscribeToReadStatus,
+} from '../lib/messagingApi';
+import { initiateCall, subscribeToCallStatus, subscribeToIncomingCalls, acceptCall, declineCall, endCall } from '../lib/callApi';
+import { IncomingCallModal, ActiveCallScreen } from './calling';
+import MessageBubble from './MessageBubble';
+import ChatHeader from './ChatHeader';
+import InputBar from './InputBar';
+import { useVoiceRecorder } from '../hooks/useVoiceRecorder';
+import '../styles/ChatWindowEnhancements.css';
 
-const INITIAL_MESSAGES = [
-  {
-    id: 1,
-    sender: 'received',
-    text: 'আমিনুল ভাই, আসছেন তো আজকে? সবাই অপেক্ষা করছে! 😊',
-    time: '১০:৩২ AM',
-    type: 'text',
-  },
-  {
-    id: 2,
-    sender: 'sent',
-    text: 'হ্যাঁ অবশ্যই! ৪টার দিকে পৌঁছাব, ট্র্যাফিক না থাকলে 😄',
-    time: '১০:৪৫ AM',
-    type: 'text',
-    replyTo: {
-      senderName: 'রাহেলা বেগম',
-      text: 'আমিনুল ভাই, আসছেন তো আজকে? সবাই...',
-    },
-    status: 'delivered',
-  },
-  {
-    id: 3,
-    sender: 'sent',
-    time: '১০:৪৬ AM',
-    type: 'image',
-    captionIcon: '🎉',
-    status: 'seen',
-  },
-  {
-    id: 4,
-    sender: 'received',
-    time: '১০:৪৮ AM',
-    type: 'voice',
-    duration: '0:24',
-    playedBars: 7,
-    barsCount: 20,
-  },
-  {
-    id: 5,
-    sender: 'sent',
-    text: 'দেখ কত সুন্দর! এই জায়গাটা সত্যিই অসাধারণ ❤️',
-    time: '১০:৫২ AM',
-    type: 'text',
-    reaction: '😍 1',
-    status: 'seen',
-  },
-  {
-    id: 6,
-    sender: 'received',
-    text: 'সত্যিই! এত সুন্দর জায়গা আগে দেখিনি। আপনি কোথায় গিয়েছিলেন?',
-    time: '১০:৫৪ AM',
-    type: 'text',
-  },
-];
+const AVATAR_CLASSES = ['av-1', 'av-2', 'av-3', 'av-4', 'av-5', 'av-6', 'av-7'];
 
-export default function ChatWindow({ activeConversation, onToggleInfo }) {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+function getAvatarClass(index) {
+  return AVATAR_CLASSES[index % AVATAR_CLASSES.length];
+}
+
+function formatMessageTime(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) {
+    return date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const isYesterday = date.toDateString() === yesterday.toDateString();
+
+  if (isYesterday) {
+    return 'গতকাল ' + date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  return date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' }) +
+    ' ' + date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDateDivider(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) return { bn: 'আজকে', en: 'Today' };
+
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) {
+    return { bn: 'গতকাল', en: 'Yesterday' };
+  }
+
+  return {
+    bn: date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }),
+    en: date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
+  };
+}
+
+export default function ChatWindow({ activeConversation, onToggleInfo, onTypingChange, presenceText, presenceUsers = {} }) {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [attachOpen, setAttachOpen] = useState(false);
-  const [voicePlaying, setVoicePlaying] = useState({}); // { [messageId]: true/false }
-  const threadEndRef = useRef(null);
+  const [replyTo, setReplyTo] = useState(null);
+  const [pinnedMessages, setPinnedMessages] = useState([]);
+  const [showPinnedBar, setShowPinnedBar] = useState(true);
+  const [typingUser, setTypingUser] = useState(null);
+  const [otherLastReadAt, setOtherLastReadAt] = useState(null);
+  const [locationSending, setLocationSending] = useState(false);
 
-  // Scroll to bottom on load and when messages update
+  const threadEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const fileDocInputRef = useRef(null);
+  const unsubscribeRef = useRef(null);
+  const pinnedUnsubRef = useRef(null);
+  const typingChannelRef = useRef(null);
+  const readStatusUnsubRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const attachPopupRef = useRef(null);
+
+  // Call state
+  const [activeCall, setActiveCall] = useState(null);
+  const [incomingCall, setIncomingCall] = useState(null);
+  const callStatusUnsubRef = useRef(null);
+  const incomingCallUnsubRef = useRef(null);
+
+  // Voice recorder
+  const recorder = useVoiceRecorder();
+
+  const conversationId = activeConversation?.id;
+  const isGroup = !!activeConversation?.isGroup;
+  const other = activeConversation?.otherParticipants?.[0];
+  const otherName = isGroup
+    ? (activeConversation?.groupName || 'গ্রুপ')
+    : (other?.name || 'অজানা ব্যবহারকারী');
+  const avatarChar = otherName.charAt(0);
+  const avatarClass = getAvatarClass(0);
+  const memberCount = isGroup ? (activeConversation?.otherParticipants?.length || 0) + 1 : 2;
+  const participantIds = useMemo(
+    () => (activeConversation?.otherParticipants || []).map(p => p.id),
+    [activeConversation]
+  );
+
+  // Presence handled in Messenger.jsx via useChatPresence — presenceText and presenceUsers received as props
+  const activeCount = isGroup
+    ? participantIds.filter(id => presenceUsers[id]?.isOnline).length + 1
+    : 0;
+
+  // Subscribe to incoming calls for this user
+  useEffect(() => {
+    if (!user) return;
+
+    incomingCallUnsubRef.current = subscribeToIncomingCalls(user.id, (callSession) => {
+      if (!activeCall) {
+        setIncomingCall(callSession);
+      }
+    });
+
+    return () => {
+      if (incomingCallUnsubRef.current) {
+        incomingCallUnsubRef.current();
+        incomingCallUnsubRef.current = null;
+      }
+    };
+  }, [user, activeCall]);
+
+  // Cleanup call status subscription on unmount
+  useEffect(() => {
+    return () => {
+      if (callStatusUnsubRef.current) {
+        callStatusUnsubRef.current();
+        callStatusUnsubRef.current = null;
+      }
+    };
+  }, []);
+
+  // Load messages when conversation changes
+  useEffect(() => {
+    if (!conversationId) {
+      setMessages([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadMessages() {
+      setLoading(true);
+      try {
+        const data = await fetchMessages(conversationId);
+        if (!cancelled) {
+          setMessages(data);
+        }
+      } catch (err) {
+        console.error('Failed to load messages:', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadMessages();
+    setReplyTo(null);
+
+    return () => { cancelled = true; };
+  }, [conversationId]);
+
+  // Load pinned messages + subscribe to changes
+  useEffect(() => {
+    if (!conversationId) {
+      setPinnedMessages([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadPinned() {
+      try {
+        const data = await fetchPinnedMessages(conversationId);
+        if (!cancelled) setPinnedMessages(data);
+      } catch (err) {
+        console.error('Failed to load pinned messages:', err);
+      }
+    }
+
+    loadPinned();
+    setShowPinnedBar(true);
+
+    if (pinnedUnsubRef.current) pinnedUnsubRef.current();
+    pinnedUnsubRef.current = subscribeToPinnedMessages(conversationId, () => {
+      loadPinned();
+    });
+
+    return () => {
+      cancelled = true;
+      if (pinnedUnsubRef.current) {
+        pinnedUnsubRef.current();
+        pinnedUnsubRef.current = null;
+      }
+    };
+  }, [conversationId]);
+
+  // Subscribe to new messages + reaction changes via Realtime
+  useEffect(() => {
+    if (!conversationId || !user) return;
+
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+    }
+
+    unsubscribeRef.current = subscribeToConversation(
+      conversationId,
+      (newMsg) => {
+        setMessages(prev => {
+          if (prev.some(m => m.id === newMsg.id)) return prev;
+          return [...prev, { ...newMsg, reactions: newMsg.reactions || [] }];
+        });
+      },
+      async (payload) => {
+        const messageId = payload.new?.message_id || payload.old?.message_id;
+        if (!messageId) return;
+        try {
+          const reactions = await fetchMessageReactions(messageId);
+          setMessages(prev => prev.map(m => m.id === messageId ? { ...m, reactions } : m));
+        } catch (err) {
+          console.error('Failed to refresh reactions:', err);
+        }
+      }
+    );
+
+    markAsRead(conversationId, user.id).catch(console.error);
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, [conversationId, user]);
+
+  // Subscribe to other participant's read status (for seen ticks)
+  useEffect(() => {
+    if (!conversationId || isGroup) {
+      setOtherLastReadAt(null);
+      return;
+    }
+
+    if (readStatusUnsubRef.current) readStatusUnsubRef.current();
+    readStatusUnsubRef.current = subscribeToReadStatus(conversationId, (updated) => {
+      if (updated.user_id !== user?.id) {
+        setOtherLastReadAt(updated.last_read_at);
+      }
+    });
+
+    return () => {
+      if (readStatusUnsubRef.current) {
+        readStatusUnsubRef.current();
+        readStatusUnsubRef.current = null;
+      }
+    };
+  }, [conversationId, isGroup, user]);
+
+  // Typing indicator subscription
+  useEffect(() => {
+    if (!conversationId || !user) return;
+
+    if (typingChannelRef.current) typingChannelRef.current.unsubscribe();
+
+    typingChannelRef.current = subscribeToTyping(conversationId, user.id, (payload) => {
+      if (payload.isTyping) {
+        setTypingUser(payload.userName || 'কেউ একজন');
+        if (onTypingChange) onTypingChange(conversationId, payload.userName || 'কেউ একজন');
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => {
+          setTypingUser(null);
+          if (onTypingChange) onTypingChange(conversationId, null);
+        }, 4000);
+      } else {
+        setTypingUser(null);
+        if (onTypingChange) onTypingChange(conversationId, null);
+      }
+    });
+
+    return () => {
+      if (typingChannelRef.current) {
+        typingChannelRef.current.unsubscribe();
+        typingChannelRef.current = null;
+      }
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, [conversationId, user]);
+
+  // Scroll to bottom when messages update
   useEffect(() => {
     threadEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  // Close attach popup on outside click
+  useEffect(() => {
+    if (!attachOpen) return;
 
-    const now = new Date();
-    let hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    const timeString = `${hours}:${minutes} ${ampm}`;
+    function handleClickOutside(e) {
+      if (attachPopupRef.current && !attachPopupRef.current.contains(e.target)) {
+        setAttachOpen(false);
+      }
+    }
 
-    const newMsg = {
-      id: Date.now(),
-      sender: 'sent',
-      text: inputValue.trim(),
-      time: timeString,
-      type: 'text',
-      status: 'sent',
-    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [attachOpen]);
 
-    setMessages(prev => [...prev, newMsg]);
-    setInputValue('');
+  // Mark as read when new messages arrive from other user
+  useEffect(() => {
+    if (!conversationId || !user || messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.sender_id !== user.id) {
+      markAsRead(conversationId, user.id).catch(console.error);
+    }
+  }, [messages, conversationId, user]);
+
+  // Attach audioBlob -> send once recording finishes (unless cancelled)
+  useEffect(() => {
+    if (!recorder.audioBlob || !conversationId || !user) return;
+
+    let cancelled = false;
+    async function uploadAndSend() {
+      setSending(true);
+      try {
+        const audioUrl = await uploadVoiceNote(recorder.audioBlob, user.id);
+        if (cancelled) return;
+        await sendMessage(conversationId, user.id, {
+          messageType: 'voice',
+          audioUrl,
+          audioDurationSec: recorder.recordingTime,
+          replyToId: replyTo?.id || null,
+        });
+        setReplyTo(null);
+      } catch (err) {
+        console.error('Failed to send voice note:', err);
+      } finally {
+        if (!cancelled) {
+          setSending(false);
+          recorder.clearAudioBlob();
+        }
+      }
+    }
+
+    uploadAndSend();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recorder.audioBlob]);
+
+  const handleInputChange = useCallback((e) => {
+    setInputValue(e.target.value);
+    if (typingChannelRef.current && user) {
+      typingChannelRef.current.broadcast(user.full_name || user.name || 'ব্যবহারকারী', true);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => {
+        typingChannelRef.current?.broadcast(user.full_name || user.name || 'ব্যবহারকারী', false);
+      }, 2000);
+    }
+  }, [user]);
+
+  const handleSend = async () => {
+    if (!inputValue.trim() || !conversationId || !user || sending) return;
+
+    setSending(true);
+    try {
+      await sendMessage(conversationId, user.id, {
+        content: inputValue.trim(),
+        replyToId: replyTo?.id || null,
+      });
+      setInputValue('');
+      setReplyTo(null);
+      typingChannelRef.current?.broadcast(user.full_name || user.name || 'ব্যবহারকারী', false);
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSend();
     }
   };
 
-  const toggleVoicePlay = (msgId) => {
-    setVoicePlaying(prev => ({
-      ...prev,
-      [msgId]: !prev[msgId],
-    }));
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !conversationId || !user) return;
+
+    setSending(true);
+    try {
+      const imageUrl = await uploadChatImage(file, user.id);
+      await sendMessage(conversationId, user.id, {
+        imageUrl,
+        replyToId: replyTo?.id || null,
+      });
+      setReplyTo(null);
+    } catch (err) {
+      console.error('Failed to upload image:', err);
+    } finally {
+      setSending(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setAttachOpen(false);
+    }
   };
 
-  const hasText = inputValue.trim().length > 0;
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !conversationId || !user) return;
 
-  // Use activeConversation values if passed, otherwise default to Rahela Begum's details
-  const name = activeConversation?.name || 'রাহেলা বেগম';
-  const avatarChar = activeConversation?.avatarChar || 'র';
-  const avatarClass = activeConversation?.avatarClass || 'av-1';
+    setSending(true);
+    try {
+      const { publicUrl, fileName } = await uploadChatFile(file, user.id);
+      await sendMessage(conversationId, user.id, {
+        content: `📎 ${fileName}`,
+        imageUrl: publicUrl,
+        replyToId: replyTo?.id || null,
+      });
+      setReplyTo(null);
+    } catch (err) {
+      console.error('Failed to upload file:', err);
+    } finally {
+      setSending(false);
+      if (fileDocInputRef.current) fileDocInputRef.current.value = '';
+      setAttachOpen(false);
+    }
+  };
+
+  const handleShareLocation = () => {
+    if (!navigator.geolocation || !conversationId || !user) return;
+    setAttachOpen(false);
+    setLocationSending(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          await sendMessage(conversationId, user.id, {
+            messageType: 'location',
+            locationLat: position.coords.latitude,
+            locationLng: position.coords.longitude,
+            locationLabel: 'আমার বর্তমান অবস্থান',
+            replyToId: replyTo?.id || null,
+          });
+          setReplyTo(null);
+        } catch (err) {
+          console.error('Failed to share location:', err);
+        } finally {
+          setLocationSending(false);
+        }
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        setLocationSending(false);
+      }
+    );
+  };
+
+  const handleStartVoiceRecording = () => {
+    setAttachOpen(false);
+    recorder.startRecording();
+  };
+
+  const handleReactionAdded = useCallback(async (messageId) => {
+    try {
+      const reactions = await fetchMessageReactions(messageId);
+      setMessages(prev => prev.map(m => m.id === messageId ? { ...m, reactions } : m));
+    } catch (err) {
+      console.error('Failed to refresh reactions:', err);
+    }
+  }, []);
+
+  const handleUnpin = async (messageId) => {
+    if (!conversationId) return;
+    try {
+      await unpinMessage(conversationId, messageId);
+    } catch (err) {
+      console.error('Failed to unpin message:', err);
+    }
+  };
+
+  // ─── Call handlers ───
+
+  const handleStartCall = useCallback(async (callType) => {
+    if (!conversationId || !user || !other) return;
+
+    try {
+      const callSession = await initiateCall(
+        conversationId,
+        user.id,
+        other.id,
+        callType
+      );
+      setActiveCall(callSession);
+
+      callStatusUnsubRef.current = subscribeToCallStatus(callSession.id, (updated) => {
+        if (updated.status === 'accepted') {
+          setActiveCall(prev => prev ? { ...prev, ...updated } : prev);
+        } else if (updated.status === 'declined' || updated.status === 'ended') {
+          setActiveCall(null);
+        }
+      });
+    } catch (err) {
+      console.error('Failed to initiate call:', err);
+    }
+  }, [conversationId, user, other]);
+
+  const handleAcceptCall = async () => {
+    if (!incomingCall) return;
+
+    try {
+      await acceptCall(incomingCall.id);
+      setActiveCall(incomingCall);
+      setIncomingCall(null);
+
+      callStatusUnsubRef.current = subscribeToCallStatus(incomingCall.id, (updated) => {
+        if (updated.status === 'ended') {
+          setActiveCall(null);
+        }
+      });
+    } catch (err) {
+      console.error('Failed to accept call:', err);
+    }
+  };
+
+  const handleDeclineCall = async () => {
+    if (!incomingCall) return;
+
+    try {
+      await declineCall(incomingCall.id);
+      setIncomingCall(null);
+    } catch (err) {
+      console.error('Failed to decline call:', err);
+    }
+  };
+
+  const handleEndCall = async () => {
+    if (!activeCall) return;
+
+    try {
+      await endCall(activeCall.id);
+    } catch (err) {
+      console.error('Failed to end call:', err);
+    } finally {
+      if (callStatusUnsubRef.current) {
+        callStatusUnsubRef.current();
+        callStatusUnsubRef.current = null;
+      }
+      setActiveCall(null);
+    }
+  };
+
+  const handleStartVoiceCall = useCallback(() => handleStartCall('voice'), [handleStartCall]);
+  const handleStartVideoCall = useCallback(() => handleStartCall('video'), [handleStartCall]);
+  const handleAttachClick = useCallback(() => fileInputRef.current?.click(), []);
+
+  const hasText = inputValue.trim().length > 0;
+  const latestPinned = pinnedMessages[0];
+
+  // Group messages by date for date dividers
+  const groupedMessages = [];
+  let lastDate = null;
+  messages.forEach(msg => {
+    const msgDate = new Date(msg.created_at).toDateString();
+    if (msgDate !== lastDate) {
+      groupedMessages.push({ type: 'date', date: msg.created_at, key: `date-${msgDate}` });
+      lastDate = msgDate;
+    }
+    groupedMessages.push({ type: 'message', data: msg, key: msg.id });
+  });
+
+  if (!activeConversation) {
+    return (
+      <main className="chat-window" aria-label="Chat window">
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          height: '100%', color: 'var(--text-light)', fontFamily: 'var(--font-bn)'
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>💬</div>
+          <div style={{ fontSize: '16px', fontWeight: 600 }}>একটি কথোপকথন নির্বাচন করুন</div>
+          <div style={{ fontSize: '13px', marginTop: '4px', fontFamily: 'var(--font-en)' }}>
+            Select a conversation to start messaging
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="chat-window" aria-label="Chat window">
       {/* Chat header */}
-      <div className="chat-header">
-        <div className="chat-contact-av-wrap">
-          <div className={`chat-contact-av ${avatarClass}`}>{avatarChar}</div>
-          <span className="chat-online-dot"></span>
-        </div>
-        <div className="chat-contact-info">
-          <div className="chat-contact-name">{name}</div>
-          <div className="chat-contact-status">
-            <span className="chat-status-dot"></span>
-            <span className="chat-status-bn">সক্রিয় আছেন</span>
-            <span className="chat-status-en">· Active Now</span>
-          </div>
-        </div>
-
-        {/* Call/Info Buttons */}
-        <div className="chat-actions">
-          <button className="chat-action-btn" title="অডিও কল / Audio Call">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 015.08 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L9.09 9.63a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-            </svg>
-          </button>
-          <button className="chat-action-btn" title="ভিডিও কল / Video Call">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <polygon points="23 7 16 12 23 17 23 7" />
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-            </svg>
-          </button>
-          <button className="chat-action-btn" title="তথ্য / Info" onClick={onToggleInfo}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <ChatHeader
+        activeConversation={activeConversation}
+        isGroup={isGroup}
+        otherName={otherName}
+        avatarChar={avatarChar}
+        avatarClass={avatarClass}
+        presenceText={presenceText}
+        memberCount={memberCount}
+        activeCount={activeCount}
+        onVoiceCall={handleStartVoiceCall}
+        onVideoCall={handleStartVideoCall}
+        onToggleInfo={onToggleInfo}
+      />
 
       {/* Pinned message bar */}
-      <div className="pinned-bar" aria-label="Pinned message">
-        <span className="pinned-icon">📌</span>
-        <div className="pinned-content">
-          <div className="pinned-label">পিন করা বার্তা · Pinned</div>
-          <div className="pinned-text">রাহেলা: কালকে সকাল ১০টার সময় আমরা ইফতারের জিনিসপত্র কিনতে বাজারে যাব। সবাই চলে আসবেন।</div>
+      {showPinnedBar && latestPinned && (
+        <div className="pinned-bar" role="note" aria-label="Pinned message">
+          <span className="pinned-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </span>
+          <div className="pinned-content">
+            <div className="pinned-label">পিন করা বার্তা · Pinned</div>
+            <div className="pinned-text">{latestPinned.message?.content || '📎 মিডিয়া'}</div>
+          </div>
+          <button
+            className="pinned-close"
+            aria-label="আনপিন করুন / Unpin"
+            onClick={() => handleUnpin(latestPinned.message?.id)}
+          >
+            ✕
+          </button>
         </div>
-      </div>
+      )}
 
       {/* Chat thread */}
       <div className="chat-thread" aria-label="Message thread">
-        {/* Date divider */}
-        <div className="date-divider" role="separator">
-          <div className="date-divider-line"></div>
-          <div className="date-divider-text">
-            <span className="date-bn">আজকে</span>
-            <span className="date-en">· Today</span>
+        {loading ? (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            height: '100%', color: 'var(--text-light)', fontFamily: 'var(--font-bn)'
+          }}>
+            বার্তা লোড হচ্ছে...
           </div>
-          <div className="date-divider-line"></div>
-        </div>
-
-        {/* Dynamic Messages */}
-        {messages.map(msg => {
-          const isSent = msg.sender === 'sent';
-
-          return (
-            <div key={msg.id} className={`msg-row ${isSent ? 'sent' : 'received'}`} style={{ marginTop: '4px' }}>
-              {!isSent && (
-                <div className={`msg-av ${avatarClass}`} aria-hidden="true">
-                  {avatarChar}
-                </div>
-              )}
-
-              {/* Message Content Bubble */}
-              {msg.type === 'image' ? (
-                <div className="bubble sent msg-image" style={{ background: 'none', borderRadius: '14px 14px 4px 14px', overflow: 'hidden', boxShadow: '0 3px 12px rgba(27,107,90,0.2)' }}>
-                  <div className="msg-image-placeholder" style={{ fontSize: '40px' }}>
-                    {msg.captionIcon || '🍛'}
-                  </div>
-                  <div className="msg-image-caption">
-                    <div className="msg-image-time-row">
-                      <span className="bubble-time" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '10px' }}>
-                        {msg.time}
-                      </span>
-                      {msg.status === 'seen' && (
-                        <span className="msg-status">
-                          <span className="status-seen" title={`পড়েছেন · Seen`}>{avatarChar}</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : msg.type === 'voice' ? (
-                <div className={`bubble ${isSent ? 'sent' : 'received'}`}>
-                  <div className="bubble-inner voice-note" style={{ padding: '10px 12px' }}>
-                    <button
-                      className="voice-play-btn"
-                      aria-label="ভয়েস নোট প্লে/পজ করুন"
-                      onClick={() => toggleVoicePlay(msg.id)}
-                    >
-                      {voicePlaying[msg.id] ? (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                          <rect x="6" y="4" width="4" height="16" rx="1" />
-                          <rect x="14" y="4" width="4" height="16" rx="1" />
-                        </svg>
-                      ) : (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                          <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                      )}
-                    </button>
-                    <div className="waveform" aria-label="Voice note waveform">
-                      {Array.from({ length: msg.barsCount || 20 }).map((_, idx) => {
-                        const played = idx < (msg.playedBars || 7);
-                        // Wave bar height simulation
-                        const heights = [8, 14, 20, 12, 18, 24, 10, 16, 22, 14, 8, 18, 20, 12, 16, 10, 22, 8, 14, 18];
-                        const h = heights[idx % heights.length];
-                        return (
-                          <div
-                            key={idx}
-                            className={`wave-bar ${played ? 'played' : ''}`}
-                            style={{ height: `${h}px` }}
-                          />
-                        );
-                      })}
-                    </div>
-                    <span className="voice-duration">{msg.duration}</span>
-                  </div>
-                  <div className="bubble-time-row" style={{ padding: '0 12px 8px' }}>
-                    <span className="bubble-time">{msg.time}</span>
-                  </div>
-                </div>
-              ) : (
-                // Text Message
-                <div className={`bubble ${isSent ? 'sent' : 'received'}`} style={{ position: 'relative' }}>
-                  <div className="bubble-inner">
-                    {msg.replyTo && (
-                      <div className="reply-quote">
-                        <div className="reply-quote-name">{msg.replyTo.senderName}</div>
-                        <div className="reply-quote-text">{msg.replyTo.text}</div>
-                      </div>
-                    )}
-                    <p className="bubble-text">{msg.text}</p>
-                    <div className="bubble-time-row">
-                      <span className="bubble-time">{msg.time}</span>
-                      {isSent && msg.status && (
-                        <span className="msg-status">
-                          {msg.status === 'sent' && (
-                            <span className="status-dot" style={{ background: 'rgba(255,255,255,0.45)' }}></span>
-                          )}
-                          {msg.status === 'delivered' && (
-                            <>
-                              <span className="status-dot" style={{ background: 'rgba(255,255,255,0.7)' }}></span>
-                              <span className="status-dot" style={{ background: 'rgba(255,255,255,0.7)', marginLeft: '-1px' }}></span>
-                            </>
-                          )}
-                          {msg.status === 'seen' && (
-                            <span className="status-seen" title={`পড়েছেন · Seen`}>{avatarChar}</span>
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {msg.reaction && (
-                    <div className="bubble-reaction" aria-label="প্রতিক্রিয়া">
-                      {msg.reaction}
-                    </div>
-                  )}
-                </div>
-              )}
+        ) : messages.length === 0 ? (
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            height: '100%', color: 'var(--text-light)', fontFamily: 'var(--font-bn)'
+          }}>
+            <div style={{ fontSize: '32px', marginBottom: '8px' }}>👋</div>
+            <div style={{ fontSize: '14px' }}>এখনো কোনো বার্তা নেই</div>
+            <div style={{ fontSize: '12px', marginTop: '4px', fontFamily: 'var(--font-en)' }}>
+              Start the conversation!
             </div>
-          );
-        })}
+          </div>
+        ) : (
+          groupedMessages.map((item) => {
+            if (item.type === 'date') {
+              const dateInfo = formatDateDivider(item.date);
+              return (
+                <div key={item.key} className="date-divider" role="separator">
+                  <div className="date-divider-line"></div>
+                  <div className="date-divider-text">
+                    <span className="date-bn">{dateInfo.bn}</span>
+                    <span className="date-en">· {dateInfo.en}</span>
+                  </div>
+                  <div className="date-divider-line"></div>
+                </div>
+              );
+            }
+
+            const msg = item.data;
+            const isSent = msg.sender_id === user?.id;
+            const senderName = msg.sender?.name || '';
+            const senderAvatar = senderName.charAt(0);
+            const isRead = isSent && !isGroup && otherLastReadAt
+              ? new Date(msg.created_at) <= new Date(otherLastReadAt)
+              : false;
+
+            return (
+              <MessageBubble
+                key={msg.id}
+                message={msg}
+                isSent={isSent}
+                senderName={senderName}
+                senderAvatar={senderAvatar}
+                avatarClass={avatarClass}
+                formatMessageTime={formatMessageTime}
+                userId={user?.id}
+                onReactionAdded={handleReactionAdded}
+                isGroup={isGroup}
+                isRead={isRead}
+                onReply={setReplyTo}
+              />
+            );
+          })
+        )}
 
         {/* Typing indicator */}
-        <div className="msg-row received" style={{ marginTop: '6px' }}>
-          <div className={`msg-av ${avatarClass}`} aria-hidden="true">
-            {avatarChar}
-          </div>
-          <div>
-            <div className="typing-bubble">
-              <span className="typing-dot"></span>
-              <span className="typing-dot"></span>
-              <span className="typing-dot"></span>
+        {typingUser && (
+          <div className="msg-row received" role="status" style={{ marginTop: '6px' }}>
+            <div className={`msg-av ${avatarClass}`}>{avatarChar}</div>
+            <div>
+              <div className="typing-bubble">
+                <span className="typing-dot"></span>
+                <span className="typing-dot"></span>
+                <span className="typing-dot"></span>
+              </div>
+              <div className="typing-label">টাইপ করছেন... · typing...</div>
             </div>
-            <div className="typing-label">টাইপ করছেন... · typing...</div>
           </div>
-        </div>
+        )}
 
-        {/* Dummy div to scroll to */}
         <div ref={threadEndRef} />
       </div>
 
-      {/* Input bar */}
-      <div className="chat-input-bar">
-        {/* Attachment popup */}
-        <div className={`attach-popup ${attachOpen ? 'open' : ''}`} id="attachPopup">
-          <button className="attach-option" aria-label="ছবি/ভিডিও / Photo or Video" onClick={() => setAttachOpen(false)}>
-            <div className="attach-opt-icon" style={{ background: '#fff0e6' }}>📷</div>
-            <div>
-              <div className="attach-opt-bn">ছবি / ভিডিও</div>
-              <div className="attach-opt-en">Photo / Video</div>
+      {/* Reply preview bar */}
+      {replyTo && (
+        <div className="reply-preview-bar">
+          <div className="reply-preview-content">
+            <div className="reply-preview-sender">{replyTo.sender?.name || 'আপনি'}</div>
+            <div className="reply-preview-text">
+              {replyTo.content
+                || (replyTo.image_url && !replyTo.audio_url ? '📷 ছবি'
+                  : replyTo.audio_url ? '🎤 ভয়েস নোট'
+                    : replyTo.location_lat ? '📍 অবস্থান'
+                      : '📎 ফাইল')}
             </div>
-          </button>
-          <button className="attach-option" aria-label="ফাইল / File" onClick={() => setAttachOpen(false)}>
-            <div className="attach-opt-icon" style={{ background: '#eff6ff' }}>📎</div>
-            <div>
-              <div className="attach-opt-bn">ফাইল</div>
-              <div className="attach-opt-en">File</div>
-            </div>
-          </button>
-          <button className="attach-option" aria-label="ভয়েস নোট / Voice Note" onClick={() => setAttachOpen(false)}>
-            <div className="attach-opt-icon" style={{ background: '#f0fdf4' }}>🎤</div>
-            <div>
-              <div className="attach-opt-bn">ভয়েস নোট</div>
-              <div className="attach-opt-en">Voice Note</div>
-            </div>
-          </button>
-          <button className="attach-option" aria-label="লোকেশন / Location" onClick={() => setAttachOpen(false)}>
-            <div className="attach-opt-icon" style={{ background: '#fef2f2' }}>📍</div>
-            <div>
-              <div className="attach-opt-bn">লোকেশন</div>
-              <div className="attach-opt-en">Location</div>
-            </div>
-          </button>
-        </div>
-
-        {/* Input Controls */}
-        <div className="input-row">
-          {/* Emoji */}
-          <button className="input-side-btn" aria-label="ইমোজি / Emoji">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-              <line x1="9" y1="9" x2="9.01" y2="9" />
-              <line x1="15" y1="9" x2="15.01" y2="9" />
-            </svg>
-          </button>
-
-          {/* Attach */}
-          <button
-            className={`input-side-btn ${attachOpen ? 'active-attach' : ''}`}
-            id="attachBtn"
-            onClick={() => setAttachOpen(prev => !prev)}
-            aria-label="সংযুক্তি / Attachment"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
-            </svg>
-          </button>
-
-          {/* Text input */}
-          <div className="msg-input-wrap">
-            <input
-              id="msgInput"
-              className="msg-input"
-              type="text"
-              placeholder="একটি বার্তা লিখুন... / Type a message..."
-              aria-label="Message input"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
           </div>
-
-          {/* Send / Mic toggle */}
-          <button
-            className={`send-btn ${hasText ? '' : 'mic-mode'}`}
-            id="sendBtn"
-            aria-label={hasText ? 'বার্তা পাঠান / Send message' : 'ভয়েস রেকর্ড / Record voice note'}
-            onClick={hasText ? handleSend : undefined}
-          >
-            {hasText ? (
-              <svg id="sendIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{ transform: 'translateX(2px)' }}>
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
-            ) : (
-              <svg id="micIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                <path d="M19 10v2a7 7 0 01-14 0v-2" />
-                <line x1="12" y1="19" x2="12" y2="23" />
-                <line x1="8" y1="23" x2="16" y2="23" />
-              </svg>
-            )}
-          </button>
+          <button className="reply-preview-close" onClick={() => setReplyTo(null)} aria-label="বাতিল করুন / Cancel reply">✕</button>
         </div>
-      </div>
+      )}
+
+      {/* Input bar */}
+      <InputBar
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onInputKeyDown={handleKeyDown}
+        sending={sending}
+        hasText={hasText}
+        attachOpen={attachOpen}
+        onToggleAttach={() => setAttachOpen(prev => !prev)}
+        onAttachClick={handleAttachClick}
+        onFileDocClick={() => { setAttachOpen(false); fileDocInputRef.current?.click(); }}
+        onEmojiClick={(emoji) => {
+          setInputValue(prev => prev + (emoji || '😊'));
+        }}
+        recorder={recorder}
+        onStartVoiceRecording={handleStartVoiceRecording}
+        onStopRecording={recorder.stopRecording}
+        onCancelRecording={recorder.cancelRecording}
+        locationSending={locationSending}
+        onShareLocation={handleShareLocation}
+        onSend={handleSend}
+        fileInputRef={fileInputRef}
+        fileDocInputRef={fileDocInputRef}
+        onImageUpload={handleImageUpload}
+        onFileUpload={handleFileUpload}
+        attachPopupRef={attachPopupRef}
+      />
+
+      {/* Incoming Call Modal */}
+      <IncomingCallModal
+        callSession={incomingCall}
+        onAccept={handleAcceptCall}
+        onDecline={handleDeclineCall}
+      />
+
+      {/* Active Call Screen */}
+      {activeCall && (
+        <ActiveCallScreen
+          callSession={activeCall}
+          localUserId={user.id}
+          onCallEnd={handleEndCall}
+        />
+      )}
     </main>
   );
 }

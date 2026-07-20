@@ -12,7 +12,7 @@ export function highlightMatch(text, query) {
   if (!query || !text) return text;
   
   // Escape regex special characters
-  const escapedQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const escapedQuery = query.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
   const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
   
   return parts.map((part, index) => 

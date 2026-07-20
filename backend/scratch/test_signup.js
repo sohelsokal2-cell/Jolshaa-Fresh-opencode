@@ -4,8 +4,13 @@ const supabase = require('../config/supabaseClient');
 async function test() {
   console.log('Testing Supabase connection and auth signup...');
   try {
-    const email = `test_${Date.now()}@example.com`;
-    const password = 'Password123!';
+    const email = process.env.TEST_EMAIL || `test_${Date.now()}@example.com`;
+    const password = process.env.TEST_PASSWORD;
+
+    if (!password) {
+      console.error('TEST_PASSWORD env var is required to run this script.');
+      return;
+    }
     
     console.log(`Attempting signup for email: ${email}`);
     const { data: authData, error: authError } = await supabase.auth.signUp({

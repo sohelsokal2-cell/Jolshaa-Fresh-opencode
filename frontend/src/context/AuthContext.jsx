@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../config/supabaseClient';
+import i18n from '../i18n';
 
 const AuthContext = createContext(null);
 
@@ -49,11 +50,23 @@ export function AuthProvider({ children }) {
           isAdmin: false,
         });
       } else {
+        // Set language from profile preference
+        if (profile?.preferred_language && ['bn', 'en'].includes(profile.preferred_language)) {
+          i18n.changeLanguage(profile.preferred_language);
+          localStorage.setItem('i18nextLng', profile.preferred_language);
+        }
+
+        const fullName = profile?.name || authUser.user_metadata?.full_name || '';
+        let photo = profile?.profile_photo_url || null;
+        if (photo && photo.includes('name=User')) {
+          photo = photo.replace('name=User', `name=${encodeURIComponent(fullName)}`);
+        }
+
         setUser({
           ...authUser,
           ...profile,
-          full_name: profile?.name || authUser.user_metadata?.full_name || '',
-          avatar_url: profile?.profile_photo_url || null,
+          full_name: fullName,
+          avatar_url: photo,
           isAdmin: profile?.is_admin || false,
         });
       }

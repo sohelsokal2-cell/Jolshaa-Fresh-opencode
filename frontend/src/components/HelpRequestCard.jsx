@@ -1,27 +1,82 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { CATEGORY_MAP, URGENCY_MAP } from '../utils/sahajjoHelpers';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from './Toast';
+import { offerHelp } from '../lib/sahajjoApi';
 
-const HelpRequestCard = ({ request, selectedRequestId, onSelectRequest, isResolved }) => {
-  const [isHelped, setIsHelped] = useState(false);
+const timeAgo = (dateStr) => {
+  const now = new Date();
+  const then = new Date(dateStr);
+  const diffMs = now - then;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'এইমাত্র';
+  if (mins < 60) return `${mins} মিনিট আগে`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} ঘণ্টা আগে`;
+  const days = Math.floor(hrs / 24);
+  return `${days} দিন আগে`;
+};
+
+const timeRemaining = (deadline, urgency) => {
+  if (urgency === 'days') return { bn: 'অনুসন্ধান', en: 'ongoing' };
+  if (!deadline) return { bn: '—', en: '—' };
+  const now = new Date();
+  const dl = new Date(deadline);
+  const diffMs = dl - now;
+  if (diffMs <= 0) return { bn: 'সময় শেষ', en: 'expired' };
+  const hrs = Math.floor(diffMs / 3600000);
+  const mins = Math.floor((diffMs % 3600000) / 60000);
+  if (hrs > 0) return { bn: `${hrs} ঘণ্টা`, en: `${hrs}h ${mins}m left` };
+  return { bn: `${mins} মিনিট`, en: `${mins}m left` };
+};
+
+const HelpRequestCard = ({ request, selectedRequestId, onSelectRequest, isNew, helperCount = 0, hasUserOffered = false, onOfferSent }) => {
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const [isHelped, setIsHelped] = useState(hasUserOffered);
+  const [offerSubmitting, setOfferSubmitting] = useState(false);
 
   const urgency = URGENCY_MAP[request.urgency];
   const category = CATEGORY_MAP[request.category];
+  const isResolved = request.status === 'resolved';
+  const tr = timeRemaining(request.deadline, request.urgency);
 
-  const handleHelp = (e) => {
+  const handleHelp = useCallback(async (e) => {
     e.stopPropagation();
-    setIsHelped(!isHelped);
-  };
+    if (isHelped || !user || offerSubmitting) return;
 
-  const handleCardClick = () => {
-    onSelectRequest(request.id);
-  };
+    setOfferSubmitting(true);
+    try {
+      await offerHelp(request.id, user.id, '');
+      setIsHelped(true);
+      if (onOfferSent) onOfferSent(request.id);
+    } catch (err) {
+      console.error('Failed to offer help:', err);
+      if (err.message?.includes('duplicate')) {
+        setIsHelped(true);
+      } else {
+        showToast('সাহায্য প্রস্তাব পাঠানো যায়নি। আবার চেষ্টা করুন।');
+      }
+    } finally {
+      setOfferSubmitting(false);
+    }
+  }, [isHelped, user, offerSubmitting, request.id, onOfferSent, showToast]);
+
+  const requesterInitial = request.requester?.name?.[0] || '?';
+  const avatarBg = 'linear-gradient(135deg,#1B6B5A,#4ECDC4)';
 
   return (
     <div
-      className={`request-card ${urgency.cardClass} ${selectedRequestId === request.id ? 'selected' : ''} ${isResolved ? 'resolved-card' : ''}`}
-      onClick={handleCardClick}
+      className={`request-card ${urgency.cardClass} ${selectedRequestId === request.id ? 'selected' : ''} ${isResolved ? 'resolved-card' : ''} ${isNew ? 'new-request' : ''}`}
+      onClick={() => onSelectRequest(request.id)}
       tabIndex="0"
     >
+      {request.image_url && (
+        <div className="rc-image-wrap">
+          <img src={request.image_url} alt="" className="rc-image" />
+        </div>
+      )}
+
       <div className="rc-top">
         <div className="rc-top-left">
           <div className={`rc-cat-icon ${category.iconClass}`}>{category.icon}</div>
@@ -37,22 +92,22 @@ const HelpRequestCard = ({ request, selectedRequestId, onSelectRequest, isResolv
         </div>
         <div className="rc-cat-label">
           <span className="cat-lbl">{category.label} / {category.labelEn}</span>
-          <span className="rc-time-ago">{request.timeAgo}</span>
+          <span className="rc-time-ago">{timeAgo(request.created_at)}</span>
         </div>
       </div>
 
       <div className="rc-requester">
-        <div className="req-av" style={{ background: request.requester.avatarBg }}>
-          {request.requester.avatar}
+        <div className="req-av" style={{ background: avatarBg }}>
+          {requesterInitial}
         </div>
         <div>
-          <div className="req-name">{request.requester.name}</div>
+          <div className="req-name">{request.requester?.name || 'অজ্ঞাত'}</div>
           <div className="req-loc">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            {request.requester.location}
+            {request.location_upazila ? `${request.location_upazila}, ` : ''}{request.location_district}
           </div>
         </div>
       </div>
@@ -64,36 +119,30 @@ const HelpRequestCard = ({ request, selectedRequestId, onSelectRequest, isResolv
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            <span className="tr-val" style={request.urgency === 'days' ? { color: 'var(--urgent-green)' } : {}}>{request.timeRemaining}</span>
+            <span className="tr-val" style={request.urgency === 'days' ? { color: 'var(--urgent-green)' } : {}}>{tr.bn}</span>
             <div>
               <div className="tr-bn">{request.urgency === 'days' ? 'অনুসন্ধান' : 'বাকি'}</div>
-              <div className="tr-en">{request.urgency === 'days' ? 'ongoing' : 'left'}</div>
+              <div className="tr-en">{tr.en}</div>
             </div>
           </div>
           <div className="helper-count">
-            <div className="hc-faces">
-              {request.helpers.slice(0, 3).map((helper, i) => (
-                <div key={i} className="hc-av" style={{ background: helper.avatarBg }}>
-                  {helper.avatar}
-                </div>
-              ))}
-            </div>
             <div>
-              <div className="hc-text-bn">{request.helpers.length} জন সাহায্য করতে চান</div>
-              <div className="hc-text-en">{request.helpers.length} people offered to help</div>
+              <div className="hc-text-bn">{helperCount} জন সাহায্য করতে চান</div>
+              <div className="hc-text-en">{helperCount} people offered to help</div>
             </div>
           </div>
         </div>
         <button
           className={`btn-can-help ${isHelped ? 'helped' : ''}`}
           onClick={handleHelp}
+          disabled={isHelped || offerSubmitting || isResolved}
         >
           {isHelped ? '✅' : '🤝'}
           <div>
             <div className="bch-bn">
-              {isHelped ? 'সাহায্যের প্রস্তাব দেওয়া হয়েছে' : 'আমি সাহায্য করতে পারি'}
+              {isHelped ? 'সাহায্যের প্রস্তাব দেওয়া হয়েছে' : offerSubmitting ? 'পাঠানো হচ্ছে...' : 'আমি সাহায্য করতে পারি'}
             </div>
-            <div className="bch-en">{isHelped ? 'Offer Sent' : 'I Can Help'}</div>
+            <div className="bch-en">{isHelped ? 'Offer Sent' : offerSubmitting ? 'Sending...' : 'I Can Help'}</div>
           </div>
         </button>
       </div>

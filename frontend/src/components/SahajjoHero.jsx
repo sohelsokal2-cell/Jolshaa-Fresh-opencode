@@ -1,3 +1,8 @@
+const formatCount = (n) => {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+};
+
 const SahajjoHero = ({ stats, onRequestHelp }) => {
   return (
     <div className="sahajjo-hero">
@@ -35,7 +40,7 @@ const SahajjoHero = ({ stats, onRequestHelp }) => {
             </svg>
           </div>
           <div>
-            <div className="hstat-val">{stats.resolved}</div>
+            <div className="hstat-val">{formatCount(stats.resolved)}</div>
             <div className="hstat-lbn">সাহায্য সম্পন্ন</div>
             <div className="hstat-len">Resolved</div>
           </div>
@@ -49,7 +54,7 @@ const SahajjoHero = ({ stats, onRequestHelp }) => {
             </svg>
           </div>
           <div>
-            <div className="hstat-val" style={{ color: 'var(--urgent-red)' }}>{stats.active}</div>
+            <div className="hstat-val" style={{ color: 'var(--urgent-red)' }}>{formatCount(stats.active)}</div>
             <div className="hstat-lbn">সক্রিয় অনুরোধ</div>
             <div className="hstat-len">Active Requests</div>
           </div>
@@ -65,7 +70,7 @@ const SahajjoHero = ({ stats, onRequestHelp }) => {
             </svg>
           </div>
           <div>
-            <div className="hstat-val" style={{ color: 'var(--teal)' }}>{stats.helpers}</div>
+            <div className="hstat-val" style={{ color: 'var(--teal)' }}>{formatCount(stats.helpers)}</div>
             <div className="hstat-lbn">সাহায্যকারী</div>
             <div className="hstat-len">Helpers</div>
           </div>
@@ -79,7 +84,7 @@ const SahajjoHero = ({ stats, onRequestHelp }) => {
             </svg>
           </div>
           <div>
-            <div className="hstat-val" style={{ color: 'var(--amber)' }}>{stats.districts}</div>
+            <div className="hstat-val" style={{ color: 'var(--amber)' }}>{formatCount(stats.districts)}</div>
             <div className="hstat-lbn">জেলায় সক্রিয়</div>
             <div className="hstat-len">Districts Active</div>
           </div>

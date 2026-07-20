@@ -1,12 +1,10 @@
-import { useState } from 'react';
-
-const SahajjoFilterBar = ({ activeFilter, onFilterChange }) => {
+const SahajjoFilterBar = ({ activeFilter, onFilterChange, sortBy, onSortChange }) => {
   const filters = [
     { id: 'all', icon: '🔍', bn: 'সব', en: 'All' },
     { id: 'medical', icon: '🏥', bn: 'চিকিৎসা', en: 'Medical' },
     { id: 'flood', icon: '🌊', bn: 'বন্যা', en: 'Flood' },
     { id: 'fire', icon: '🔥', bn: 'আগুন', en: 'Fire' },
-    { id: 'lost', icon: '👤', bn: 'হারানো', en: 'Lost' },
+    { id: 'lost_person', icon: '👤', bn: 'হারানো', en: 'Lost' },
     { id: 'food', icon: '🍚', bn: 'খাবার', en: 'Food' },
     { id: 'shelter', icon: '🏠', bn: 'আশ্রয়', en: 'Shelter' },
   ];
@@ -26,10 +24,14 @@ const SahajjoFilterBar = ({ activeFilter, onFilterChange }) => {
           </button>
         ))}
       </div>
-      <select className="sort-select" aria-label="Sort requests">
-        <option>সবচেয়ে জরুরি</option>
-        <option>নতুন / Newest</option>
-        <option>কাছে / Near Me</option>
+      <select
+        className="sort-select"
+        aria-label="Sort requests"
+        value={sortBy}
+        onChange={(e) => onSortChange(e.target.value)}
+      >
+        <option value="urgency">সবচেয়ে জরুরি / Most Urgent</option>
+        <option value="newest">নতুন / Newest</option>
       </select>
     </div>
   );

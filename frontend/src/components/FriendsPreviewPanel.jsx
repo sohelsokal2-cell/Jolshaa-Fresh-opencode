@@ -1,25 +1,49 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const DEFAULT_FRIENDS = [
-  { id: 1, name: 'রাহেলা বেগম', avatarChar: 'র', avatarClass: 'fa-1', mutualCount: '১২' },
-  { id: 2, name: 'করিম উদ্দিন', avatarChar: 'ক', avatarClass: 'fa-2', mutualCount: '৮' },
-  { id: 3, name: 'তানভীর', avatarChar: 'ত', avatarClass: 'fa-3', mutualCount: '৫' },
-  { id: 4, name: 'সামিয়া আক্তার', avatarChar: 'স', avatarClass: 'fa-4', mutualCount: '১৫' },
-  { id: 5, name: 'নাবিলা', avatarChar: 'না', avatarClass: 'fa-5', mutualCount: '৩' },
-  { id: 6, name: 'ফারহান', avatarChar: 'ফ', avatarClass: 'fa-6', mutualCount: '৭' },
+const AVATAR_COLORS = [
+  'linear-gradient(135deg,#1B6B5A,#2a9678)',
+  'linear-gradient(135deg,#E85C4A,#f0816e)',
+  'linear-gradient(135deg,#D4A04A,#e8c06a)',
+  'linear-gradient(135deg,#4A7AE8,#6e9af0)',
+  'linear-gradient(135deg,#8B5CF8,#a78bfa)',
+  'linear-gradient(135deg,#EC4899,#f472b6)',
+  'linear-gradient(135deg,#14B8A6,#5eead4)',
 ];
+function getAvatarColor(name = '') {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
 
-export default function FriendsPreviewPanel({
-  friends = DEFAULT_FRIENDS,
-  totalCount = 89,
-  onSeeAllClick,
-  onFriendClick
-}) {
+export default function FriendsPreviewPanel({ friends = [], totalCount = 0, isOwnProfile, showFullList = false }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-  const filteredFriends = friends.filter(friend =>
-    friend.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const displayList = showFullList ? friends : friends.slice(0, 6);
+  const filteredFriends = displayList.filter(friend =>
+    friend.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleFriendClick = (friend) => {
+    navigate(`/profile/${friend.id}`);
+  };
+
+  if (friends.length === 0) {
+    return (
+      <div className="support-panel" aria-label="Friends tab preview">
+        <div className="support-panel-header">
+          <div className="sp-title">
+            <span className="sp-title-bn">বন্ধু</span>
+            <span className="sp-title-en">Friends · {totalCount}</span>
+          </div>
+        </div>
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-light)', fontFamily: 'var(--font-bn)', fontSize: '13px' }}>
+          {isOwnProfile ? 'এখনো কোনো বন্ধু নেই।' : 'কোনো বন্ধু নেই।'}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="support-panel" aria-label="Friends tab preview">
@@ -28,13 +52,6 @@ export default function FriendsPreviewPanel({
           <span className="sp-title-bn">বন্ধু</span>
           <span className="sp-title-en">Friends · {totalCount}</span>
         </div>
-        <button
-          className="sp-see-all"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-          onClick={onSeeAllClick}
-        >
-          সব দেখুন · See all
-        </button>
       </div>
 
       <div className="friends-mini-search">
@@ -59,15 +76,37 @@ export default function FriendsPreviewPanel({
           <div
             key={friend.id}
             className="fmg-card"
-            onClick={() => onFriendClick?.(friend)}
+            onClick={() => handleFriendClick(friend)}
           >
             <div className="fmg-photo">
-              <div className={`fmg-ph-inner ${friend.avatarClass || 'fa-1'}`}>
-                {friend.avatarChar}
-              </div>
+              {friend.profile_photo_url ? (
+                <img
+                  src={friend.profile_photo_url}
+                  alt={friend.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                <div
+                  className="fmg-ph-inner"
+                  style={{
+                    background: getAvatarColor(friend.name || ''),
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    fontSize: '20px',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-bn)',
+                  }}
+                >
+                  {friend.name?.[0] || '?'}
+                </div>
+              )}
             </div>
             <div className="fmg-name">{friend.name}</div>
-            <div className="fmg-mutual">{friend.mutualCount} mutual</div>
           </div>
         ))}
       </div>

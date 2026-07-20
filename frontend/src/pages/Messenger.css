@@ -86,8 +86,13 @@ html, body { height: 100%; font-family: var(--font-bn); background: var(--off-wh
 
 /* ===================== MESSENGER BODY ===================== */
 .messenger-body {
-  display: flex; height: 100vh; padding-top: var(--nav-h);
-  overflow: hidden;
+  position: absolute !important;
+  top: var(--nav-h, 58px) !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: flex !important;
+  overflow: hidden !important;
 }
 
 /* ===================== CONVERSATION LIST ===================== */
@@ -173,12 +178,23 @@ html, body { height: 100%; font-family: var(--font-bn); background: var(--off-wh
 }
 .online-dot.green { background: #22c55e; }
 .online-dot.grey { background: #9ca3af; }
-.group-badge {
-  position: absolute; bottom: -2px; right: -2px;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--teal); display: flex; align-items: center; justify-content: center;
+.group-av-stack {
+  position: relative; width: 46px; height: 46px; flex-shrink: 0;
+}
+.group-av-mini {
+  position: absolute; width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-bn); font-size: 10px; font-weight: 700; color: white;
   border: 2px solid white;
 }
+.gam-1 { background: linear-gradient(135deg,#f97316,#dc2626); top: 0; left: 0; }
+.gam-2 { background: linear-gradient(135deg,#06b6d4,#0891b2); bottom: 0; right: 0; }
+.group-badge {
+   position: absolute; bottom: -2px; right: -2px;
+   width: 18px; height: 18px; border-radius: 50%;
+   background: var(--teal); display: flex; align-items: center; justify-content: center;
+   border: 2px solid white; font-family: var(--font-bn); font-size: 9px; font-weight: 600; color: white;
+ }
 .conv-info { flex: 1; min-width: 0; }
 .conv-name-row { display: flex; align-items: center; justify-content: space-between; }
 .conv-name { font-family: var(--font-bn); font-size: 14px; font-weight: 600; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -256,7 +272,13 @@ html, body { height: 100%; font-family: var(--font-bn); background: var(--off-wh
 .date-en { font-family: var(--font-en); font-size: 10px; color: var(--text-xlight); }
 
 /* Message wrappers */
-.msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+.msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 100%;
+  position: relative;
+}
 .msg-row.sent { flex-direction: row-reverse; }
 .msg-row.received { flex-direction: row; }
 
@@ -424,12 +446,80 @@ html, body { height: 100%; font-family: var(--font-bn); background: var(--off-wh
 }
 .send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(27,107,90,0.4); }
 .send-btn.mic-mode { background: linear-gradient(135deg, #f97316, #dc2626); box-shadow: 0 2px 8px rgba(220,38,38,0.3); }
+.input-side-btn.active-emoji { color: var(--teal); background: var(--teal-pale); }
+
+/* ─── Facebook-style Emoji Picker Panel ─── */
+.fb-emoji-picker {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 8px;
+  width: 320px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+  z-index: 200;
+  overflow: hidden;
+  animation: emojiPickerPop 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes emojiPickerPop {
+  0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.fb-emoji-categories {
+  display: flex;
+  padding: 8px 8px 4px;
+  gap: 2px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.fb-emoji-cat-btn {
+  flex: 1; padding: 7px 2px; border: none; background: transparent;
+  font-size: 18px; border-radius: 8px; cursor: pointer;
+  transition: background 0.15s; line-height: 1;
+}
+.fb-emoji-cat-btn:hover { background: #f0f2f5; }
+.fb-emoji-cat-btn.active {
+  background: var(--teal-pale);
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+}
+.fb-emoji-cat-name {
+  font-family: var(--font-en); font-size: 11px; font-weight: 600;
+  color: var(--text-light); padding: 6px 10px 2px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.fb-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  padding: 6px 8px 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.fb-emoji-item {
+  width: 34px; height: 34px; border: none; background: transparent;
+  font-size: 20px; cursor: pointer; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s ease; line-height: 1;
+}
+.fb-emoji-item:hover {
+  background: #f0f2f5;
+  transform: scale(1.35);
+}
 
 /* ===================== INFO PANEL ===================== */
 .info-panel {
   width: var(--info-w); flex-shrink: 0;
   background: var(--card-bg); border-left: 1px solid var(--border-light);
   display: flex; flex-direction: column; height: 100%; overflow-y: auto;
+}
+.info-label-bar {
+  background: var(--teal-pale); padding: 5px 12px;
+  display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(27,107,90,0.12);
+  flex-shrink: 0;
+}
+.info-label-text {
+  font-family: var(--font-en); font-size: 9px; font-weight: 700; color: var(--teal);
+  text-transform: uppercase; letter-spacing: 0.08em;
 }
 .info-profile { display: flex; flex-direction: column; align-items: center; padding: 20px 16px 14px; border-bottom: 1px solid var(--border-light); }
 .info-av {

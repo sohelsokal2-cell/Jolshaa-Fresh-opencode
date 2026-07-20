@@ -1,18 +1,23 @@
 import React from 'react';
 import { useToast } from '../Toast';
+import { useAuth } from '../../context/AuthContext';
 
 export default function DashboardHeader() {
   const { showToast } = useToast();
+  const { user } = useAuth();
+
+  const name = user?.full_name || user?.name || 'ক্রিয়েটর';
+  const initial = name.charAt(0);
 
   return (
     <div className="page-hdr">
       <div className="ph-left">
-        <div className="ph-av">আ</div>
+        <div className="ph-av">{initial}</div>
         <div>
           <div className="ph-title-bn">ক্রিয়েটর ড্যাশবোর্ড</div>
           <div className="ph-title-en">Creator Dashboard · Jolshaa Monetization Studio</div>
           <div className="ph-creator-row">
-            <div className="ph-creator-name">আরিফ হোসেন</div>
+            <div className="ph-creator-name">{name}</div>
             <div className="verified-chip">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--gold-light)" strokeWidth="2.8" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
               <span className="verified-chip-text">VERIFIED</span>

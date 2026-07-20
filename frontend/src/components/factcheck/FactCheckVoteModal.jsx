@@ -1,14 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { submitVote, getFactCheckSummary, getMyVote, subscribeToVoteChanges } from '../../lib/factcheckApi';
 import './FactCheckVoteModal.css';
 
-const BASE_VOTE_COUNTS = { true: 9, false: 29, mislead: 9 };
-
 export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmitted }) {
+  const { user } = useAuth();
   const [selectedVote, setSelectedVote] = useState(null);
   const [reasonExpanded, setReasonExpanded] = useState(false);
   const [reasonText, setReasonText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const [dist, setDist] = useState({ true_count: 0, false_count: 0, mislead_count: 0, total: 0, pct_true: 0, pct_false: 0, pct_mislead: 0 });
+
+  // Load vote distribution and user's existing vote
+  useEffect(() => {
+    if (!isOpen || !post?.id) return;
+
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const [distribution, userVote] = await Promise.all([
+          getFactCheckSummary(post.id),
+          user ? getMyVote(post.id, user.id) : Promise.resolve(null),
+        ]);
+        if (cancelled) return;
+        setDist(distribution);
+        if (userVote) {
+          setSelectedVote(userVote.vote);
+          setReasonText(userVote.reason || '');
+        }
+      } catch (err) {
+        console.error('Failed to load factcheck data:', err);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [isOpen, post?.id, user]);
+
+  // Realtime subscription for vote changes
+  useEffect(() => {
+    if (!isOpen || !post?.id) return;
+
+    const unsubscribe = subscribeToVoteChanges(post.id, async () => {
+      try {
+        const updated = await getFactCheckSummary(post.id);
+        setDist(updated);
+      } catch (err) {
+        console.error('Realtime vote update failed:', err);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [isOpen, post?.id]);
 
   // Close on Escape key
   useEffect(() => {
@@ -18,18 +63,23 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
     return () => document.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedVote(null);
+      setReasonExpanded(false);
+      setReasonText('');
+      setSubmitting(false);
+      setSubmitSuccess(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  // Compute display counts from base + selected vote (no accumulation on re-click)
-  const voteCounts = {
-    true: BASE_VOTE_COUNTS.true + (selectedVote === 'true' ? 1 : 0),
-    false: BASE_VOTE_COUNTS.false + (selectedVote === 'false' ? 1 : 0),
-    mislead: BASE_VOTE_COUNTS.mislead + (selectedVote === 'mislead' ? 1 : 0),
-  };
-  const totalVotes = voteCounts.true + voteCounts.false + voteCounts.mislead;
-  const pctTrue = Math.round((voteCounts.true / totalVotes) * 100);
-  const pctFalse = Math.round((voteCounts.false / totalVotes) * 100);
-  const pctMislead = 100 - pctTrue - pctFalse;
+  const totalVotes = dist.total;
+  const pctTrue = Number(dist.pct_true) || 0;
+  const pctFalse = Number(dist.pct_false) || 0;
+  const pctMislead = Number(dist.pct_mislead) || 0;
 
   const handleVoteSelect = (type) => {
     setSelectedVote(type);
@@ -42,20 +92,16 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
   };
 
   const handleSubmit = async () => {
-    if (!selectedVote || submitting) return;
+    if (!selectedVote || submitting || !user) return;
     setSubmitting(true);
-    setSubmitSuccess(true);
 
-    // TODO: Replace with real backend call
-    // POST /api/posts/:id/factcheck/vote
-    // Body: { vote: selectedVote, reason: reasonText || null }
-    // This endpoint will be added during backend integration phase
     try {
-      // await fetch(`/api/posts/${post.id}/factcheck/vote`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ vote: selectedVote, reason: reasonText || null }),
-      // });
+      await submitVote(post.id, user.id, selectedVote, reasonText || null);
+      setSubmitSuccess(true);
+
+      // Refresh distribution
+      const updated = await getFactCheckSummary(post.id);
+      setDist(updated);
 
       setTimeout(() => {
         setSubmitting(false);
@@ -64,12 +110,13 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
         setReasonExpanded(false);
         setReasonText('');
         if (onVoteSubmitted) {
-          onVoteSubmitted({ vote: selectedVote, reason: reasonText });
+          onVoteSubmitted();
         }
-      }, 2500);
-    } catch (_err) {
+      }, 1500);
+    } catch (err) {
+      console.error('Vote submit failed:', err);
       setSubmitting(false);
-      setSubmitSuccess(false);
+      alert('ভোট সেভ হয়নি। আবার চেষ্টা করুন।');
     }
   };
 
@@ -78,6 +125,9 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
     if (type === 'false') return 'fcm-vbi-false';
     return 'fcm-vbi-mislead';
   };
+
+  const authorInitial = post?.authorName?.charAt(0) || 'প';
+  const authorBg = 'linear-gradient(135deg,#7c3aed,#a78bfa)';
 
   return (
     <div className="fcm-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
@@ -110,20 +160,20 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
 
         {/* Post preview */}
         <div className="fcm-post-preview">
-          <div className="fcm-post-av" style={{ background: post?.avatarBg || 'linear-gradient(135deg,#7c3aed,#a78bfa)' }}>
-            {post?.authorName?.charAt(0) || 'প'}
+          <div className="fcm-post-av" style={{ background: authorBg }}>
+            {authorInitial}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="fcm-post-name">{post?.authorName || 'পোস্ট লেখক'}</div>
-            <div className="fcm-post-time">{post?.time || '২ ঘণ্টা আগে'} · {post?.location || 'Dhaka'}</div>
-            <div className="fcm-post-text">{post?.text || 'পোস্টের তথ্য এখানে দেখা যাবে...'}</div>
+            <div className="fcm-post-time">{post?.time || ''} · {post?.location || ''}</div>
+            <div className="fcm-post-text">{post?.content || 'পোস্টের তথ্য এখানে দেখা যাবে...'}</div>
             <div className="fcm-preview-flag">
               <div className="fcm-flag-chip">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <circle cx="11" cy="11" r="7"/>
                   <path d="M21 21l-4.35-4.35"/>
                 </svg>
-                {post?.factCheckerCount || 47} জন ফ্যাক্ট-চেক করেছেন · {post?.factCheckerCount || 47} fact-checkers
+                {totalVotes} জন ফ্যাক্ট-চেক করেছেন · {totalVotes} fact-checkers
               </div>
             </div>
           </div>
@@ -137,7 +187,6 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
 
         {/* Vote buttons */}
         <div className="fcm-vote-buttons">
-          {/* True */}
           <button
             className={`fcm-vote-btn fcm-vb-true ${selectedVote === 'true' ? 'selected' : ''}`}
             onClick={() => handleVoteSelect('true')}
@@ -161,7 +210,6 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
             </div>
           </button>
 
-          {/* False */}
           <button
             className={`fcm-vote-btn fcm-vb-false ${selectedVote === 'false' ? 'selected' : ''}`}
             onClick={() => handleVoteSelect('false')}
@@ -186,7 +234,6 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
             </div>
           </button>
 
-          {/* Misleading */}
           <button
             className={`fcm-vote-btn fcm-vb-mislead ${selectedVote === 'mislead' ? 'selected' : ''}`}
             onClick={() => handleVoteSelect('mislead')}
@@ -268,7 +315,7 @@ export default function FactCheckVoteModal({ post, isOpen, onClose, onVoteSubmit
         {/* Footer */}
         <div className="fcm-footer">
           <div className="fcm-vote-stats">
-            <strong>{totalVotes}</strong> জন ভোট দিয়েছেন · <strong>{reasonText ? 13 : 12}</strong>টি কারণ দেওয়া হয়েছে
+            <strong>{totalVotes}</strong> জন ভোট দিয়েছেন
           </div>
           <div className="fcm-actions">
             <button className="fcm-btn-cancel" onClick={handleReset}>বাতিল</button>

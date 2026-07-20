@@ -2,36 +2,20 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 const W = 540;
 const H = 180;
-const MAX_VAL = 12000;
 
 const TABS = [
-  { id: '7d', label: '৭ দিন' },
-  { id: '30d', label: '৩০ দিন' },
-  { id: '3m', label: '৩ মাস' },
+  { id: '7d', label: '৭ দিন', days: 7 },
+  { id: '30d', label: '৩০ দিন', days: 30 },
+  { id: '3m', label: '৩ মাস', days: 90 },
 ];
 
-const X_LABELS = {
-  '7d': ['Jun 30', 'Jul 1', 'Jul 2', 'Jul 3', 'Jul 4', 'Jul 5', 'Jul 6'],
-  '30d': ['Jun 12', 'Jun 17', 'Jun 22', 'Jun 27', 'Jul 2', 'Jul 7'],
-  '3m': ['Apr 12', 'May 12', 'Jun 12', 'Jul 7'],
-};
-
-function generateData(n) {
-  let data = [];
-  let v = 3000 + Math.random() * 2000;
-  for (let i = 0; i < n; i++) {
-    v = Math.max(800, Math.min(MAX_VAL, v + (Math.random() - 0.44) * 1800));
-    data.push(Math.round(v));
-  }
-  data[data.length - 1] = Math.round(data[data.length - 1] * 1.1);
-  return data;
-}
-
-function valueToY(v) {
-  return H - (v / MAX_VAL) * H;
+function valueToY(v, maxVal) {
+  if (maxVal === 0) return H;
+  return H - (v / maxVal) * H;
 }
 
 function indexToX(i, n) {
+  if (n <= 1) return W / 2;
   return (i / (n - 1)) * W;
 }
 
@@ -47,30 +31,57 @@ function smoothPath(pts) {
   return d;
 }
 
-function buildChartData(n) {
-  const totalData = generateData(n);
-  const subData = totalData.map((v) => Math.round(v * (0.30 + Math.random() * 0.12)));
-  const pts = totalData.map((v, i) => ({ x: indexToX(i, n), y: valueToY(v) }));
-  const subPts = subData.map((v, i) => ({ x: indexToX(i, n), y: valueToY(v) }));
-  return { totalData, subData, pts, subPts };
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-const TAB_COUNTS = { '7d': 7, '30d': 30, '3m': 30 };
-
-export default function EarningsChart() {
+export default function EarningsChart({ chartData: rawData = [] }) {
   const [activeTab, setActiveTab] = useState('30d');
-  const [chartData, setChartData] = useState(() => buildChartData(TAB_COUNTS['30d']));
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, text: '' });
   const svgRef = useRef(null);
 
-  useEffect(() => {
-    setChartData(buildChartData(TAB_COUNTS[activeTab]));
-    setTooltip({ visible: false, x: 0, y: 0, text: '' });
-  }, [activeTab]);
+  const days = TABS.find((t) => t.id === activeTab)?.days || 30;
 
-  const handleTabClick = useCallback((tabId) => {
-    setActiveTab(tabId);
-  }, []);
+  // Filter data by selected period
+  const filteredData = rawData.filter((d) => {
+    const date = new Date(d.day);
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    return date >= cutoff;
+  });
+
+  // Use actual amounts from RPC
+  const amounts = filteredData.map((d) => Number(d.amount) || 0);
+  const maxVal = Math.max(...amounts, 1000);
+
+  // Build points
+  const pts = amounts.map((v, i) => ({
+    x: indexToX(i, amounts.length || 1),
+    y: valueToY(v, maxVal),
+  }));
+  const smooth = smoothPath(pts);
+  const areaPath = pts.length > 0
+    ? smooth + ` L ${pts[pts.length - 1].x} ${H} L ${pts[0].x} ${H} Z`
+    : '';
+
+  // X-axis labels — show up to 6 evenly spaced
+  const xLabels = [];
+  const step = Math.max(1, Math.floor(filteredData.length / 6));
+  for (let i = 0; i < filteredData.length; i += step) {
+    xLabels.push(formatDate(filteredData[i].day));
+  }
+  if (filteredData.length > 0) {
+    const last = formatDate(filteredData[filteredData.length - 1].day);
+    if (xLabels[xLabels.length - 1] !== last) xLabels.push(last);
+  }
+
+  // Y-axis labels
+  const yLabels = [];
+  for (let i = 0; i <= 4; i++) {
+    const val = Math.round((maxVal / 4) * (4 - i));
+    yLabels.push(val >= 1000 ? `${(val / 1000).toFixed(val >= 10000 ? 0 : 1)}k` : String(val));
+  }
 
   const handleDotEnter = useCallback((pt, value) => {
     if (!svgRef.current) return;
@@ -89,12 +100,6 @@ export default function EarningsChart() {
     setTooltip((prev) => ({ ...prev, visible: false }));
   }, []);
 
-  const { totalData, pts, subPts } = chartData;
-  const smooth = smoothPath(pts);
-  const smoothSub = smoothPath(subPts);
-  const areaPath = smooth + ` L ${pts[pts.length - 1].x} ${H} L ${pts[0].x} ${H} Z`;
-  const areaGold = smoothSub + ` L ${subPts[subPts.length - 1].x} ${H} L ${subPts[0].x} ${H} Z`;
-
   const n = pts.length;
 
   return (
@@ -102,14 +107,17 @@ export default function EarningsChart() {
       <div className="cc-header">
         <div>
           <div className="cc-title-bn">আয়ের প্রবণতা</div>
-          <div className="cc-title-en">Earnings Trend · {activeTab === '7d' ? 'Last 7 Days' : activeTab === '30d' ? 'Last 30 Days' : 'Last 3 Months'}</div>
+          <div className="cc-title-en">
+            Earnings Trend ·{' '}
+            {activeTab === '7d' ? 'Last 7 Days' : activeTab === '30d' ? 'Last 30 Days' : 'Last 3 Months'}
+          </div>
         </div>
         <div className="cc-tabs">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               className={`cc-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => handleTabClick(tab.id)}
+              onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
             </button>
@@ -120,12 +128,21 @@ export default function EarningsChart() {
       <div className="chart-svg-wrap" style={{ position: 'relative' }}>
         <div style={{ display: 'flex', gap: 0 }}>
           {/* Y-axis labels */}
-          <div style={{
-            display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-            padding: '0 6px 32px 0', width: 36, textAlign: 'right',
-          }}>
-            {['12k', '9k', '6k', '3k', '0'].map((lbl) => (
-              <span key={lbl} style={{ fontFamily: 'var(--font-en)', fontSize: '8.5px', color: 'var(--text-xlight)' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              padding: '0 6px 32px 0',
+              width: 36,
+              textAlign: 'right',
+            }}
+          >
+            {yLabels.map((lbl) => (
+              <span
+                key={lbl}
+                style={{ fontFamily: 'var(--font-en)', fontSize: '8.5px', color: 'var(--text-xlight)' }}
+              >
                 {lbl}
               </span>
             ))}
@@ -133,85 +150,100 @@ export default function EarningsChart() {
 
           {/* SVG chart area */}
           <div style={{ flex: 1, position: 'relative' }}>
-            <svg
-              ref={svgRef}
-              viewBox={`0 0 ${W} ${H}`}
-              width="100%"
-              style={{ display: 'block' }}
-              preserveAspectRatio="none"
-            >
-              <defs>
-                <linearGradient id="chartGradTeal" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1B6B5A" stopOpacity="0.22" />
-                  <stop offset="100%" stopColor="#1B6B5A" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="chartGradGold" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#D4A017" stopOpacity="0.16" />
-                  <stop offset="100%" stopColor="#D4A017" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#1B6B5A" />
-                  <stop offset="60%" stopColor="#2a9678" />
-                  <stop offset="100%" stopColor="#D4A017" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
+            {n > 0 ? (
+              <svg
+                ref={svgRef}
+                viewBox={`0 0 ${W} ${H}`}
+                width="100%"
+                style={{ display: 'block' }}
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="chartGradTeal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1B6B5A" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#1B6B5A" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#1B6B5A" />
+                    <stop offset="60%" stopColor="#2a9678" />
+                    <stop offset="100%" stopColor="#D4A017" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
 
-              {/* Grid lines */}
-              {[0, 45, 90, 135, 180].map((y) => (
-                <line key={y} x1="0" y1={y} x2={W} y2={y} stroke="#F0EBE3" strokeWidth="1" />
-              ))}
+                {/* Grid lines */}
+                {[0, 45, 90, 135, 180].map((y) => (
+                  <line key={y} x1="0" y1={y} x2={W} y2={y} stroke="#F0EBE3" strokeWidth="1" />
+                ))}
 
-              {/* Area fills */}
-              <path d={areaPath} fill="url(#chartGradTeal)" />
-              <path d={areaGold} fill="url(#chartGradGold)" />
+                {/* Area fill */}
+                <path d={areaPath} fill="url(#chartGradTeal)" />
 
-              {/* Main line (total) */}
-              <path d={smooth} fill="none" stroke="url(#lineGradient)" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" filter="url(#glow)" />
+                {/* Main line */}
+                <path
+                  d={smooth}
+                  fill="none"
+                  stroke="url(#lineGradient)"
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  filter="url(#glow)"
+                />
 
-              {/* Sub line (subscriptions) */}
-              <path d={smoothSub} fill="none" stroke="#D4A017" strokeWidth="1.8" strokeDasharray="5 3" strokeLinecap="round" />
+                {/* Data dots */}
+                {pts.map((p, i) => {
+                  if (n > 10 && i % Math.ceil(n / 10) !== 0 && i !== n - 1) return null;
+                  return (
+                    <circle
+                      key={i}
+                      cx={p.x}
+                      cy={p.y}
+                      r="4"
+                      fill={i === n - 1 ? 'var(--gold)' : 'var(--teal)'}
+                      stroke="white"
+                      strokeWidth="2"
+                    />
+                  );
+                })}
 
-              {/* Data dots (every 5th + last) */}
-              {pts.map((p, i) => {
-                if (i % 5 !== 0 && i !== n - 1) return null;
-                return (
-                  <circle
-                    key={i}
-                    cx={p.x}
-                    cy={p.y}
-                    r="4"
-                    fill={i === n - 1 ? 'var(--gold)' : 'var(--teal)'}
-                    stroke="white"
-                    strokeWidth="2"
-                  />
-                );
-              })}
-
-              {/* Hover strips (invisible rects for mouse events) */}
-              {pts.map((p, i) => {
-                const step = W / n;
-                return (
-                  <rect
-                    key={`strip-${i}`}
-                    x={p.x - step / 2}
-                    y={0}
-                    width={step}
-                    height={H}
-                    fill="transparent"
-                    style={{ cursor: 'crosshair' }}
-                    onMouseEnter={() => handleDotEnter(p, totalData[i])}
-                    onMouseLeave={handleDotLeave}
-                  />
-                );
-              })}
-            </svg>
+                {/* Hover strips */}
+                {pts.map((p, i) => {
+                  const step = W / n;
+                  return (
+                    <rect
+                      key={`strip-${i}`}
+                      x={p.x - step / 2}
+                      y={0}
+                      width={step}
+                      height={H}
+                      fill="transparent"
+                      style={{ cursor: 'crosshair' }}
+                      onMouseEnter={() => handleDotEnter(p, amounts[i])}
+                      onMouseLeave={handleDotLeave}
+                    />
+                  );
+                })}
+              </svg>
+            ) : (
+              <div
+                style={{
+                  height: H,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--text-xlight)',
+                  fontSize: 12,
+                }}
+              >
+                এখনো কোনো তথ্য নেই
+              </div>
+            )}
 
             {/* Tooltip */}
             <div
@@ -229,8 +261,10 @@ export default function EarningsChart() {
 
         {/* X-axis labels */}
         <div className="chart-x-labels">
-          {(X_LABELS[activeTab] || []).map((lbl) => (
-            <span key={lbl} className="chart-x-lbl">{lbl}</span>
+          {xLabels.map((lbl) => (
+            <span key={lbl} className="chart-x-lbl">
+              {lbl}
+            </span>
           ))}
         </div>
       </div>
@@ -238,12 +272,17 @@ export default function EarningsChart() {
       {/* Legend */}
       <div style={{ display: 'flex', gap: 16, marginTop: 10, paddingLeft: 36 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 18, height: 3, background: 'linear-gradient(to right,var(--teal),var(--gold))', borderRadius: 2 }} />
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 10, color: 'var(--text-light)' }}>মোট আয় / Total</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 18, height: 0, borderTop: '1.5px dashed var(--gold)', background: 'none', borderRadius: 2, opacity: 0.7 }} />
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 10, color: 'var(--text-light)' }}>সাবস্ক্রিপশন / Subscriptions</span>
+          <div
+            style={{
+              width: 18,
+              height: 3,
+              background: 'linear-gradient(to right,var(--teal),var(--gold))',
+              borderRadius: 2,
+            }}
+          />
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 10, color: 'var(--text-light)' }}>
+            মোট আয় / Total
+          </span>
         </div>
       </div>
     </div>

@@ -1,25 +1,44 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from './Toast';
+import { updateLanguagePreference } from '../lib/settingsApi';
 
 const LANGUAGES = [
   { code: 'bn', flag: '🇧🇩', native: 'বাংলা', en: 'Bengali · বর্তমান ভাষা' },
   { code: 'en', flag: '🇬🇧', native: 'English', en: 'English (UK)' },
-  { code: 'hi', flag: '🇮🇳', native: 'हिंदी', en: 'Hindi · हिंदी' },
+  { code: 'hi', flag: '🇮🇳', native: 'हिन्दी', en: 'Hindi · हिन्दी' },
   { code: 'ar', flag: '🇸🇦', native: 'العربية', en: 'Arabic · عربی' },
   { code: 'ur', flag: '🇵🇰', native: 'اردو', en: 'Urdu · اردو' },
 ];
 
-// Only these languages are wired to the real i18n system in this step.
 const SUPPORTED_LANGS = ['bn', 'en'];
 
 export default function LanguageSettingsPanel({ className }) {
   const { i18n } = useTranslation();
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language || 'bn');
+  const [saving, setSaving] = useState(false);
 
-  const handleSelect = (code) => {
+  const handleSelect = async (code) => {
     setSelectedLanguage(code);
+
     if (SUPPORTED_LANGS.includes(code)) {
       i18n.changeLanguage(code);
+      localStorage.setItem('i18nextLng', code);
+    }
+
+    if (user) {
+      setSaving(true);
+      try {
+        await updateLanguagePreference(user.id, code);
+      } catch (err) {
+        console.error('Language save failed:', err);
+        showToast(`ভাষা সেভ ব্যর্থ: ${err.message}`);
+      } finally {
+        setSaving(false);
+      }
     }
   };
 
@@ -31,7 +50,7 @@ export default function LanguageSettingsPanel({ className }) {
         </div>
         <div>
           <div className="lpt-bn">ভাষা নির্বাচন</div>
-          <div className="lpt-en">Language · উদাহরণ / Preview</div>
+          <div className="lpt-en">Language · {saving ? 'সেভ হচ্ছে...' : 'সেভ হয়েছে ✓'}</div>
         </div>
       </div>
 
@@ -55,7 +74,6 @@ export default function LanguageSettingsPanel({ className }) {
         ))}
       </div>
 
-      {/* App version info */}
       <div className="app-version">
         <div className="av-label">APP VERSION</div>
         <div className="av-value">Jolshaa v2.4.1 · Beta</div>

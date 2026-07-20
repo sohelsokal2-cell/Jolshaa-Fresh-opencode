@@ -12,8 +12,11 @@ router.get('/', (req, res) => {
 });
 
 // GET /api/health/db
-// Checks Supabase connection by counting rows in profiles table
+// Checks Supabase connection — only available in non-production
 router.get('/db', async (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(404).json({ status: 'not found' });
+  }
   try {
     const { count, error } = await supabase
       .from('profiles')

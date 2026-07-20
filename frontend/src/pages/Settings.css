@@ -347,3 +347,96 @@ body { font-family: var(--font-bn); background: var(--off-white); color: var(--t
 @media (max-width: 1100px) { .lang-panel { display: none; } }
 @media (max-width: 780px) { .sidebar-left { transform: translateX(-100%); } .content-area { margin-left: 0; } }
 @media (max-width: 500px) { .nav-wordmark { display: none; } }
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999; padding: 20px;
+}
+.modal-box {
+  background: white; border-radius: 16px; padding: 28px;
+  width: 100%; max-width: 440px; max-height: 90vh; overflow: auto;
+}
+.modal-title {
+  margin: 0 0 16px; font-size: 16px; font-weight: 700; font-family: var(--font-bn);
+}
+.modal-title-danger {
+  margin: 0 0 12px; font-size: 16px; font-weight: 700; font-family: var(--font-bn); color: var(--danger);
+}
+.modal-desc {
+  font-size: 13px; line-height: 1.6; color: var(--text-mid); font-family: var(--font-bn); margin: 0 0 20px;
+}
+.modal-desc-short {
+  font-size: 13px; line-height: 1.6; color: var(--text-mid); font-family: var(--font-bn); margin: 0 0 12px;
+}
+.modal-desc-bold {
+  font-size: 13px; line-height: 1.6; color: var(--text-mid); font-family: var(--font-bn); margin: 0 0 12px; font-weight: 600;
+}
+.modal-label {
+  display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; font-family: var(--font-bn);
+}
+.modal-label-hint {
+  font-weight: 400; color: var(--text-light); font-size: 11px;
+}
+.modal-input {
+  width: 100%; padding: 10px 12px; border: 1.5px solid #e5e7eb;
+  border-radius: 10px; font-size: 13px; box-sizing: border-box;
+}
+.modal-input-with-margin {
+  width: 100%; padding: 10px 12px; border: 1.5px solid #e5e7eb;
+  border-radius: 10px; font-size: 13px; box-sizing: border-box; margin-bottom: 16px;
+}
+.modal-textarea {
+  width: 100%; padding: 10px 12px; border: 1.5px solid #e5e7eb;
+  border-radius: 10px; font-size: 13px; resize: vertical; box-sizing: border-box;
+}
+.modal-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+.modal-btn-cancel {
+  padding: 10px 20px; background: #f3f4f6; border: none;
+  border-radius: 10px; cursor: pointer; font-size: 13px; font-family: var(--font-bn);
+}
+.modal-btn-cancel:disabled {
+  cursor: default;
+}
+.modal-btn-primary {
+  padding: 10px 24px; background: var(--amber); color: white;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-family: var(--font-bn); font-weight: 600;
+}
+.modal-btn-primary:disabled {
+  cursor: default; opacity: 0.5;
+}
+.modal-btn-danger {
+  padding: 10px 24px; background: var(--danger); color: white;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-family: var(--font-bn); font-weight: 600;
+}
+.modal-btn-danger:disabled {
+  cursor: default; opacity: 0.5;
+}
+.modal-btn-teal {
+  padding: 10px 24px; background: var(--teal); color: white;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-family: var(--font-bn); font-weight: 600;
+}
+.modal-btn-teal:disabled {
+  cursor: default; opacity: 0.5;
+}
+.modal-progress {
+  font-size: 13px; color: var(--teal); margin-bottom: 12px; text-align: center;
+}
+.modal-danger-text {
+  color: var(--danger);
+}
+.modal-section {
+  margin-bottom: 14px;
+}
+.modal-section-last {
+  margin-bottom: 20px;
+}
+.modal-file-info {
+  font-size: 12px; color: var(--text-light); margin-top: 4px;
+}

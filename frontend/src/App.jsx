@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastProvider } from './components/Toast';
@@ -7,6 +7,7 @@ import DesignSystemDemo from './pages/DesignSystemDemo';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import NewsFeed from './pages/NewsFeed';
+import Messages from './pages/Messages';
 import Messenger from './pages/Messenger';
 import Profile from './pages/Profile';
 import Groups from './pages/Groups';
@@ -16,12 +17,14 @@ import Reels from './pages/Reels';
 import Watch from './pages/Watch';
 import Events from './pages/Events';
 import SahajjoChai from './pages/SahajjoChai';
-import FactCheckPreview from './pages/FactCheckPreview';
 import Settings from './pages/Settings';
 import Friends from './pages/Friends';
 import CreatorDashboard from './pages/CreatorDashboard';
+import MockCheckout from './pages/MockCheckout';
 import AdminPanel from './pages/AdminPanel';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
+import { GroupCallScreen } from './components/calling';
+import LiveVideoPage from './pages/LiveVideoPage';
 
 function PlaceholderPage({ title }) {
   return (
@@ -32,6 +35,18 @@ function PlaceholderPage({ title }) {
         ← Go to News Feed / নিউজ ফিডে ফিরে যান
       </Link>
     </div>
+  );
+}
+
+function GroupCallPage() {
+  const { groupId } = useParams();
+  const navigate = useNavigate();
+  const roomName = `group-${groupId}`;
+  return (
+    <GroupCallScreen
+      roomName={roomName}
+      onLeave={() => navigate('/groups')}
+    />
   );
 }
 
@@ -55,9 +70,17 @@ function App() {
             }
           />
 
-          {/* Protected Messenger */}
+          {/* Protected Messages */}
           <Route
-            path="/messenger"
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Messenger />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages/:conversationId"
             element={
               <ProtectedRoute>
                 <Messenger />
@@ -65,9 +88,17 @@ function App() {
             }
           />
 
-          {/* Protected Profile */}
+          {/* Protected Profile — own or other user */}
           <Route
             path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:userId"
             element={
               <ProtectedRoute>
                 <Profile />
@@ -83,6 +114,21 @@ function App() {
                 <Groups />
               </ProtectedRoute>
             }
+          />
+
+          {/* Group Call */}
+          <Route
+            path="/groups/:groupId/call"
+            element={
+              <ProtectedRoute>
+                <GroupCallPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/live/:streamId"
+            element={<ProtectedRoute><LiveVideoPage /></ProtectedRoute>}
           />
 
           {/* Protected Pages Management */}
@@ -151,6 +197,11 @@ function App() {
               <CreatorDashboard />
             </ProtectedRoute>
           } />
+          <Route path="/payment/mock/:transactionId" element={
+            <ProtectedRoute>
+              <MockCheckout />
+            </ProtectedRoute>
+          } />
 
           {/* Admin Panel — admin-only protected */}
           <Route path="/admin" element={
@@ -174,7 +225,6 @@ function App() {
           {/* Developer Testing Routes */}
           <Route path="/test" element={<ConnectionTest />} />
           <Route path="/design" element={<DesignSystemDemo />} />
-          <Route path="/factcheck-preview" element={<FactCheckPreview />} />
         </Routes>
       </BrowserRouter>
       </ToastProvider>

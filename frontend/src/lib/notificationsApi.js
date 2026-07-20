@@ -1,15 +1,15 @@
 import { supabase } from '../config/supabaseClient';
 
-export async function fetchNotifications(userId, limit = 30) {
+export async function fetchNotifications(userId, limit = 30, offset = 0) {
   const { data, error } = await supabase
     .from('notifications')
     .select(`
-      id, recipient_id, actor_id, type, reference_id, is_read, created_at,
+      id, recipient_id, actor_id, type, reference_id, is_read, created_at, title, body,
       actor:profiles!notifications_actor_id_fkey(id, name, profile_photo_url)
     `)
     .eq('recipient_id', userId)
     .order('created_at', { ascending: false })
-    .limit(limit);
+    .range(offset, offset + limit - 1);
 
   if (error) throw error;
 
@@ -18,6 +18,16 @@ export async function fetchNotifications(userId, limit = 30) {
     actorName: n.actor?.name || null,
     actorAvatar: n.actor?.profile_photo_url || null,
   }));
+}
+
+export async function fetchNotificationCount(userId) {
+  const { count, error } = await supabase
+    .from('notifications')
+    .select('id', { count: 'exact', head: true })
+    .eq('recipient_id', userId);
+
+  if (error) throw error;
+  return count || 0;
 }
 
 export async function fetchUnreadCount(userId) {
@@ -67,9 +77,7 @@ export function subscribeToNotifications(userId, onNewNotification, channelName 
         onNewNotification(payload.new);
       }
     )
-    .subscribe((status) => {
-      console.log('[Realtime] Notifications channel status:', status);
-    });
+    .subscribe();
 
   return () => {
     supabase.removeChannel(channel);

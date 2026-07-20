@@ -17,6 +17,12 @@ export const CATEGORY_MAP = {
     labelEn: 'Fire',
     iconClass: 'rci-fire',
   },
+  lost_person: {
+    icon: '👤',
+    label: 'হারানো',
+    labelEn: 'Lost',
+    iconClass: 'rci-lost',
+  },
   lost: {
     icon: '👤',
     label: 'হারানো',

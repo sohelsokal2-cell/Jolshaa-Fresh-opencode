@@ -1,16 +1,74 @@
-const VideoCard = ({ video, wide }) => {
-  const handlePlay = () => {
-    console.log('Play video:', video.title);
+import { useState, useRef } from 'react';
+
+const VideoCard = ({ video, wide, onPlay }) => {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  const handlePlay = (e) => {
+    e.stopPropagation();
+    if (video.video_url) {
+      setPlaying(true);
+      if (onPlay && video.id) onPlay(video.id);
+    }
   };
+
+  if (playing && video.video_url) {
+    return (
+      <div className={`video-card ${wide ? 'vc-wide' : ''}`} style={{ position: 'relative' }}>
+        <div className="vc-thumb" style={{ position: 'relative' }}>
+          <video
+            ref={videoRef}
+            src={video.video_url}
+            controls
+            autoPlay
+            style={{ width: '100%', borderRadius: '12px', background: '#000', maxHeight: '280px' }}
+            onEnded={() => setPlaying(false)}
+          />
+          <button
+            onClick={(e) => { e.stopPropagation(); setPlaying(false); }}
+            style={{
+              position: 'absolute', top: '8px', left: '8px', zIndex: 10,
+              background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none',
+              borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '11px'
+            }}
+          >
+            ←
+          </button>
+        </div>
+        <div className="vc-info">
+          <div className="vc-creator-row">
+            <div className="vc-av" style={{ background: video.creatorColor }}>
+              {video.creatorAvatar}
+            </div>
+            <div className="vc-creator-name">{video.creator}</div>
+          </div>
+          <div className="vc-title">{video.title}</div>
+          <div className="vc-stats">
+            <span>{video.views}</span>
+            <span className="vc-stats-sep" />
+            <span>{video.time}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`video-card ${wide ? 'vc-wide' : ''}`} onClick={handlePlay}>
       <div className="vc-thumb">
-        <div className={`vct-bg vct-${video.id}`} style={{ background: video.bgGradient }}>
-          <div className="vct-emoji">{video.emoji}</div>
-          <div className="vct-overlay" />
-          <div className="vct-bottom" />
-        </div>
+        {video.thumbnail_url ? (
+          <img
+            src={video.thumbnail_url}
+            alt={video.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', borderRadius: '12px' }}
+          />
+        ) : (
+          <div className={`vct-bg vct-${video.id}`} style={{ background: video.bgGradient || 'linear-gradient(140deg, #1a4a3a, #2a6a4a)' }}>
+            <div className="vct-emoji">{video.emoji || '▶️'}</div>
+            <div className="vct-overlay" />
+            <div className="vct-bottom" />
+          </div>
+        )}
 
         <div className="vc-play-overlay">
           <div className="vc-play-btn">

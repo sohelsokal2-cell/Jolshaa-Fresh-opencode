@@ -15,13 +15,14 @@ const NAV_SECTIONS = [
     label: 'Finance',
     items: [
       { id: 'revenue', icon: 'rupee-sign', label: 'Revenue', bn: 'আয়' },
-      { id: 'settlements', icon: 'calendar-check', label: 'Settlements', bn: 'সেটেলমেন্ট' },
+      { id: 'adreview', icon: 'megaphone', label: 'Ad Review', bn: 'বিজ্ঞাপন রিভিউ' },
       { id: 'payouts', icon: 'wallet', label: 'Payouts', bn: 'পেআউট' },
     ],
   },
   {
     label: 'System',
     items: [
+      { id: 'factcheck', icon: 'magnify-check', label: 'Fact-Check Queue', bn: 'গুজব রিভিউ কিউ' },
       { id: 'security', icon: 'shield-alt', label: 'Security', bn: 'নিরাপত্তা' },
       { id: 'logs', icon: 'clipboard-list', label: 'Audit Logs', bn: 'অডিট লগ' },
     ],
@@ -37,6 +38,8 @@ const ICONS = {
   'wallet': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 10H2"/><circle cx="17" cy="14" r="1"/></svg>,
   'shield-alt': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
   'clipboard-list': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>,
+  'magnify-check': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="10" cy="10" r="6"/><line x1="14.5" y1="14.5" x2="20" y2="20"/><path d="M8 10l1.5 1.5L13 8.5"/></svg>,
+  'megaphone': <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg>,
 };
 
 export default function AdminSidebar({ activeNav, setActiveNav }) {

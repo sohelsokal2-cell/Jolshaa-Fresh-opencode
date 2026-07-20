@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
 import { toggleReaction, fetchComments, addComment } from '../lib/postsApi';
+import { getFactCheckSummary, enableFactCheck } from '../lib/factcheckApi';
 import { useToast } from './Toast';
+import FactCheckBadge from './factcheck/FactCheckBadge';
+import FactCheckFalseOverlay from './factcheck/FactCheckFalseOverlay';
+import FactCheckVoteModal from './factcheck/FactCheckVoteModal';
+import PostMediaDisplay from './PostMediaDisplay';
 
 function timeAgo(dateString) {
   const now = new Date();
@@ -33,6 +39,29 @@ export default function PostCard({ post }) {
   const [commentText, setCommentText] = useState('');
   const [loadingComments, setLoadingComments] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
+
+  // Fact-check state
+  const [showFactCheckModal, setShowFactCheckModal] = useState(false);
+  const [factcheckDist, setFactcheckDist] = useState(null);
+  const [factcheckStatus, setFactcheckStatus] = useState(post.factcheck_status || 'unverified');
+  const [isFactCheckEnabled, setIsFactCheckEnabled] = useState(post.is_fact_check_enabled || false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [flaggingFactCheck, setFlaggingFactCheck] = useState(false);
+
+  // Load vote distribution for this post
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const dist = await getFactCheckSummary(post.id);
+        if (!cancelled) setFactcheckDist(dist);
+      } catch (err) {
+        console.error('Failed to load factcheck dist:', err);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [post.id]);
 
   const handleReaction = async (type) => {
     console.log('[handleReaction] called with type:', type, 'user:', user?.id, 'post:', post?.id);
@@ -119,6 +148,44 @@ export default function PostCard({ post }) {
     }
   };
 
+  const handleFlagFactCheck = async () => {
+    if (!user) {
+      showToast('লগইন করুন।');
+      return;
+    }
+    setFlaggingFactCheck(true);
+    try {
+      await enableFactCheck(post.id);
+      setIsFactCheckEnabled(true);
+      setShowMoreMenu(false);
+      showToast('পোস্টটি ফ্যাক্ট-চেকের জন্য ফ্ল্যাগ করা হয়েছে।');
+    } catch (err) {
+      console.error('Failed to enable fact-check:', err);
+      showToast('ফ্ল্যাগ করা যায়নি। আবার চেষ্টা করুন।');
+    } finally {
+      setFlaggingFactCheck(false);
+    }
+  };
+
+  const handleVoteSubmitted = async () => {
+    // Refresh distribution and status after vote
+    try {
+      const dist = await getFactCheckSummary(post.id);
+      setFactcheckDist(dist);
+      
+      // Determine a local status update based on consensus (optional but helpful for UX)
+      if (dist.total > 5) {
+        if (dist.pct_false > 60) setFactcheckStatus('false');
+        else if (dist.pct_true > 60) setFactcheckStatus('true');
+        else if (dist.pct_mislead > 40) setFactcheckStatus('mislead');
+      }
+      
+      showToast('আপনার ভোট গ্রহণ করা হয়েছে।');
+    } catch (err) {
+      console.error('Failed to refresh factcheck:', err);
+    }
+  };
+
   const reactionSummary = Object.entries(reactionCounts)
     .filter(([, count]) => count > 0)
     .map(([type, count]) => ({ type, count }))
@@ -126,8 +193,8 @@ export default function PostCard({ post }) {
 
   const reactionEmojis = reactionSummary.map(r => r.type);
 
-  return (
-    <article className="post-card" aria-label={`Post by ${post.authorName}`}>
+  const postContent = (
+    <>
       {/* Header */}
       <div className="post-header">
         <div className="post-header-left">
@@ -152,23 +219,75 @@ export default function PostCard({ post }) {
                 Public
               </span>
             </div>
+            {/* Fact-check badge — only shown when enabled */}
+            {isFactCheckEnabled && (
+              <div style={{ marginTop: 4 }}>
+              <FactCheckBadge
+                enabled={isFactCheckEnabled}
+                status={factcheckStatus}
+                  onClick={() => user ? setShowFactCheckModal(true) : showToast('ভোট দিতে লগইন করো।')}
+                  voteCount={factcheckDist?.total || 0}
+                  percentage={factcheckStatus === 'true' ? factcheckDist?.pct_true : factcheckStatus === 'mislead' ? factcheckDist?.pct_mislead : factcheckStatus === 'false' ? factcheckDist?.pct_false : undefined}
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        <button className="post-more-btn" aria-label="More options">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="5" cy="12" r="2" />
-            <circle cx="12" cy="12" r="2" />
-            <circle cx="19" cy="12" r="2" />
-          </svg>
-        </button>
+        <div style={{ position: 'relative' }}>
+          <button
+            className="post-more-btn"
+            aria-label="More options"
+            onClick={() => setShowMoreMenu(prev => !prev)}
+            onBlur={() => setTimeout(() => setShowMoreMenu(false), 150)}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg>
+          </button>
+          {showMoreMenu && (
+            <div className="post-more-menu">
+              {!isFactCheckEnabled ? (
+                <button
+                  className="post-more-menu-item"
+                  onClick={handleFlagFactCheck}
+                  disabled={flaggingFactCheck}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                    <line x1="4" y1="22" x2="4" y2="15"/>
+                  </svg>
+                  {flaggingFactCheck ? 'ফ্ল্যাগ হচ্ছে...' : 'যাচাই করতে চাই / Flag for fact-check'}
+                </button>
+              ) : (
+                <div className="post-more-menu-item post-more-menu-disabled">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  ইতিমধ্যে ফ্ল্যাগ করা হয়েছে / Already flagged
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content Text */}
       <p className="post-text">{post.content}</p>
+      {(post.feeling || post.location_name || post.life_update || post.tags?.length > 0) && (
+        <div className="post-extra-info">
+          {post.feeling && <span>😊 {post.feeling}</span>}
+          {post.location_name && <span>📍 {post.location_name}</span>}
+          {post.life_update && <span>🚩 {post.life_update}</span>}
+          {post.tags?.length > 0 && <span>👥 with {post.tags.map(tag => tag.user?.name).filter(Boolean).join(', ')}</span>}
+        </div>
+      )}
+      {post.gif_url && <img src={post.gif_url} className="post-media" alt="GIF" />}
 
-      {/* Media Image */}
-      {post.image_url && (
+      {post.media?.length > 0 ? <PostMediaDisplay media={post.media} /> : post.image_url && (
         <img
           src={post.image_url}
           className="post-media"
@@ -327,6 +446,29 @@ export default function PostCard({ post }) {
           )}
         </div>
       )}
-    </article>
+    </>
+  );
+
+  return (
+    <>
+      <article className="post-card" aria-label={`Post by ${post.authorName}`}>
+        {factcheckStatus === 'false' && isFactCheckEnabled ? (
+          <FactCheckFalseOverlay percentage={factcheckDist?.pct_false || 0}>
+            {postContent}
+          </FactCheckFalseOverlay>
+        ) : postContent}
+      </article>
+
+      {/* Fact-Check Vote Modal — portal to body to escape overflow:hidden on .post-card */}
+      {createPortal(
+        <FactCheckVoteModal
+          post={post}
+          isOpen={showFactCheckModal}
+          onClose={() => setShowFactCheckModal(false)}
+          onVoteSubmitted={handleVoteSubmitted}
+        />,
+        document.body
+      )}
+    </>
   );
 }

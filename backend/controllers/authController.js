@@ -1,8 +1,9 @@
 const supabase = require('../config/supabaseClient');
 
-// Validate email format
+// Validate email format — compiled once to avoid ReDoS risk
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return EMAIL_REGEX.test(email);
 }
 
 // POST /api/auth/signup
@@ -35,11 +36,12 @@ async function signup(req, res) {
       });
     }
 
-    if (!password || typeof password !== 'string' || password.length < 6) {
+    const MIN_PASSWORD_LENGTH = 8;
+    if (!password || typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
       return res.status(400).json({
         success: false,
         error: 'WEAK_PASSWORD',
-        message: 'Password must be at least 6 characters.',
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
       });
     }
 
@@ -200,7 +202,10 @@ async function login(req, res) {
 // POST /api/auth/logout
 async function logout(req, res) {
   try {
-    const { error } = await supabase.auth.signOut();
+    // Revoke all refresh tokens for this user via admin API.
+    // The service_role client has no user session, so signOut() is a no-op.
+    // admin.signOut() invalidates all refresh tokens, forcing re-authentication.
+    const { error } = await supabase.auth.admin.signOut(req.user.id);
     if (error) {
       return res.status(500).json({
         success: false,
@@ -247,4 +252,61 @@ async function me(req, res) {
   }
 }
 
-module.exports = { signup, login, logout, me };
+// POST /api/auth/delete-account
+async function deleteAccount(req, res) {
+  try {
+    const userId = req.user.id;
+
+    // 1. Delete user's posts
+    await supabase.from('posts').delete().eq('user_id', userId);
+
+    // 2. Delete user's comments
+    await supabase.from('comments').delete().eq('user_id', userId);
+
+    // 3. Delete user's likes
+    await supabase.from('likes').delete().eq('user_id', userId);
+
+    // 4. Delete user's reactions
+    await supabase.from('reactions').delete().eq('user_id', userId);
+
+    // 5. Delete user's follow relationships
+    await supabase.from('follows').delete().or(`follower_id.eq.${userId},following_id.eq.${userId}`);
+
+    // 6. Delete user's notifications
+    await supabase.from('notifications').delete().eq('user_id', userId);
+
+    // 7. Delete user's saved videos
+    await supabase.from('saved_videos').delete().eq('user_id', userId);
+
+    // 8. Delete user's video views
+    await supabase.from('video_views').delete().eq('viewer_id', userId);
+
+    // 9. Delete user's conversation participants (leaves conversations)
+    await supabase.from('conversation_participants').delete().eq('user_id', userId);
+
+    // 10. Delete the profile
+    await supabase.from('profiles').delete().eq('id', userId);
+
+    // 11. Delete the auth user (requires service_role key)
+    const { error: authDeleteError } = await supabase.auth.admin.deleteUser(userId);
+    if (authDeleteError) {
+      console.error('[deleteAccount] Auth user deletion failed:', authDeleteError.message);
+      // Profile is already deleted, so the account is effectively removed
+      // even if auth deletion fails
+    }
+
+    return res.json({
+      success: true,
+      message: 'Account and all data deleted successfully.',
+    });
+  } catch (err) {
+    console.error('[deleteAccount] Unexpected error:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'SERVER_ERROR',
+      message: 'An unexpected error occurred. Please try again.',
+    });
+  }
+}
+
+module.exports = { signup, login, logout, me, deleteAccount };

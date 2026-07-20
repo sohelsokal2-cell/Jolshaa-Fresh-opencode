@@ -1,202 +1,231 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTabs from '../components/ProfileTabs';
 import PersonalDetailsCard from '../components/PersonalDetailsCard';
-import HighlightsCard from '../components/HighlightsCard';
 import FriendsPreviewCard from '../components/FriendsPreviewCard';
 import ProfileCompletionCard from '../components/ProfileCompletionCard';
-import PostFilterRow from '../components/PostFilterRow';
 import ProfilePostCard from '../components/ProfilePostCard';
 import AboutPreviewPanel from '../components/AboutPreviewPanel';
-import ReelsPreviewPanel from '../components/ReelsPreviewPanel';
 import FriendsPreviewPanel from '../components/FriendsPreviewPanel';
+import EditProfileModal from '../components/EditProfileModal';
+import PhotosTab from '../components/profile/PhotosTab';
+import FriendsTab from '../components/profile/FriendsTab';
+import AboutTab from '../components/profile/AboutTab';
+import ReelsTab from '../components/profile/ReelsTab';
+import CheckInsTab from '../components/profile/CheckInsTab';
+import ManageSectionsModal from '../components/profile/ManageSectionsModal';
+import { useAuth } from '../context/AuthContext';
+import {
+  fetchProfile,
+  fetchFriendshipStatus,
+  fetchFriendCount,
+  fetchFriends,
+  fetchProfilePosts,
+  fetchProfilePhotos,
+} from '../lib/profileApi';
 import './Profile.css';
 
-const DEFAULT_POSTS = [
-  {
-    id: 1,
-    isPinned: true,
-    authorName: 'Md Sohel',
-    authorAvatarChar: 'স',
-    timeString: 'March 15, 2025',
-    privacy: 'Public',
-    textBn: 'আমার জলশা যাত্রা শুরু হলো! 🎉 এই প্ল্যাটফর্মে সবাইকে স্বাগতম। বাংলাদেশের মানুষদের জন্য, বাংলাদেশের মানুষদের হাতে তৈরি।',
-    captionIcon: '🎊',
-    reactionsCount: '৩৪৬',
-    commentsCount: '৪৮',
-    sharesCount: '২১',
-    reactionsList: ['❤️', '😊', '👏'],
-    initiallyLiked: true,
-  },
-  {
-    id: 2,
-    isPinned: false,
-    authorName: 'Md Sohel',
-    authorAvatarChar: 'স',
-    timeString: '2 hours ago · ২ ঘণ্টা আগে',
-    privacy: 'Friends',
-    textBn: 'আজ মাগুরার নদীর ধারে সন্ধ্যাকাল কাটালাম। 🌅 এই সৌন্দর্য ভাষায় প্রকাশ করা কঠিন। আমার শহর, আমার গর্ব।',
-    hasImage: true,
-    mediaSrc: 'cover', // special key to render cover photo
-    mediaAlt: 'নদীর সন্ধ্যাকাল — Riverbank at dusk',
-    reactionsCount: '৮৭',
-    commentsCount: '১২',
-    sharesCount: '৫',
-    reactionsList: ['❤️', '😍'],
-    initiallyLiked: false,
-  },
-  {
-    id: 3,
-    isPinned: false,
-    authorName: 'Md Sohel',
-    authorAvatarChar: 'স',
-    timeString: 'Yesterday · গতকাল',
-    privacy: 'Public',
-    textBn: 'মাগুরা বাজারে গেলাম আজ। ভিডিওতে দেখুন কত রকম শাকসবজি! 🥬🥕 আমাদের কৃষকদের পরিশ্রম সত্যিই অসাধারণ।',
-    isVideo: true,
-    viewsCount: '২,৪৩১',
-    videoDuration: '2:14',
-    reactionsCount: '১৫৩',
-    commentsCount: '৩২',
-    sharesCount: '১৮',
-    reactionsList: ['👏', '❤️'],
-    initiallyLiked: false,
-  },
-];
-
 export default function Profile() {
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'about' | 'reels' | 'photos' | 'friends'
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const { userId } = useParams();
+  const { user } = useAuth();
 
-  const handleViewChange = (mode) => {
-    setViewMode(mode);
+  const [activeTab, setActiveTab] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [friendCount, setFriendCount] = useState(0);
+  const [friendshipStatus, setFriendshipStatus] = useState(null);
+  const [showManageSections, setShowManageSections] = useState(false);
+
+  const profileUserId = userId || user?.id;
+  const isOwnProfile = !userId || userId === user?.id;
+
+  const loadProfile = useCallback(async () => {
+    if (!profileUserId) return;
+    setLoading(true);
+    try {
+      const [profile, count, frStatus] = await Promise.all([
+        fetchProfile(profileUserId),
+        fetchFriendCount(profileUserId),
+        isOwnProfile ? Promise.resolve(null) : fetchFriendshipStatus(user?.id, profileUserId),
+      ]);
+      setProfileData(profile);
+      setFriendCount(count);
+      setFriendshipStatus(frStatus);
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [profileUserId, isOwnProfile, user?.id]);
+
+  const loadPosts = useCallback(async () => {
+    if (!profileUserId) return;
+    try {
+      const data = await fetchProfilePosts(profileUserId);
+      setPosts(data);
+    } catch (err) {
+      console.error('Failed to load posts:', err);
+    }
+  }, [profileUserId]);
+
+  const loadPhotos = useCallback(async () => {
+    if (!profileUserId) return;
+    try {
+      const data = await fetchProfilePhotos(profileUserId);
+      setPhotos(data);
+    } catch (err) {
+      console.error('Failed to load photos:', err);
+    }
+  }, [profileUserId]);
+
+  const loadFriends = useCallback(async () => {
+    if (!profileUserId) return;
+    try {
+      const data = await fetchFriends(profileUserId, 9);
+      setFriends(data);
+    } catch (err) {
+      console.error('Failed to load friends:', err);
+    }
+  }, [profileUserId]);
+
+  useEffect(() => {
+    loadProfile();
+    loadPosts();
+    loadPhotos();
+    loadFriends();
+  }, [loadProfile, loadPosts, loadPhotos, loadFriends]);
+
+  const handleViewChange = (mode) => setViewMode(mode);
+
+  const handleProfileUpdated = () => {
+    loadProfile();
+    setShowEditModal(false);
   };
+
+  if (loading) {
+    return (
+      <div style={{ background: 'var(--off-white)', minHeight: '100vh' }}>
+        <Navbar messageCount={0} notificationCount={0} showReels={true} showProfile={true} />
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-light)', fontFamily: 'var(--font-bn)' }}>
+          লোড হচ্ছে...
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div style={{ background: 'var(--off-white)', minHeight: '100vh' }}>
+        <Navbar messageCount={0} notificationCount={0} showReels={true} showProfile={true} />
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-light)', fontFamily: 'var(--font-bn)' }}>
+          প্রোফাইল পাওয়া যায়নি।
+        </div>
+      </div>
+    );
+  }
+
+  const firstName = profileData.name?.split(' ')[0] || profileData.name || 'User';
 
   return (
     <div style={{ background: 'var(--off-white)', minHeight: '100vh' }}>
-      {/* Reusing existing Navbar, passing proper notification badges */}
       <Navbar messageCount={5} notificationCount={7} showReels={true} showProfile={true} />
 
       <div className="profile-page-body">
-        {/* Profile Header Block */}
-        <ProfileHeader />
+        <ProfileHeader
+          profileData={profileData}
+          isOwnProfile={isOwnProfile}
+          friendshipStatus={friendshipStatus}
+          friendCount={friendCount}
+          onEditProfileClick={() => setShowEditModal(true)}
+          onProfileUpdated={() => {
+            loadProfile();
+            loadFriends();
+          }}
+        />
 
-        {/* Tabs Block */}
-        <ProfileTabs activeTab={activeTab} onChangeTab={setActiveTab} />
+        <ProfileTabs activeTab={activeTab} onChangeTab={setActiveTab} visibleSections={profileData.visible_sections || {}} onManageSections={() => setShowManageSections(true)} />
 
-        {/* Main Content Layout */}
         <div className="profile-content">
-          
-          {/* Left Column (Sticky Sidebar) */}
           <aside className="profile-left" aria-label="Profile sidebar">
-            <PersonalDetailsCard />
-            <HighlightsCard />
-            <FriendsPreviewCard />
+            <PersonalDetailsCard profileData={profileData} isOwnProfile={isOwnProfile} />
+            <FriendsPreviewCard
+              friends={friends}
+              totalFriendsCount={friendCount}
+              isOwnProfile={isOwnProfile}
+            />
           </aside>
 
-          {/* Right Column (Dynamic Views based on Tabs) */}
           <main className="profile-right">
             {activeTab === 'all' && (
               <>
                 <div className="profile-feed-col">
-                  {/* Profile Completion Tracker */}
-                  <ProfileCompletionCard />
+                  {isOwnProfile && <ProfileCompletionCard profileData={profileData} />}
 
-                  {/* Post filtering row */}
-                  <PostFilterRow onViewChange={handleViewChange} />
-
-                  {/* Compact post creation input box */}
                   <div className="create-post-compact" aria-label="Create new post">
                     <div className="create-compact-row">
-                      <div className="create-compact-av">স</div>
+                      <div className="create-compact-av">
+                        {profileData.name?.[0] || '?'}
+                      </div>
                       <input
                         className="create-compact-input"
                         type="text"
-                        placeholder="কী মনে হচ্ছে, Sohel? / What's on your mind?"
-                        aria-label="Create post input"
+                        placeholder={`কী মনে হচ্ছে, ${firstName}? / What's on your mind?`}
+                        readOnly
                       />
-                    </div>
-                    <div className="create-compact-actions">
-                      <button className="create-action-btn" aria-label="ছবি/ভিডিও / Photo or Video">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round">
-                          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                        <span>ছবি / ভিডিও</span>
-                      </button>
-                      <button className="create-action-btn" aria-label="রিলস / Reel">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polygon points="5 3 19 12 5 21 5 3"/><rect x="19" y="3" width="2" height="18" rx="1"/>
-                        </svg>
-                        <span>রিলস</span>
-                      </button>
-                      <button className="create-action-btn" aria-label="অনুভূতি / Feeling">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round">
-                          <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
-                        </svg>
-                        <span>অনুভূতি</span>
-                      </button>
-                      <button className="create-action-btn" style={{ flex: 0, padding: '8px 12px', background: 'linear-gradient(135deg,var(--teal),var(--teal-light))', borderRadius: '9px', color: 'white', fontWeight: 700 }} aria-label="পোস্ট করুন / Post">
-                        <span style={{ fontFamily: 'var(--font-bn)' }}>পোস্ট</span>
-                      </button>
                     </div>
                   </div>
 
-                  {/* Feed post items */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    {DEFAULT_POSTS.map(post => (
-                      <ProfilePostCard key={post.id} post={post} />
-                    ))}
+                    {posts.length === 0 ? (
+                      <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-light)', fontFamily: 'var(--font-bn)', fontSize: '14px' }}>
+                        কোনো পোস্ট নেই।
+                      </div>
+                    ) : (
+                      posts.map(post => (
+                        <ProfilePostCard key={post.id} post={post} />
+                      ))
+                    )}
                   </div>
                 </div>
 
-                {/* Right side support columns */}
                 <div className="profile-support-col">
-                  <AboutPreviewPanel />
-                  <ReelsPreviewPanel />
-                  <FriendsPreviewPanel />
+                  <AboutPreviewPanel profileData={profileData} isOwnProfile={isOwnProfile} />
+                  <FriendsPreviewPanel
+                    friends={friends}
+                    totalCount={friendCount}
+                    isOwnProfile={isOwnProfile}
+                  />
                 </div>
               </>
             )}
 
-            {/* Tab specific detail showcases for better premium UX */}
-            {activeTab === 'about' && (
-              <div className="profile-feed-col" style={{ maxWidth: '600px' }}>
-                <AboutPreviewPanel />
-              </div>
-            )}
+            {activeTab === 'about' && <AboutTab profileData={profileData} isOwnProfile={isOwnProfile} onUpdated={loadProfile} />}
 
-            {activeTab === 'reels' && (
-              <div className="profile-feed-col" style={{ maxWidth: '600px' }}>
-                <ReelsPreviewPanel />
-              </div>
-            )}
+            {activeTab === 'photos' && <PhotosTab userId={profileUserId} isOwnProfile={isOwnProfile} />}
 
-            {activeTab === 'photos' && (
-              <div className="profile-card" style={{ width: '100%', padding: '20px' }}>
-                <div className="card-header" style={{ padding: '0 0 10px' }}>
-                  <div className="card-title">
-                    <span className="card-title-bn">আমার ছবিসমূহ</span>
-                    <span className="card-title-en">My Photos</span>
-                  </div>
-                </div>
-                <div className="media-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-                  <div className="media-thumb" style={{ aspectRatio: '1', background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>🌅</div>
-                  <div className="media-thumb" style={{ aspectRatio: '1', background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>🍛</div>
-                  <div className="media-thumb" style={{ aspectRatio: '1', background: 'var(--off-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>🌿</div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'friends' && (
-              <div className="profile-feed-col" style={{ maxWidth: '600px' }}>
-                <FriendsPreviewPanel />
-              </div>
-            )}
+            {activeTab === 'friends' && <FriendsTab friends={friends} isOwnProfile={isOwnProfile} />}
+            {activeTab === 'reels' && <ReelsTab userId={profileUserId} isOwnProfile={isOwnProfile} />}
+            {activeTab === 'checkins' && <CheckInsTab userId={profileUserId} isOwnProfile={isOwnProfile} />}
           </main>
-
         </div>
       </div>
+
+      {showEditModal && (
+        <EditProfileModal
+          profileData={profileData}
+          onClose={() => setShowEditModal(false)}
+          onUpdated={handleProfileUpdated}
+        />
+      )}
+      {showManageSections && isOwnProfile && <ManageSectionsModal profileData={profileData} onClose={() => setShowManageSections(false)} onSaved={sections => { setProfileData(prev => ({ ...prev, visible_sections: sections })); if (activeTab !== 'all' && sections[activeTab] === false) setActiveTab('all'); }} />}
     </div>
   );
 }

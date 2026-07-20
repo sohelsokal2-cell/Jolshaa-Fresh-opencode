@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const WatchSidebar = ({ activeNav, onNavChange, activeCategory, onCategoryChange }) => {
+const WatchSidebar = ({ activeNav, onNavChange, activeCategory, onCategoryChange, onUploadClick }) => {
   const categories = [
     { id: 'all', bn: 'সব', en: 'All' },
     { id: 'music', bn: 'সঙ্গীত', en: 'Music' },
@@ -72,7 +72,7 @@ const WatchSidebar = ({ activeNav, onNavChange, activeCategory, onCategoryChange
       <div className="sb-upload-cta">
         <div className="sb-upload-bn">নতুন ভিডিও আপলোড করুন</div>
         <span className="sb-upload-en">Upload New Video</span>
-        <button className="btn-upload">
+        <button className="btn-upload" onClick={onUploadClick}>
           <span style={{ fontSize: '13px' }}>📤</span>
           আপলোড করুন
         </button>

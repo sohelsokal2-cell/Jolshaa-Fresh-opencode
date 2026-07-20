@@ -1,4 +1,4 @@
-const EventsSidebar = ({ activeTab, onTabChange, activeCategory, onCategoryChange, onSelectEvent, upcomingEvents }) => {
+const EventsSidebar = ({ activeTab, onTabChange, activeCategory, onCategoryChange, onSelectEvent, upcomingEvents, onCreateEvent }) => {
   const tabs = [
     { id: 'yours', iconClass: 'sti-yours', icon: '👤', bn: 'তোমার ইভেন্ট', en: 'Your Events', badge: '৩' },
     { id: 'discover', iconClass: 'sti-disc', icon: '🔍', bn: 'আবিষ্কার করো', en: 'Discover' },
@@ -31,7 +31,7 @@ const EventsSidebar = ({ activeTab, onTabChange, activeCategory, onCategoryChang
         </div>
       </div>
 
-      <button className="btn-create-event">
+      <button className="btn-create-event" onClick={onCreateEvent}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.8" strokeLinecap="round">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />

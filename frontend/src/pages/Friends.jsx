@@ -10,7 +10,9 @@ import {
   respondToFriendRequest,
   deleteFriendRequest,
   sendFriendRequest,
+  subscribeToFriendRequests,
 } from '../lib/friendsApi';
+import { findOrCreateDirectConversation } from '../lib/messagingApi';
 import FriendsSidebar from '../components/friends/FriendsSidebar';
 import AllFriendsView from '../components/friends/AllFriendsView';
 import FriendRequestsView from '../components/friends/FriendRequestsView';
@@ -51,6 +53,11 @@ export default function Friends() {
   }, [user]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  useEffect(() => {
+    if (!user) return undefined;
+    return subscribeToFriendRequests(user.id, () => loadData());
+  }, [user, loadData]);
 
   async function handleAccept(req) {
     try {
@@ -103,7 +110,8 @@ export default function Friends() {
 
   async function handleAddFriend(profileId) {
     try {
-      await sendFriendRequest(user.id, profileId);
+      const request = await sendFriendRequest(user.id, profileId);
+      setSentReqs(prev => [request, ...prev]);
       showToast('বন্ধু অনুরোধ পাঠানো হয়েছে!');
     } catch (err) {
       console.error(err);
@@ -135,7 +143,15 @@ export default function Friends() {
                 <AllFriendsView
                   friends={friends}
                   searchQuery={searchQuery}
-                  onMessage={() => navigate('/messenger')}
+                  onMessage={async (friend) => {
+                    try {
+                      const conv = await findOrCreateDirectConversation(user.id, friend.id);
+                      navigate(`/messages/${conv.id}`);
+                    } catch (err) {
+                      console.error('Failed to open conversation:', err);
+                      showToast('বার্তা খুলতে ব্যর্থ হয়েছে।');
+                    }
+                  }}
                   onUnfriend={handleUnfriend}
                 />
               )}

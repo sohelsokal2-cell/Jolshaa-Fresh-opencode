@@ -36,7 +36,7 @@ CREATE POLICY "Addressee can update status"
 DROP POLICY IF EXISTS "Requester can delete own requests" ON public.friendships;
 CREATE POLICY "Requester can delete own requests"
   ON public.friendships FOR DELETE
-  USING (auth.uid() = requester_id);
+  USING (auth.uid() = requester_id OR auth.uid() = addressee_id);
 
 -- 2. NOTIFICATIONS TABLE
 CREATE TABLE IF NOT EXISTS public.notifications (
@@ -48,6 +48,23 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   is_read BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Enable realtime updates for friend requests and notifications.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'friendships'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.friendships;
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables
+    WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'notifications'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+  END IF;
+END $$;
 
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 

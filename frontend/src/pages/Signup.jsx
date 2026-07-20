@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import './Signup.css';
 
 // Regexes (exact same as original HTML)
@@ -32,6 +33,7 @@ function getStrength(pw) {
 export default function Signup() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
+  const { t, i18n } = useTranslation();
 
   // --- DOB options generated once ---
   const dayOptions  = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
@@ -47,13 +49,19 @@ export default function Signup() {
   const [pwValue,       setPwValue]       = useState('');
   const [contactValid,  setContactValid]  = useState(null); // true | false | null
   const [contactError,  setContactError]  = useState('');   // custom error text
-  const [activeLang,    setActiveLang]    = useState('bn');
   const [isSubmitting,  setIsSubmitting]  = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [apiError,      setApiError]      = useState('');
 
   // --- react-hook-form ---
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  // Derive activeLang from i18n
+  const activeLang = i18n.language || 'bn';
+
+  const handleLangChange = (lang) => {
+    i18n.changeLanguage(lang);
+  };
 
   // --- Progress strip ---
   const updateStep = (fieldName) => {
@@ -74,7 +82,6 @@ export default function Signup() {
     const isPhone = BD_PHONE_REGEX.test(v.replace(/\s/g, ''));
     const isEmail = EMAIL_REGEX.test(v);
     if (isPhone) {
-      // Phone-only: Supabase Auth requires email — show guidance
       setContactValid(false);
       setContactError('নিবন্ধনের জন্য ইমেইল প্রয়োজন। ফোন নম্বর পরে প্রোফাইলে যোগ করা যাবে। / Email is required to create an account. You can add your phone number from your profile later.');
     } else if (isEmail) {
@@ -131,7 +138,7 @@ export default function Signup() {
         setContactValid(false);
         setContactError('সঠিক ইমেইল লিখো / Please enter a valid email address');
       } else if (msg.includes('Password')) {
-        setApiError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে। / Password must be at least 6 characters.');
+        setApiError('পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে। / Password must be at least 8 characters.');
       } else {
         setApiError(msg || 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করো।');
       }
@@ -187,8 +194,8 @@ export default function Signup() {
 
         {/* Heading */}
         <div className="heading-block">
-          <h1 className="heading-main">জলশায় যোগ দাও</h1>
-          <p className="heading-sub">তোমার প্রিয় মানুষদের সাথে প্রতিদিনের গল্প ভাগ করো — পরিবার, বন্ধু, আর তোমার নিজের কমিউনিটির সাথে।</p>
+          <h1 className="heading-main">{t('signup_title', 'জলশায় যোগ দাও')}</h1>
+          <p className="heading-sub">{t('signup_sub', 'তোমার প্রিয় মানুষদের সাথে প্রতিদিনের গল্প ভাগ করো — পরিবার, বন্ধু, আর তোমার নিজের কমিউনিটির সাথে।')}</p>
         </div>
 
         {/* Progress strip */}
@@ -200,7 +207,7 @@ export default function Signup() {
                   {n}
                 </div>
                 <span className={`step-label ${activeStep === n ? 'active' : ''}`}>
-                  {['ব্যক্তিগত', 'যোগাযোগ', 'নিরাপত্তা'][i]}
+                  {[t('personal', 'ব্যক্তিগত'), t('contact', 'যোগাযোগ'), t('security', 'নিরাপত্তা')][i]}
                 </span>
               </div>
               {n < 3 && (
@@ -215,17 +222,17 @@ export default function Signup() {
 
           {/* SECTION 1: নাম */}
           <section className="form-section" aria-labelledby="sec-name">
-            <span className="section-label" id="sec-name">নাম</span>
+            <span className="section-label" id="sec-name">{t('name', 'নাম')}</span>
             <div className="field-row">
               <div className="field-group">
                 <label className="field-label" htmlFor="firstName">
-                  নামের প্রথম অংশ<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
+                  {t('first_name', 'নামের প্রথম অংশ')}<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
                 </label>
                 <input
                   id="firstName"
                   className={`field-input ${errors.firstName ? 'invalid' : ''}`}
                   type="text"
-                  placeholder="যেমন: সুমাইয়া"
+                  placeholder={t('eg_sumaiya', 'যেমন: সুমাইয়া')}
                   autoComplete="given-name"
                   onFocus={() => updateStep('firstName')}
                   {...register('firstName', { required: true })}
@@ -234,17 +241,17 @@ export default function Signup() {
                     else e.target.classList.remove('valid');
                   }}
                 />
-                {errors.firstName && <span className="field-error show">নামের প্রথম অংশ লিখো</span>}
+                {errors.firstName && <span className="field-error show">{t('enter_first_name', 'নামের প্রথম অংশ লিখো')}</span>}
               </div>
               <div className="field-group">
                 <label className="field-label" htmlFor="lastName">
-                  পদবী<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
+                  {t('last_name', 'পদবী')}<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
                 </label>
                 <input
                   id="lastName"
                   className={`field-input ${errors.lastName ? 'invalid' : ''}`}
                   type="text"
-                  placeholder="যেমন: আক্তার"
+                  placeholder={t('eg_akter', 'যেমন: আক্তার')}
                   autoComplete="family-name"
                   onFocus={() => updateStep('lastName')}
                   {...register('lastName', { required: true })}
@@ -253,17 +260,17 @@ export default function Signup() {
                     else e.target.classList.remove('valid');
                   }}
                 />
-                {errors.lastName && <span className="field-error show">পদবী লিখো</span>}
+                {errors.lastName && <span className="field-error show">{t('enter_last_name', 'পদবী লিখো')}</span>}
               </div>
             </div>
           </section>
 
           {/* SECTION 2: জন্মতারিখ ও লিঙ্গ */}
           <section className="form-section" aria-labelledby="sec-dob">
-            <span className="section-label" id="sec-dob">জন্মতারিখ ও পরিচয়</span>
+            <span className="section-label" id="sec-dob">{t('dob_gender', 'জন্মতারিখ ও পরিচয়')}</span>
             <div className="field-group">
               <label className="field-label" htmlFor="dobDay">
-                জন্মতারিখ<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
+                {t('dob', 'জন্মতারিখ')}<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
               </label>
               <div className="dob-row" role="group" aria-label="জন্মতারিখ">
                 <div className="dob-wrap day">
@@ -273,7 +280,7 @@ export default function Signup() {
                     onFocus={() => updateStep('dobDay')}
                     {...register('dobDay')}
                   >
-                    <option value="" disabled>দিন</option>
+                    <option value="" disabled>{t('day', 'দিন')}</option>
                     {dayOptions.map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </div>
@@ -284,8 +291,8 @@ export default function Signup() {
                     onFocus={() => updateStep('dobMonth')}
                     {...register('dobMonth')}
                   >
-                    <option value="" disabled>মাস</option>
-                    {['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর']
+                    <option value="" disabled>{t('month', 'মাস')}</option>
+                    {[t('jan','জানুয়ারি'),t('feb','ফেব্রুয়ারি'),t('mar','মার্চ'),t('apr','এপ্রিল'),t('may','মে'),t('jun','জুন'),t('jul','জুলাই'),t('aug','আগস্ট'),t('sep','সেপ্টেম্বর'),t('oct','অক্টোবর'),t('nov','নভেম্বর'),t('dec','ডিসেম্বর')]
                       .map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
                   </select>
                 </div>
@@ -296,14 +303,14 @@ export default function Signup() {
                     onFocus={() => updateStep('dobYear')}
                     {...register('dobYear')}
                   >
-                    <option value="" disabled>বছর</option>
+                    <option value="" disabled>{t('year', 'বছর')}</option>
                     {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
                 </div>
               </div>
             </div>
             <div className="field-group">
-              <label className="field-label" htmlFor="gender">লিঙ্গ</label>
+              <label className="field-label" htmlFor="gender">{t('gender', 'লিঙ্গ')}</label>
               <div className="gender-wrap">
                 <select
                   className="field-select"
@@ -311,11 +318,11 @@ export default function Signup() {
                   onFocus={() => updateStep('gender')}
                   {...register('gender')}
                 >
-                  <option value="">তোমার লিঙ্গ নির্বাচন করো</option>
-                  <option value="male">পুরুষ</option>
-                  <option value="female">মহিলা</option>
-                  <option value="other">অন্যান্য</option>
-                  <option value="prefer_not">বলতে চাই না</option>
+                  <option value="">{t('select_gender', 'তোমার লিঙ্গ নির্বাচন করো')}</option>
+                  <option value="male">{t('male', 'পুরুষ')}</option>
+                  <option value="female">{t('female', 'মহিলা')}</option>
+                  <option value="other">{t('other', 'অন্যান্য')}</option>
+                  <option value="prefer_not">{t('prefer_not', 'বলতে চাই না')}</option>
                 </select>
               </div>
             </div>
@@ -323,10 +330,10 @@ export default function Signup() {
 
           {/* SECTION 3: যোগাযোগ */}
           <section className="form-section" aria-labelledby="sec-contact">
-            <span className="section-label" id="sec-contact">যোগাযোগ</span>
+            <span className="section-label" id="sec-contact">{t('contact', 'যোগাযোগ')}</span>
             <div className="field-group">
               <label className="field-label" htmlFor="contactInfo">
-                ইমেইল<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
+                {t('email', 'ইমেইল')}<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
               </label>
               <input
                 id="contactInfo"
@@ -342,7 +349,7 @@ export default function Signup() {
               />
               {(contactError || (errors.contactInfo && !contactError)) && (
                 <span className="field-error show">
-                  {contactError || 'ইমেইল আবশ্যক / Email is required'}
+                  {contactError || t('email_required', 'ইমেইল আবশ্যক / Email is required')}
                 </span>
               )}
             </div>
@@ -350,17 +357,17 @@ export default function Signup() {
 
           {/* SECTION 4: নিরাপত্তা */}
           <section className="form-section" aria-labelledby="sec-security">
-            <span className="section-label" id="sec-security">নিরাপত্তা</span>
+            <span className="section-label" id="sec-security">{t('security', 'নিরাপত্তা')}</span>
             <div className="field-group">
               <label className="field-label" htmlFor="password">
-                পাসওয়ার্ড<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
+                {t('password', 'পাসওয়ার্ড')}<span className="required-dot" aria-label="প্রয়োজনীয়">•</span>
               </label>
               <div className="password-wrap">
                 <input
                   id="password"
                   className={`field-input ${errors.password ? 'invalid' : ''}`}
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="কমপক্ষে ৮টি অক্ষর"
+                  placeholder={t('min_8_char', 'কমপক্ষে ৮টি অক্ষর')}
                   autoComplete="new-password"
                   onFocus={() => updateStep('password')}
                   {...register('password', { required: true, minLength: 8 })}
@@ -369,7 +376,7 @@ export default function Signup() {
                 <button
                   type="button"
                   className="pw-toggle"
-                  aria-label={showPassword ? 'পাসওয়ার্ড লুকাও' : 'পাসওয়ার্ড দেখাও'}
+                  aria-label={showPassword ? t('hide_pw', 'পাসওয়ার্ড লুকাও') : t('show_pw', 'পাসওয়ার্ড দেখাও')}
                   onClick={() => setShowPassword(p => !p)}
                 >
                   {/* Eye open */}
@@ -398,7 +405,7 @@ export default function Signup() {
                       ))}
                     </div>
                     <div className={`strength-label ${cls}`} aria-live="polite">
-                      {label ? `পাসওয়ার্ড শক্তি: ${label}` : ''}
+                      {label ? `${t('pw_strength', 'পাসওয়ার্ড শক্তি')}: ${label}` : ''}
                     </div>
                   </>
                 );
@@ -406,17 +413,17 @@ export default function Signup() {
 
               {errors.password && (
                 <span className="field-error show">
-                  পাসওয়ার্ড কমপক্ষে ৮টি অক্ষর হতে হবে
+                  {t('pw_min_8', 'পাসওয়ার্ড কমপক্ষে ৮টি অক্ষর হতে হবে')}
                 </span>
               )}
             </div>
 
             {/* Legal text */}
             <p className="legal-text">
-              "যোগ দাও" বোতামে চাপ দিলে তুমি জলশার{' '}
-              <a href="#" aria-label="শর্তাবলী পড়ো">শর্তাবলী</a> এবং{' '}
-              <a href="#" aria-label="গোপনীয়তা নীতি পড়ো">গোপনীয়তা নীতি</a>
-              -তে রাজি হচ্ছ বলে ধরা হবে। তোমার তথ্য আমাদের কাছে নিরাপদ।
+              {t('agree_text', '"যোগ দাও" বোতামে চাপ দিলে তুমি জলশার ')}
+              <button type="button" className="legal-link" onClick={() => alert('শর্তাবলী শীঘ্রই যুক্ত হবে।')} aria-label="শর্তাবলী পড়ো">{t('terms', 'শর্তাবলী')}</button> {t('and', 'এবং')} {' '}
+              <button type="button" className="legal-link" onClick={() => alert('গোপনীয়তা নীতি শীঘ্রই যুক্ত হবে।')} aria-label="গোপনীয়তা নীতি পড়ো">{t('privacy_policy', 'গোপনীয়তা নীতি')}</button>
+              {t('agree_end', '-তে রাজি হচ্ছ বলে ধরা হবে। তোমার তথ্য আমাদের কাছে নিরাপদ।')}
             </p>
           </section>
 
@@ -444,19 +451,19 @@ export default function Signup() {
             </button>
             <p className="submit-nudge">
               <span className="nudge-icon">✦</span>
-              মাত্র এক মিনিটেই তৈরি হয়ে যাবে তোমার জলশা অ্যাকাউন্ট
+              {t('one_min_signup', 'মাত্র এক মিনিটেই তৈরি হয়ে যাবে তোমার জলশা অ্যাকাউন্ট')}
             </p>
           </div>
 
           {/* Login link */}
           <div className="login-link-row">
-            <span className="login-link-label">ইতিমধ্যে অ্যাকাউন্ট আছে?</span>
+            <span className="login-link-label">{t('already_have_account', 'ইতিমধ্যে অ্যাকাউন্ট আছে?')}</span>
             <button
               type="button"
               className="login-link"
               onClick={() => navigate('/login')}
             >
-              লগ ইন করো →
+              {t('login_now', 'লগ ইন করো')} →
             </button>
           </div>
 
@@ -466,9 +473,9 @@ export default function Signup() {
       {/* FOOTER */}
       <footer className="page-footer" role="contentinfo">
         <nav className="lang-selector" aria-label="ভাষা নির্বাচন">
-          <button className={`lang-item ${activeLang === 'bn' ? 'active' : ''}`} onClick={() => setActiveLang('bn')}>বাংলা</button>
+          <button className={`lang-item ${activeLang === 'bn' ? 'active' : ''}`} onClick={() => handleLangChange('bn')}>বাংলা</button>
           <span className="lang-dot" aria-hidden="true">●</span>
-          <button className={`lang-item ${activeLang === 'en' ? 'active' : ''}`} onClick={() => setActiveLang('en')}>English</button>
+          <button className={`lang-item ${activeLang === 'en' ? 'active' : ''}`} onClick={() => handleLangChange('en')}>English</button>
           <span className="lang-dot" aria-hidden="true">●</span>
           <button className="lang-item" disabled style={{ cursor: 'not-allowed', opacity: 0.5 }}>हिन्दी</button>
           <span className="lang-dot" aria-hidden="true">●</span>

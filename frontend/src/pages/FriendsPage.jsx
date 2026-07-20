@@ -9,7 +9,12 @@ import {
   fetchSentRequests,
   respondToFriendRequest,
   deleteFriendRequest,
+  sendFriendRequest,
+  searchUsers,
+  fetchFriendsPageSuggestions,
+  fetchUpcomingBirthdays,
 } from '../lib/friendsApi';
+import { findOrCreateDirectConversation } from '../lib/messagingApi';
 import './FriendsPage.css';
 
 const AVATAR_COLORS = [
@@ -156,7 +161,7 @@ export default function FriendsPage() {
     { id: 'all', bn: 'সব বন্ধু', en: 'All Friends', count: friends.length },
     { id: 'requests', bn: 'বন্ধুর অনুরোধ', en: 'Friend Requests', count: requests.length },
     { id: 'sent', bn: 'পাঠানো অনুরোধ', en: 'Sent Requests', count: sentReqs.length },
-    { id: 'suggestions', bn: 'পরিচিতি হতে পারেন', en: 'People You May Know', count: null },
+    { id: 'find', bn: 'বন্ধু খুঁজুন', en: 'Find Friends', count: null },
     { id: 'birthdays', bn: 'জন্মদিন', en: 'Birthdays', count: null },
   ];
 
@@ -216,7 +221,15 @@ export default function FriendsPage() {
                   sortBy={sortBy}
                   onSortChange={setSortBy}
                   onUnfriend={handleUnfriend}
-                  onMessage={(f) => navigate('/messenger')}
+                  onMessage={async (f) => {
+                    try {
+                      const conv = await findOrCreateDirectConversation(user.id, f.id);
+                      navigate(`/messages/${conv.id}`);
+                    } catch (err) {
+                      console.error('Failed to open conversation:', err);
+                      showToast('বার্তা খুলতে ব্যর্থ হয়েছে।');
+                    }
+                  }}
                 />
               )}
               {activeTab === 'requests' && (
@@ -233,8 +246,8 @@ export default function FriendsPage() {
                   onCancel={handleCancelSent}
                 />
               )}
-              {activeTab === 'suggestions' && <SuggestionsView />}
-              {activeTab === 'birthdays' && <BirthdaysView />}
+              {activeTab === 'find' && <FindFriendsView userId={user.id} onSendRequest={sendFriendRequest} showToast={showToast} />}
+              {activeTab === 'birthdays' && <BirthdaysView userId={user.id} />}
             </>
           )}
         </main>
@@ -456,56 +469,192 @@ function SentView({ sentReqs, onCancel }) {
   );
 }
 
-function SuggestionsView() {
-  const suggestions = [
-    { id: 1, name: 'রিফাত হোসেন', mutual: 3 },
-    { id: 2, name: 'নুসরাত জাহান', mutual: 7 },
-    { id: 3, name: 'আরিফুল ইসলাম', mutual: 2 },
-    { id: 4, name: 'মাহমুদা আক্তার', mutual: 5 },
-    { id: 5, name: 'কামরুজ্জামান', mutual: 1 },
-    { id: 6, name: 'ফারহানা পারভিন', mutual: 4 },
-  ];
+function FindFriendsView({ userId, onSendRequest, showToast }) {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(true);
+  const [sentIds, setSentIds] = useState(new Set());
+  const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    loadSuggestions();
+  }, []);
+
+  async function loadSuggestions() {
+    setLoadingSuggestions(true);
+    try {
+      const users = await fetchFriendsPageSuggestions(userId);
+      setSuggestions(users);
+    } catch (err) {
+      console.error('Failed to load suggestions:', err);
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  }
+
+  async function handleSearch(e) {
+    e.preventDefault();
+    if (!query.trim()) return;
+    setLoading(true);
+    setSearched(true);
+    try {
+      const users = await searchUsers(query, userId);
+      setResults(users);
+    } catch (err) {
+      console.error('Search failed:', err);
+      showToast('সার্চ ব্যর্থ হয়েছে।');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSendRequest(targetUser) {
+    try {
+      await onSendRequest(userId, targetUser.id);
+      setSentIds(prev => new Set([...prev, targetUser.id]));
+      showToast('বন্ধু অনুরোধ পাঠানো হয়েছে!');
+    } catch (err) {
+      console.error(err);
+      if (err.message?.includes('duplicate')) {
+        showToast('অনুরোধ ইতিমধ্যে পাঠানো হয়েছে।');
+        setSentIds(prev => new Set([...prev, targetUser.id]));
+      } else {
+        showToast('অনুরোধ পাঠানো যায়নি।');
+      }
+    }
+  }
+
+  const displayList = searched ? results : suggestions;
 
   return (
     <div className="fp-section">
       <div className="fp-section-head">
         <h3 className="fp-section-title">
-          <span className="fp-st-bn">পরিচিতি হতে পারেন</span>
-          <span className="fp-st-en">People You May Know</span>
+          <span className="fp-st-bn">বন্ধু খুঁজুন</span>
+          <span className="fp-st-en">Find Friends</span>
         </h3>
       </div>
-      <div className="fp-grid">
-        {suggestions.map(s => (
-          <div key={s.id} className="fp-card fp-card-suggestion">
-            <button className="fp-card-dismiss" aria-label="Dismiss">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-            <div className="fp-card-top">
-              <div className="fp-card-avatar" style={{ background: getAvatarColor(s.name) }}>
-                <span className="fp-avatar-char">{getInitial(s.name)}</span>
+
+      <form className="fp-find-search" onSubmit={handleSearch}>
+        <input
+          className="fp-find-input"
+          placeholder="নাম দিয়ে খুঁজুন... / Search by name..."
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+        <button type="submit" className="fp-find-btn" disabled={loading}>
+          {loading ? '...' : 'খুঁজুন / Search'}
+        </button>
+      </form>
+
+      {loading || loadingSuggestions ? (
+        <div className="fp-loading">
+          <div className="fp-spinner"></div>
+          <span>খুঁজছে...</span>
+        </div>
+      ) : displayList.length === 0 ? (
+        <div className="fp-empty">
+          <div className="fp-empty-icon">{searched ? '🔍' : '👥'}</div>
+          <p className="fp-empty-bn">
+            {searched ? 'কেউ পাওয়া যায়নি' : 'কোনো সাজেশন নেই'}
+          </p>
+          <p className="fp-empty-en">
+            {searched ? 'No users found' : 'No suggestions available'}
+          </p>
+        </div>
+      ) : (
+        <>
+          {!searched && (
+            <p className="fp-find-hint">
+              <span className="fp-find-hint-bn">পরিচিতি হতে পারেন</span>
+              <span className="fp-find-hint-en">People You May Know</span>
+            </p>
+          )}
+          <div className="fp-grid">
+            {displayList.map(u => (
+              <div key={u.id} className="fp-card">
+                <div className="fp-card-top">
+                  <div
+                    className="fp-card-avatar"
+                    style={{ background: u.profile_photo_url ? 'none' : getAvatarColor(u.name) }}
+                  >
+                    {u.profile_photo_url ? (
+                      <img src={u.profile_photo_url} alt={u.name} />
+                    ) : (
+                      <span className="fp-avatar-char">{getInitial(u.name)}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="fp-card-info">
+                  <span className="fp-card-name">{u.name}</span>
+                </div>
+                <button
+                  className="fp-card-add-btn"
+                  disabled={sentIds.has(u.id)}
+                  onClick={() => handleSendRequest(u)}
+                >
+                  {sentIds.has(u.id) ? (
+                    'অনুরোধ পাঠানো হয়েছে · Sent'
+                  ) : (
+                    <>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      বন্ধু যোগ করো / Add Friend
+                    </>
+                  )}
+                </button>
               </div>
-            </div>
-            <div className="fp-card-info">
-              <span className="fp-card-name">{s.name}</span>
-              <span className="fp-card-mutual">{toBnNumber(s.mutual)} জন পারস্পরিক বন্ধু · {s.mutual} mutual</span>
-            </div>
-            <button className="fp-card-add-btn">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              বন্ধু যোগ করো / Add Friend
-            </button>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 }
 
-function BirthdaysView() {
-  const birthdays = [
-    { id: 1, name: 'তানভীর আহমেদ', date: 'আজ · Today' },
-    { id: 2, name: 'সামিয়া আক্তার', date: 'আগামীকাল · Tomorrow' },
-    { id: 3, name: 'রাহেলা বেগম', date: '৩ দিন পর · In 3 days' },
-  ];
+function BirthdaysView({ userId }) {
+  const [birthdays, setBirthdays] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadBirthdays();
+  }, [userId]);
+
+  async function loadBirthdays() {
+    setLoading(true);
+    try {
+      const data = await fetchUpcomingBirthdays(userId);
+      setBirthdays(data);
+    } catch (err) {
+      console.error('Failed to load birthdays:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getBirthdayLabel(daysUntil) {
+    if (daysUntil === 0) return 'আজ · Today';
+    if (daysUntil === 1) return 'আগামীকাল · Tomorrow';
+    return `${toBnNumber(daysUntil)} দিন পর · In ${daysUntil} days`;
+  }
+
+  if (loading) {
+    return (
+      <div className="fp-section">
+        <div className="fp-section-head">
+          <h3 className="fp-section-title">
+            <span className="fp-st-bn">জন্মদিন</span>
+            <span className="fp-st-en">Birthdays</span>
+          </h3>
+        </div>
+        <div className="fp-loading">
+          <div className="fp-spinner"></div>
+          <span>লোড হচ্ছে...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fp-section">
@@ -515,23 +664,38 @@ function BirthdaysView() {
           <span className="fp-st-en">Birthdays</span>
         </h3>
       </div>
-      <div className="fp-bday-list">
-        {birthdays.map(b => (
-          <div key={b.id} className="fp-bday-row">
-            <div className="fp-bday-avatar" style={{ background: getAvatarColor(b.name) }}>
-              <span className="fp-avatar-char">{getInitial(b.name)}</span>
+      {birthdays.length === 0 ? (
+        <div className="fp-empty">
+          <div className="fp-empty-icon">🎂</div>
+          <p className="fp-empty-bn">আগামী ৩০ দিনে কোনো বন্ধুর জন্মদিন নেই</p>
+          <p className="fp-empty-en">No friend birthdays in the next 30 days</p>
+        </div>
+      ) : (
+        <div className="fp-bday-list">
+          {birthdays.map(b => (
+            <div key={b.id} className="fp-bday-row">
+              <div
+                className="fp-bday-avatar"
+                style={{ background: b.avatarUrl ? 'none' : getAvatarColor(b.name) }}
+              >
+                {b.avatarUrl ? (
+                  <img src={b.avatarUrl} alt={b.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                ) : (
+                  <span className="fp-avatar-char">{getInitial(b.name)}</span>
+                )}
+              </div>
+              <div className="fp-bday-info">
+                <span className="fp-bday-name">{b.name}</span>
+                <span className="fp-bday-date">{getBirthdayLabel(b.daysUntil)}</span>
+              </div>
+              <button className="fp-btn fp-btn-accept">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                শুভেচ্ছা পাঠান / Wish
+              </button>
             </div>
-            <div className="fp-bday-info">
-              <span className="fp-bday-name">{b.name}</span>
-              <span className="fp-bday-date">{b.date}</span>
-            </div>
-            <button className="fp-btn fp-btn-accept">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              শুভেচ্ছা পাঠান / Wish
-            </button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

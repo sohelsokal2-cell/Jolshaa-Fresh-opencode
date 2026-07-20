@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 const CATEGORY_COLORS = {
   music: {
     chip: { background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe' },
@@ -31,14 +29,14 @@ const CATEGORY_COLORS = {
   },
 };
 
-const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
-  const [rsvp, setRsvp] = useState(event.initialRsvp || 'none');
+const EventCard = ({ event, isWide, selectedEventId, onSelectEvent, myRsvp, onRsvpChange }) => {
+  const rsvp = myRsvp || 'none';
 
   const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.community;
 
   const handleRsvp = (e, value) => {
     e.stopPropagation();
-    setRsvp(value);
+    if (onRsvpChange) onRsvpChange(event.id, value);
   };
 
   const handleCardClick = () => {
@@ -49,20 +47,28 @@ const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
     <div
       className={`event-card ${isWide ? 'ec-wide' : ''} ${selectedEventId === event.id ? 'selected' : ''}`}
       onClick={handleCardClick}
-      style={{ animationDelay: `${event.id * 0.04}s` }}
+      style={{ animationDelay: `${event.id ? event.id.charCodeAt(0) * 0.04 : 0}s` }}
     >
       <div className="ec-cover">
-        <div className="ec-cover-bg" style={{ background: event.coverGradient }}>
-          <div className="ec-cover-overlay" />
-          <div
-            className="ec-cover-emoji"
-            style={isWide ? { fontSize: '90px', opacity: 0.18 } : {}}
-          >
-            {event.emoji}
+        {event.cover_image_url ? (
+          <img
+            src={event.cover_image_url}
+            alt={event.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute' }}
+          />
+        ) : (
+          <div className="ec-cover-bg" style={{ background: event.coverGradient }}>
+            <div className="ec-cover-overlay" />
+            <div
+              className="ec-cover-emoji"
+              style={isWide ? { fontSize: '90px', opacity: 0.18 } : {}}
+            >
+              {event.emoji}
+            </div>
           </div>
-        </div>
+        )}
 
-        {event.isOnline && (
+        {event.location_type === 'online' && (
           <div className="ec-online-badge">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
               <circle cx="12" cy="12" r="10" />
@@ -116,12 +122,8 @@ const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
             </div>
             <div className="ec-going-row">
               <div className="avatar-stack">
-                {event.avatars.map((av, i) => (
-                  <div
-                    key={i}
-                    className="av-sm"
-                    style={{ background: av.bg }}
-                  >
+                {event.avatars && event.avatars.map((av, i) => (
+                  <div key={i} className="av-sm" style={{ background: av.bg }}>
                     {av.letter}
                   </div>
                 ))}
@@ -158,8 +160,8 @@ const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
                 আগ্রহী
               </button>
               <button
-                className={`rsvp-btn rb-cant ${rsvp === 'cant' ? 'selected' : ''}`}
-                onClick={(e) => handleRsvp(e, 'cant')}
+                className={`rsvp-btn rb-cant ${rsvp === 'not_going' ? 'selected' : ''}`}
+                onClick={(e) => handleRsvp(e, 'not_going')}
               >
                 ✕ পারব না
               </button>
@@ -200,12 +202,8 @@ const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
           </div>
           <div className="ec-going-row">
             <div className="avatar-stack">
-              {event.avatars.map((av, i) => (
-                <div
-                  key={i}
-                  className="av-sm"
-                  style={{ background: av.bg }}
-                >
+              {event.avatars && event.avatars.map((av, i) => (
+                <div key={i} className="av-sm" style={{ background: av.bg }}>
                   {av.letter}
                 </div>
               ))}
@@ -240,8 +238,8 @@ const EventCard = ({ event, isWide, selectedEventId, onSelectEvent }) => {
               আগ্রহী
             </button>
             <button
-              className={`rsvp-btn rb-cant ${rsvp === 'cant' ? 'selected' : ''}`}
-              onClick={(e) => handleRsvp(e, 'cant')}
+              className={`rsvp-btn rb-cant ${rsvp === 'not_going' ? 'selected' : ''}`}
+              onClick={(e) => handleRsvp(e, 'not_going')}
             >
               ✕ পারব না
             </button>

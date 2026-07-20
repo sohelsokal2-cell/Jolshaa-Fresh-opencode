@@ -1,132 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { fetchConversations, trackPresence } from '../lib/messagingApi';
+import NewMessageModal from './NewMessageModal';
+import { useNavigate } from 'react-router-dom';
 
-const DEFAULT_CONVERSATIONS = [
-  {
-    id: 1,
-    name: 'রাহেলা বেগম',
-    avatarChar: 'র',
-    avatarClass: 'av-1',
-    onlineStatus: 'green', // 'green' | 'grey' | null
-    isGroup: false,
-    isPinned: true,
-    lastMsgBn: 'আপা, কালকে কি রান্না করবেন?',
-    lastMsgEn: '',
-    time: '১০:৪২ মি.',
-    unreadCount: 0,
-    isUnread: true, // bold preview style
-    muted: false,
-  },
-  {
-    id: 2,
-    name: 'করিম উদ্দিন',
-    avatarChar: 'ক',
-    avatarClass: 'av-2',
-    onlineStatus: 'green',
-    isGroup: false,
-    isPinned: true,
-    lastMsgBn: 'জি ভাই, কাজটা হয়ে গেছে।',
-    lastMsgEn: '',
-    time: 'গতকাল',
-    unreadCount: 0,
-    isUnread: false,
-    muted: false,
-  },
-  {
-    id: 3,
-    name: 'জলশা রান্নাঘর 🍳',
-    avatarChar: 'জ',
-    avatarClass: 'av-3',
-    onlineStatus: null,
-    isGroup: true,
-    isPinned: false,
-    lastMsgBn: 'নাবিলা: রেসিপিটা শেয়ার করবেন?',
-    lastMsgEn: '',
-    time: 'গতকাল',
-    unreadCount: 3,
-    isUnread: true,
-    muted: false,
-  },
-  {
-    id: 4,
-    name: 'ফারহানা হক',
-    avatarChar: 'ফ',
-    avatarClass: 'av-4',
-    onlineStatus: 'grey',
-    isGroup: false,
-    isPinned: false,
-    lastMsgBn: 'ছবিগুলো পাঠালাম।',
-    lastMsgEn: '',
-    time: '২ দিন আগে',
-    unreadCount: 0,
-    isUnread: false,
-    muted: false,
-  },
-  {
-    id: 5,
-    name: 'তানভীর আহমেদ',
-    avatarChar: 'ত',
-    avatarClass: 'av-5',
-    onlineStatus: 'green',
-    isGroup: false,
-    isPinned: false,
-    lastMsgBn: 'ভয়েস বার্তা (0:45)',
-    lastMsgEn: '',
-    time: '৩ দিন আগে',
-    unreadCount: 0,
-    isUnread: false,
-    muted: true,
-  },
-  {
-    id: 6,
-    name: 'সামিয়া আক্তার',
-    avatarChar: 'স',
-    avatarClass: 'av-6',
-    onlineStatus: 'grey',
-    isGroup: false,
-    isPinned: false,
-    lastMsgBn: 'ঠিক আছে, পরে কথা হবে।',
-    lastMsgEn: '',
-    time: '৫ দিন আগে',
-    unreadCount: 0,
-    isUnread: false,
-    muted: false,
-  },
-  {
-    id: 7,
-    name: 'সাহাজ্জো গ্রুপ 🆘',
-    avatarChar: 'স',
-    avatarClass: 'av-7',
-    onlineStatus: null,
-    isGroup: true,
-    isPinned: false,
-    lastMsgBn: 'জাফর: জরুরী সাহায্য দরকার!',
-    lastMsgEn: '',
-    time: '১ সপ্তাহ আগে',
-    unreadCount: 0,
-    isUnread: false,
-    muted: false,
-  },
-];
+// Avatar gradient classes (cycling through available colors)
+const AVATAR_CLASSES = ['av-1', 'av-2', 'av-3', 'av-4', 'av-5', 'av-6', 'av-7'];
+
+function getAvatarClass(index) {
+  return AVATAR_CLASSES[index % AVATAR_CLASSES.length];
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return 'এখন';
+  if (diffMins < 60) return `${diffMins} মি.`;
+  if (diffHours < 24) return `${diffHours} ঘ.`;
+  if (diffDays < 7) return `${diffDays} দিন`;
+  return date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' });
+}
 
 export default function ConversationList({
-  conversations = DEFAULT_CONVERSATIONS,
   activeId,
   onSelectConversation,
+  refreshTrigger,
+  typingConversations = {},
 }) {
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'unread' | 'groups'
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showNewMessageModal, setShowNewMessageModal] = useState(false);
+  const [onlineUserIds, setOnlineUserIds] = useState(new Set());
+
+  // Track global online presence
+  useEffect(() => {
+    if (!user) return;
+    const unsubscribe = trackPresence(user.id, (onlineSet) => {
+      setOnlineUserIds(onlineSet);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  const loadConversations = useCallback(async () => {
+    if (!user) return;
+    try {
+      const data = await fetchConversations(user.id);
+      setConversations(data);
+    } catch (err) {
+      console.error('Failed to load conversations:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadConversations();
+  }, [loadConversations, refreshTrigger]);
 
   // Filtering logic
   const filteredConversations = conversations.filter(conv => {
-    // Search filter
-    const matchesSearch = conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          conv.lastMsgBn.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const otherName = conv.otherParticipants?.[0]?.name || '';
+    const lastMsgText = conv.lastMessage?.content || '';
+
+    const matchesSearch =
+      otherName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (conv.groupName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lastMsgText.toLowerCase().includes(searchQuery.toLowerCase());
+
     if (!matchesSearch) return false;
 
-    // Tab filter
     if (activeTab === 'unread') {
-      return conv.isUnread || conv.unreadCount > 0;
+      return conv.unreadCount > 0;
     }
     if (activeTab === 'groups') {
       return conv.isGroup;
@@ -134,73 +88,133 @@ export default function ConversationList({
     return true;
   });
 
-  // Separate pinned vs normal messages
-  const pinnedConversations = filteredConversations.filter(c => c.isPinned);
-  const otherConversations = filteredConversations.filter(c => !c.isPinned);
+   const handleNewConversationCreated = (convId) => {
+     navigate(`/messages/${convId}`);
+     setShowNewMessageModal(false);
+     // Refresh list after a brief delay
+     setTimeout(() => {
+       loadConversations();
+     }, 300);
+   };
 
-  const renderConvItem = (conv) => {
-    const isActive = conv.id === activeId;
-    return (
-      <div
-        key={conv.id}
-        className={`conv-item ${isActive ? 'active' : ''}`}
-        role="listitem"
-        tabIndex="0"
-        aria-label={`${conv.name} conversation`}
-        onClick={() => onSelectConversation(conv)}
-      >
-        <div className="conv-av-wrap">
-          <div className={`conv-av ${conv.avatarClass}`}>{conv.avatarChar}</div>
-          {conv.onlineStatus && (
-            <span className={`online-dot ${conv.onlineStatus === 'green' ? 'green' : 'grey'}`}></span>
-          )}
-          {conv.isGroup && (
-            <span className="group-badge">👥</span>
-          )}
-        </div>
-        <div className="conv-info">
-          <div className="conv-name-row">
-            <span className="conv-name">{conv.name}</span>
-            <span className="conv-time">{conv.time}</span>
-          </div>
-          <div className="conv-preview-row">
-            <span className={`conv-preview ${conv.isUnread ? 'unread' : ''}`}>
-              {conv.lastMsgBn}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {conv.muted && (
-                <span className="conv-muted" title="Muted">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M18.85 18.85a10 10 0 01-14-14m1.41-1.41a10 10 0 0114.14 14.14M12 7V5a2 2 0 00-2-2H8M8 12a4 4 0 004 4h2M19 12a7 7 0 01-7 7" />
-                    <line x1="1" y1="1" x2="23" y2="23" strokeWidth="2.5" />
+   const renderConvItem = (conv, idx) => {
+     const isActive = conv.id === activeId;
+     const isGroup = conv.isGroup;
+     const other = conv.otherParticipants?.[0];
+     
+     // Name: group name or other user name
+     const name = isGroup ? conv.groupName : (other?.name || 'অজানা ব্যবহারকারী');
+     
+     // Avatar: group stack or single avatar
+     const avatarChar = name.charAt(0);
+     const avatarClass = getAvatarClass(idx);
+     
+       // Last message preview with type prefix
+       let lastMsgText = conv.lastMessage?.content || '';
+       const lastMsg = conv.lastMessage;
+       if (!lastMsgText && lastMsg) {
+         if (lastMsg.image_url && !lastMsg.audio_url) lastMsgText = '📷 ছবি';
+         else if (lastMsg.audio_url) lastMsgText = '🎤 ভয়েস নোট';
+         else if (lastMsg.location_lat) lastMsgText = '📍 অবস্থান';
+       }
+     
+      const lastMsgTime = formatTime(conv.lastMessage?.created_at);
+      const hasUnread = conv.unreadCount > 0;
+      const isMuted = conv.isMuted;
+      const typingUser = typingConversations[conv.id];
+      // Online status: check global presence tracking for the other participant (direct chats only)
+      const isOnline = !isGroup && other?.id ? onlineUserIds.has(other.id) : false;
+
+     return (
+       <div
+         key={conv.id}
+         className={`conv-item ${isActive ? 'active' : ''}`}
+         role="listitem"
+         tabIndex="0"
+         aria-label={`${name} conversation`}
+         onClick={() => onSelectConversation(conv)}
+       >
+         {/* Avatar */}
+         <div className="conv-av-wrap">
+           {isGroup ? (
+             // Group avatar stack (two overlapping circles)
+             <div className="group-av-stack">
+               <div className={`group-av-mini gam-1 ${avatarClass}`}>
+                 {conv.otherParticipants?.[0]?.name?.charAt(0) || 'G'}
+               </div>
+               <div className={`group-av-mini gam-2 ${avatarClass}`}>
+                 {conv.otherParticipants?.[1]?.name?.charAt(0) || '2'}
+               </div>
+             </div>
+           ) : (
+             <div className={`conv-av ${avatarClass}`}>{avatarChar}</div>
+           )}
+           
+           {/* Online indicator (only for direct chats) */}
+           {!isGroup && (
+             <span className={`online-dot ${isOnline ? 'green' : 'grey'}`}></span>
+           )}
+           
+           {/* Group badge */}
+           {isGroup && (
+             <span className="group-badge">গ্রুপ</span>
+           )}
+         </div>
+
+         {/* Info */}
+         <div className="conv-info">
+           <div className="conv-name-row">
+             <span className="conv-name">{name}</span>
+             <span className="conv-time">{lastMsgTime}</span>
+           </div>
+            <div className="conv-preview-row">
+              {isMuted && (
+                <span className="conv-muted" title="মিউট করা">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0 -5.94 -.6" />
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
                   </svg>
                 </span>
               )}
-              {conv.unreadCount > 0 && (
+              <span className={`conv-preview ${hasUnread ? 'unread' : ''}`}>
+                {typingUser ? (
+                  <span style={{ color: 'var(--teal)', fontStyle: 'italic' }}>টাইপ করছেন...</span>
+                ) : (
+                  lastMsgText || 'কোনো বার্তা নেই'
+                )}
+              </span>
+              {hasUnread && !typingUser && (
                 <span className="conv-badge">{conv.unreadCount}</span>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+         </div>
+       </div>
+     );
+   };
 
-  return (
-    <aside className="conv-list" aria-label="Conversations">
-      {/* Header */}
-      <div className="conv-header">
-        <div className="conv-title">
-          <span className="conv-title-bn">মেসেজ</span>
-          <span className="conv-title-en">Messages</span>
-        </div>
-        <button className="new-msg-btn" aria-label="নতুন বার্তা / New Message">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-        </button>
-      </div>
+   return (
+     <>
+       <aside className="conv-list" aria-label="Conversations">
+         {/* Header */}
+         <div className="conv-header">
+           <div className="conv-title">
+             <span className="conv-title-bn">মেসেজ</span>
+             <span className="conv-title-en">Messages</span>
+           </div>
+           <button
+             className="new-msg-btn"
+             onClick={() => setShowNewMessageModal(true)}
+             title="নতুন বার্তা / New message"
+             aria-label="Compose new message"
+           >
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+               <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+             </svg>
+           </button>
+         </div>
 
       {/* Search */}
       <div className="conv-search">
@@ -213,7 +227,7 @@ export default function ConversationList({
           </span>
           <input
             type="text"
-            placeholder="খুঁজুন... / Search conversations"
+            placeholder="খুঁজুন... / Search"
             aria-label="Search conversations"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -227,7 +241,6 @@ export default function ConversationList({
           <button
             className={`filter-tab ${activeTab === 'all' ? 'active' : ''}`}
             onClick={() => setActiveTab('all')}
-            aria-pressed={activeTab === 'all'}
           >
             <span className="filter-tab-bn">সব</span>
             <span className="filter-tab-en">All</span>
@@ -235,7 +248,6 @@ export default function ConversationList({
           <button
             className={`filter-tab ${activeTab === 'unread' ? 'active' : ''}`}
             onClick={() => setActiveTab('unread')}
-            aria-pressed={activeTab === 'unread'}
           >
             <span className="filter-tab-bn">পড়িনি</span>
             <span className="filter-tab-en">Unread</span>
@@ -243,7 +255,6 @@ export default function ConversationList({
           <button
             className={`filter-tab ${activeTab === 'groups' ? 'active' : ''}`}
             onClick={() => setActiveTab('groups')}
-            aria-pressed={activeTab === 'groups'}
           >
             <span className="filter-tab-bn">গ্রুপ</span>
             <span className="filter-tab-en">Groups</span>
@@ -251,30 +262,27 @@ export default function ConversationList({
         </div>
       </div>
 
-      {/* Conversation Items list */}
+      {/* Conversation Items */}
       <div className="conv-items" role="list" aria-label="Conversation list">
-        {/* Pinned label */}
-        {pinnedConversations.length > 0 && (
-          <>
-            <div className="conv-section-label">পিন করা বার্তা · Pinned</div>
-            {pinnedConversations.map(renderConvItem)}
-          </>
-        )}
-
-        {/* All messages label */}
-        {otherConversations.length > 0 && (
-          <>
-            <div className="conv-section-label" style={{ marginTop: '8px' }}>সব বার্তা · All Messages</div>
-            {otherConversations.map(renderConvItem)}
-          </>
-        )}
-
-        {filteredConversations.length === 0 && (
+        {loading ? (
           <div style={{ textAlign: 'center', color: 'var(--text-light)', padding: '24px', fontFamily: 'var(--font-bn)', fontSize: '14px' }}>
-            কোনো মেসেজ পাওয়া যায়নি
+            লোড হচ্ছে...
           </div>
-        )}
-      </div>
-    </aside>
-  );
+        ) : filteredConversations.length === 0 ? (
+          <div style={{ textAlign: 'center', color: 'var(--text-light)', padding: '24px', fontFamily: 'var(--font-bn)', fontSize: '14px' }}>
+            {searchQuery ? 'কোনো মেসেজ পাওয়া যায়নি' : 'এখনো কোনো কথোপকথন নেই'}
+          </div>
+        ) : (
+          filteredConversations.map((conv, idx) => renderConvItem(conv, idx))
+         )}
+       </div>
+     </aside>
+
+       <NewMessageModal
+         isOpen={showNewMessageModal}
+         onClose={() => setShowNewMessageModal(false)}
+         onConversationCreated={handleNewConversationCreated}
+       />
+     </>
+   );
 }

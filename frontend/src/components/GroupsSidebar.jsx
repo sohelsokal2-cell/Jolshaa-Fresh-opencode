@@ -1,64 +1,38 @@
 import React, { useState } from 'react';
 
-const DEFAULT_GROUPS = [
-  {
-    id: 1,
-    name: 'বাংলাদেশ ট্রাভেল ক্লাব',
-    emoji: '✈️',
-    gradient: 'linear-gradient(135deg,#22d3ee,#0891b2)',
-    statusClass: 'status-active-now',
-    statusTextBn: 'এখনই সক্রিয়',
-    statusTextEn: 'Active now'
-  },
-  {
-    id: 2,
-    name: 'রান্নাঘর',
-    emoji: '🍛',
-    gradient: 'linear-gradient(135deg,#fde68a,#f59e0b)',
-    statusClass: 'status-recent',
-    statusTextBn: '৩৫ মিনিট আগে সক্রিয়',
-    statusTextEn: 'Active 35m ago'
-  },
-  {
-    id: 3,
-    name: 'ঢাকা ফটোগ্রাফি',
-    emoji: '📷',
-    gradient: 'linear-gradient(135deg,#c4b5fd,#7c3aed)',
-    statusClass: 'status-hours',
-    statusTextBn: '২ ঘণ্টা আগে সক্রিয়',
-    statusTextEn: 'Active 2h ago'
-  },
-  {
-    id: 4,
-    name: 'খেলাধুলার আসর',
-    emoji: '⚽',
-    gradient: 'linear-gradient(135deg,#bbf7d0,#16a34a)',
-    statusClass: 'status-hours',
-    statusTextBn: '৫ ঘণ্টা আগে সক্রিয়',
-    statusTextEn: 'Active 5h ago'
-  },
-  {
-    id: 5,
-    name: 'বই পড়ুয়া',
-    emoji: '📚',
-    gradient: 'linear-gradient(135deg,#fde2c5,#f97316)',
-    statusClass: 'status-days',
-    statusTextBn: '২ দিন আগে সক্রিয়',
-    statusTextEn: 'Active 2 days ago'
-  }
+const GROUP_GRADIENTS = [
+  'linear-gradient(135deg,#22d3ee,#0891b2)',
+  'linear-gradient(135deg,#fde68a,#f59e0b)',
+  'linear-gradient(135deg,#c4b5fd,#7c3aed)',
+  'linear-gradient(135deg,#bbf7d0,#16a34a)',
+  'linear-gradient(135deg,#fde2c5,#f97316)',
+  'linear-gradient(135deg,#fecaca,#dc2626)',
+  'linear-gradient(135deg,#bfdbfe,#2563eb)',
 ];
+
+function getGroupInitial(name) {
+  return name ? name.charAt(0) : 'G';
+}
+
+function getGroupGradient(id) {
+  if (!id) return GROUP_GRADIENTS[0];
+  const hash = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return GROUP_GRADIENTS[hash % GROUP_GRADIENTS.length];
+}
 
 export default function GroupsSidebar({
   isOpen = false,
   onToggleSidebar,
-  groups = DEFAULT_GROUPS,
-  initialActiveNav = 'feed'
+  groups = [],
+  activeNav = 'feed',
+  onNavChange,
+  onCreateGroupClick,
+  loading = false,
 }) {
-  const [activeNav, setActiveNav] = useState(initialActiveNav);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredGroups = groups.filter(g =>
-    g.name.toLowerCase().includes(searchQuery.toLowerCase())
+    g.name && g.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -98,7 +72,7 @@ export default function GroupsSidebar({
         <a
           href="#"
           className={`sb-nav-item ${activeNav === 'feed' ? 'active' : ''}`}
-          onClick={(e) => { e.preventDefault(); setActiveNav('feed'); }}
+          onClick={(e) => { e.preventDefault(); onNavChange?.('feed'); }}
           aria-current={activeNav === 'feed' ? 'page' : undefined}
         >
           <div className="sb-nav-icon icon-feed">
@@ -114,7 +88,7 @@ export default function GroupsSidebar({
         <a
           href="#"
           className={`sb-nav-item ${activeNav === 'discover' ? 'active' : ''}`}
-          onClick={(e) => { e.preventDefault(); setActiveNav('discover'); }}
+          onClick={(e) => { e.preventDefault(); onNavChange?.('discover'); }}
           aria-current={activeNav === 'discover' ? 'page' : undefined}
         >
           <div className="sb-nav-icon icon-discover">
@@ -130,7 +104,7 @@ export default function GroupsSidebar({
         <a
           href="#"
           className={`sb-nav-item ${activeNav === 'mygroups' ? 'active' : ''}`}
-          onClick={(e) => { e.preventDefault(); setActiveNav('mygroups'); }}
+          onClick={(e) => { e.preventDefault(); onNavChange?.('mygroups'); }}
           aria-current={activeNav === 'mygroups' ? 'page' : undefined}
         >
           <div className="sb-nav-icon icon-mygroup">
@@ -146,7 +120,11 @@ export default function GroupsSidebar({
       </nav>
 
       {/* Create Group button */}
-      <button className="sb-create-btn" aria-label="নতুন গ্রুপ তৈরি করো — Create New Group">
+      <button
+        className="sb-create-btn"
+        aria-label="নতুন গ্রুপ তৈরি করো — Create New Group"
+        onClick={onCreateGroupClick}
+      >
         <div className="sb-create-plus" aria-hidden="true">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </div>
@@ -167,32 +145,46 @@ export default function GroupsSidebar({
 
       {/* Joined group list */}
       <div className="sb-group-list" role="list">
-        {filteredGroups.map(group => (
-          <a
-            key={group.id}
-            href="#"
-            className={`sb-group-item ${group.statusClass}`}
-            role="listitem"
-            aria-label={`${group.name} — ${group.statusTextBn}`}
-            onClick={(e) => e.preventDefault()}
-          >
-            <div className="sb-group-thumb">
-              <div className="sb-group-thumb-inner" style={{ background: group.gradient }}>
-                {group.emoji}
-              </div>
-            </div>
-            <div className="sb-group-info">
-              <div className="sb-group-name-bn">{group.name}</div>
-              <div className="sb-group-status">
-                <span className="sb-status-dot" aria-hidden="true"></span>
-                <div>
-                  <div className="sb-status-text-bn">{group.statusTextBn}</div>
-                  <div className="sb-status-text-en">{group.statusTextEn}</div>
+        {loading ? (
+          <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-light)' }}>
+            লোড হচ্ছে...
+          </div>
+        ) : filteredGroups.length === 0 ? (
+          <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-light)' }}>
+            {groups.length === 0 ? 'এখনো কোনো গ্রুপে যোগ দেননি' : 'কোনো গ্রুপ পাওয়া যায়নি'}
+          </div>
+        ) : (
+          filteredGroups.map(group => (
+            <a
+              key={group.id}
+              href="#"
+              className="sb-group-item status-recent"
+              role="listitem"
+              aria-label={group.name}
+              onClick={(e) => e.preventDefault()}
+            >
+              <div className="sb-group-thumb">
+                <div className="sb-group-thumb-inner" style={{ background: getGroupGradient(group.id) }}>
+                  {getGroupInitial(group.name)}
                 </div>
               </div>
-            </div>
-          </a>
-        ))}
+              <div className="sb-group-info">
+                <div className="sb-group-name-bn">{group.name}</div>
+                <div className="sb-group-status">
+                  <span className="sb-status-dot" aria-hidden="true"></span>
+                  <div>
+                    <div className="sb-status-text-bn">
+                      {group.privacy === 'private' ? 'বেসরকারি' : 'সর্বজনীন'}
+                    </div>
+                    <div className="sb-status-text-en">
+                      {group.privacy === 'private' ? 'Private' : 'Public'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))
+        )}
       </div>
     </aside>
   );

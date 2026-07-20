@@ -341,10 +341,14 @@ export default function Login() {
             </button>
 
             <div className="forgot-row">
-              <a href="#" className="forgot-link">
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={() => alert('পাসওয়ার্ড রিসেট লিংক শীঘ্রই আসছে। / Password reset coming soon.')}
+              >
                 <span className="forgot-bn">পাসওয়ার্ড ভুলে গেছেন?</span>
                 <span className="forgot-en">/ Forgot password?</span>
-              </a>
+              </button>
             </div>
 
             <div className="divider">

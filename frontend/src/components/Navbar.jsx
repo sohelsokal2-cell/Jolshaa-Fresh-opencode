@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchUnreadCount, subscribeToNotifications } from '../lib/notificationsApi';
+import { fetchTotalUnreadCount, subscribeToConversationsList } from '../lib/messagingApi';
 import NotificationPanel from './NotificationPanel';
 
 export default function Navbar({
-  messageCount = 5,
+  messageCount: messageCountProp,
   showReels = false,
   showProfile = false,
   initialSearchQuery = '',
@@ -20,7 +21,11 @@ export default function Navbar({
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [realMessageCount, setRealMessageCount] = useState(0);
   const profileRef = useRef(null);
+
+  // Use prop if provided, otherwise use real count
+  const messageCount = messageCountProp !== undefined ? messageCountProp : realMessageCount;
 
   const toggleNotificationPanel = useCallback(() => {
     setIsNotificationPanelOpen((prev) => !prev);
@@ -58,6 +63,19 @@ export default function Navbar({
     const unsubscribe = subscribeToNotifications(user.id, () => {
       setNotificationCount(prev => prev + 1);
     }, 'notifications-navbar');
+    return unsubscribe;
+  }, [user]);
+
+  // Fetch real unread message count
+  useEffect(() => {
+    if (!user) return;
+
+    fetchTotalUnreadCount(user.id).then(count => setRealMessageCount(count)).catch(() => {});
+
+    const unsubscribe = subscribeToConversationsList(user.id, () => {
+      fetchTotalUnreadCount(user.id).then(count => setRealMessageCount(count)).catch(() => {});
+    });
+
     return unsubscribe;
   }, [user]);
 
@@ -193,10 +211,10 @@ export default function Navbar({
 
         {/* Messages */}
         <button
-          className={`nav-icon-btn ${currentPath === '/messenger' ? 'active' : ''}`}
+          className={`nav-icon-btn ${currentPath.startsWith('/messages') || currentPath === '/messenger' ? 'active' : ''}`}
           title="বার্তা / Messages"
           aria-label="Messages"
-          onClick={() => navigate('/messenger')}
+          onClick={() => navigate('/messages')}
         >
           {messageCount > 0 && <div className="nav-badge">{messageCount}</div>}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -222,19 +240,6 @@ export default function Navbar({
           </button>
         )}
 
-        {/* Notifications */}
-        <button
-          className={`nav-icon-btn ${isNotificationPanelOpen ? 'active ring-active' : ''}`}
-          title="বিজ্ঞপ্তি / Notifications"
-          aria-label="Notifications"
-          onClick={toggleNotificationPanel}
-        >
-          {notificationCount > 0 && <div className="nav-badge">{notificationCount}</div>}
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 01-3.46 0" />
-          </svg>
-        </button>
       </div>
 
       {/* Sahajjo Chai — DISTINCT urgent button */}
@@ -255,6 +260,18 @@ export default function Navbar({
 
       {/* Right: profile */}
       <div className="nav-right" ref={profileRef} style={{ position: 'relative' }}>
+        <button
+          className={`nav-icon-btn nav-right-notification ${isNotificationPanelOpen ? 'active ring-active' : ''}`}
+          title="বিজ্ঞপ্তি / Notifications"
+          aria-label="Notifications"
+          onClick={toggleNotificationPanel}
+        >
+          {notificationCount > 0 && <div className="nav-badge">{notificationCount}</div>}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+        </button>
         <div
           className="nav-avatar"
           title="আমার প্রোফাইল / My Profile"
@@ -264,7 +281,11 @@ export default function Navbar({
           onClick={() => setIsProfileOpen((p) => !p)}
           style={{ cursor: 'pointer' }}
         >
-          আ
+          {user?.profile_photo_url || user?.avatar_url || user?.user_metadata?.avatar_url ? (
+            <img className="nav-avatar-img" src={user.profile_photo_url || user.avatar_url || user.user_metadata.avatar_url} alt="Profile" />
+          ) : (
+            (user?.full_name || user?.name || 'U').charAt(0)
+          )}
         </div>
 
         {isProfileOpen && (

@@ -385,3 +385,62 @@ body { font-family: var(--font-bn); background: var(--off-white); color: var(--t
 .page-card { animation: cardIn 0.4s ease both; }
 .page-card:nth-child(2) { animation-delay: 0.08s; }
 .page-card:nth-child(3) { animation-delay: 0.16s; }
+
+/* ===== Modal Styles ===== */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-content {
+  background: white; border-radius: 16px; width: 100%; max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--border-light);
+}
+.modal-header h3 {
+  margin: 0; font-size: 18px; font-weight: 700; color: var(--text-dark);
+}
+.modal-close {
+  background: none; border: none; font-size: 24px; cursor: pointer;
+  color: var(--text-light); padding: 4px 8px; border-radius: 8px;
+}
+.modal-close:hover { background: var(--border-light); }
+.modal-body { padding: 20px 24px; }
+.modal-label {
+  display: block; font-size: 13px; font-weight: 600; color: var(--text-mid);
+  margin-bottom: 6px; margin-top: 14px;
+}
+.modal-label:first-child { margin-top: 0; }
+.modal-input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-size: 14px; color: var(--text-dark);
+  background: var(--off-white); box-sizing: border-box;
+}
+.modal-input:focus {
+  outline: none; border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(27,107,90,0.1);
+}
+textarea.modal-input { resize: vertical; font-family: inherit; }
+.modal-footer {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 16px 24px 20px; border-top: 1px solid var(--border-light);
+}
+.modal-btn-cancel {
+  padding: 10px 20px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: white; color: var(--text-mid); font-size: 14px; font-weight: 500;
+  cursor: pointer;
+}
+.modal-btn-cancel:hover { background: var(--off-white); }
+.modal-btn-primary {
+  padding: 10px 24px; border-radius: 10px; border: none;
+  background: var(--teal); color: white; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn-primary:hover { background: #155a4b; }
+.modal-btn-primary:disabled {
+  background: var(--border); cursor: not-allowed; opacity: 0.7;
+}

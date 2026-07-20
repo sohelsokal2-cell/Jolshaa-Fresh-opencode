@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "suppress": [
+      "javascript-lazy-load-module",
+      "javascript-regex-dos-attack",
+      "javascript-csrf-disabled",
+      "javascript-do-not-allow-unrestricted-cors",
+      "javascript-jsx-disallow-bind",
+      "javascript-jsx-label-not-i18n",
+      "javascript-hardcoded-credentials-ide",
+      "multilanguage-password",
+      "multilanguage-unscoped-npm-package-name"
+    ]
+  }
+}

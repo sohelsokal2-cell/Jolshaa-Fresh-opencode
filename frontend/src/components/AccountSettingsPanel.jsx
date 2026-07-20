@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from './Toast';
-
-const INITIAL_FIELDS = {
-  name: 'আরিফ হোসেন',
-  email: 'arif.hossain@gmail.com',
-  phone: '+880 1700-000000',
-};
+import {
+  updateProfileField,
+  updateEmail,
+  updatePassword,
+  reauthenticate,
+  updateToggle,
+  updatePostPrivacy,
+  deactivateAccount,
+  requestAccountDeletion,
+} from '../lib/settingsApi';
 
 const FIELD_META = [
   { key: 'name', labelBn: 'পুরো নাম', labelEn: 'Full Name', iconClass: 'fri-account', type: 'text',
@@ -17,80 +22,249 @@ const FIELD_META = [
 ];
 
 export default function AccountSettingsPanel() {
+  const { user } = useAuth();
   const { showToast } = useToast();
 
-  const [values, setValues] = useState(INITIAL_FIELDS);
-  const [editing, setEditing] = useState(null);   // field key being edited, or null
+  const [values, setValues] = useState({ name: '', email: '', phone: '' });
+  const [originalValues, setOriginalValues] = useState({ name: '', email: '', phone: '' });
+  const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  // Toggle states (persisted later via backend)
   const [toggles, setToggles] = useState({
-    lockProfile: true,
-    showActive: false,
-    followSuggest: true,
+    lockProfile: false,
+    showActive: true,
+  });
+  const [originalToggles, setOriginalToggles] = useState({
+    lockProfile: false,
+    showActive: true,
   });
 
-  // Dropdown selections
-  const [postVisibility, setPostVisibility] = useState('friends');
-  const [tagYou, setTagYou] = useState('friends');
+  const [postVisibility, setPostVisibility] = useState('public');
+  const [originalPostVisibility, setOriginalPostVisibility] = useState('public');
 
   const [hasChanges, setHasChanges] = useState(false);
 
+  // Password change modal
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  // Deactivate confirmation modal
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [deactivating, setDeactivating] = useState(false);
+
+  // Delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
+  // Load profile data on mount
+  useEffect(() => {
+    if (user) {
+      const profileData = {
+        name: user.full_name || user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+      };
+      setValues(profileData);
+      setOriginalValues(profileData);
+
+      const toggleData = {
+        lockProfile: user.is_profile_locked || false,
+        showActive: user.show_active_status !== false,
+      };
+      setToggles(toggleData);
+      setOriginalToggles(toggleData);
+
+      const privacy = user.default_post_privacy || 'public';
+      setPostVisibility(privacy);
+      setOriginalPostVisibility(privacy);
+    }
+  }, [user]);
+
   const markChanged = () => setHasChanges(true);
 
-  /* ─── Inline field edit ─── */
+  const checkChanges = (newVals, newToggles, newPrivacy) => {
+    const fieldsChanged = JSON.stringify(newVals) !== JSON.stringify(originalValues);
+    const togglesChanged = JSON.stringify(newToggles) !== JSON.stringify(originalToggles);
+    const privacyChanged = newPrivacy !== originalPostVisibility;
+    setHasChanges(fieldsChanged || togglesChanged || privacyChanged);
+  };
+
+  // Inline field edit
   const startEdit = (field) => {
     setEditing(field);
     setDraft(values[field]);
-    markChanged();
   };
 
-  const saveEdit = (field) => {
+  const saveEdit = async (field) => {
     const val = draft.trim();
     if (!val) return;
-    setValues((prev) => ({ ...prev, [field]: val }));
-    setEditing(null);
-    showToast('সংরক্ষিত হয়েছে ✓');
-    // TODO: call backend to persist the updated field (PATCH /api/users/me)
+
+    setSaving(true);
+    try {
+      if (field === 'email') {
+        await updateEmail(val);
+        showToast('ইমেইল আপডেট অনুরোধ পাঠানো হয়েছে — নতুন ইমেইলে কনফার্মেশন চেক করুন');
+      } else if (field === 'phone') {
+        await updateProfileField(user.id, 'phone', val);
+      } else {
+        await updateProfileField(user.id, field, val);
+      }
+
+      const newValues = { ...values, [field]: val };
+      setValues(newValues);
+      setOriginalValues({ ...newValues });
+      setEditing(null);
+      checkChanges(newValues, toggles, postVisibility);
+      showToast('সংরক্ষিত হয়েছে ✓');
+    } catch (err) {
+      console.error('Save field failed:', err);
+      showToast(`ব্যর্থ: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const cancelEdit = () => setEditing(null);
 
-  /* ─── Toggle switches ─── */
-  const flipToggle = (key) => {
-    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
-    markChanged();
+  // Toggle switches — optimistic update
+  const flipToggle = async (key) => {
+    const newToggles = { ...toggles, [key]: !toggles[key] };
+    setToggles(newToggles);
+    checkChanges(values, newToggles, postVisibility);
+
+    const fieldMap = {
+      lockProfile: 'is_profile_locked',
+      showActive: 'show_active_status',
+    };
+
+    try {
+      await updateToggle(user.id, fieldMap[key], newToggles[key]);
+    } catch (err) {
+      console.error('Toggle failed:', err);
+      setToggles(toggles);
+      checkChanges(values, toggles, postVisibility);
+      showToast(`ব্যর্থ: ${err.message}`);
+    }
   };
 
-  /* ─── Password / danger actions (placeholder for now) ─── */
+  // Post privacy
+  const handlePostPrivacy = async (value) => {
+    setPostVisibility(value);
+    checkChanges(values, toggles, value);
+
+    try {
+      await updatePostPrivacy(user.id, value);
+    } catch (err) {
+      console.error('Privacy update failed:', err);
+      setPostVisibility(postVisibility);
+      checkChanges(values, toggles, postVisibility);
+      showToast(`ব্যর্থ: ${err.message}`);
+    }
+  };
+
+  // Password change
   const handleChangePassword = () => {
-    // TODO: open real password-change flow / modal in a later step
-    showToast('পাসওয়ার্ড পরিবর্তনের পেজ খুলছে...');
+    setShowPasswordModal(true);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
   };
 
-  const handleDeactivate = () => {
-    // TODO: show real confirmation modal before deactivating
-    showToast('নিশ্চিত করার জন্য একটি ডায়ালগ দেখাবে');
+  const submitPasswordChange = async () => {
+    if (!currentPassword) {
+      showToast('বর্তমান পাসওয়ার্ড দিন');
+      return;
+    }
+    if (newPassword.length < 8) {
+      showToast('নতুন পাসওয়ার্ড কমপক্ষে ৮ ক্যারেক্টার হতে হবে');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      showToast('নতুন পাসওয়ার্ড মিলছে না');
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      // Verify current password by re-authenticating
+      await reauthenticate(user.email, currentPassword);
+      // Now update to the new password
+      await updatePassword(newPassword);
+      setShowPasswordModal(false);
+      showToast('পাসওয়ার্ড পরিবর্তন হয়েছে ✓');
+    } catch (err) {
+      console.error('Password change failed:', err);
+      if (err.message?.includes('Invalid login credentials')) {
+        showToast('বর্তমান পাসওয়ার্ড ভুল।');
+      } else if (err.message?.includes('session') || err.message?.includes('recent')) {
+        showToast('সেশন মেয়াদোতীর্ত হয়েছে। আবার লগইন করুন।');
+      } else {
+        showToast(`ব্যর্থ: ${err.message}`);
+      }
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
+  // Deactivate
+  const handleDeactivate = () => setShowDeactivateModal(true);
+
+  const confirmDeactivate = async () => {
+    setDeactivating(true);
+    try {
+      await deactivateAccount(user.id);
+      setShowDeactivateModal(false);
+      showToast('অ্যাকাউন্ট নিষ্ক্রিয় হয়েছে');
+    } catch (err) {
+      console.error('Deactivate failed:', err);
+      showToast(`ব্যর্থ: ${err.message}`);
+    } finally {
+      setDeactivating(false);
+    }
+  };
+
+  // Delete
   const handleDelete = () => {
-    // TODO: require password re-auth confirmation modal before permanent delete
-    showToast('স্থায়ী মুছে ফেলার জন্য পাসওয়ার্ড নিশ্চিতকরণ প্রয়োজন');
+    setShowDeleteModal(true);
+    setDeleteConfirmText('');
   };
 
-  /* ─── Save bar ─── */
+  const confirmDelete = async () => {
+    if (deleteConfirmText !== 'DELETE') return;
+
+    setDeleting(true);
+    try {
+      await requestAccountDeletion();
+      setShowDeleteModal(false);
+      showToast('অ্যাকাউন্ট এবং সমস্ত ডেটা স্থায়ীভাবে মুছে ফেলা হয়েছে।');
+    } catch (err) {
+      console.error('Delete request failed:', err);
+      showToast(`ব্যর্থ: ${err.message}`);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Discard changes
   const discardChanges = () => {
-    setValues(INITIAL_FIELDS);
-    setToggles({ lockProfile: true, showActive: false, followSuggest: true });
-    setPostVisibility('friends');
-    setTagYou('friends');
+    setValues(originalValues);
+    setToggles(originalToggles);
+    setPostVisibility(originalPostVisibility);
     setEditing(null);
     setHasChanges(false);
     showToast('পরিবর্তনগুলো বাতিল করা হয়েছে');
   };
 
+  // Save all (for the save bar)
   const saveAllSettings = () => {
-    // TODO: POST/PATCH all changed settings to backend in a later step
+    setOriginalValues({ ...values });
+    setOriginalToggles({ ...toggles });
+    setOriginalPostVisibility(postVisibility);
     setHasChanges(false);
     showToast('সেটিংস সফলভাবে সংরক্ষিত হয়েছে ✓');
   };
@@ -132,7 +306,9 @@ export default function AccountSettingsPanel() {
               </div>
               <div className="fr-edit-wrap">
                 <button className="btn-edit" onClick={() => startEdit(f.key)}>সম্পাদনা / Edit</button>
-                <button className="btn-save" onClick={() => saveEdit(f.key)}>সংরক্ষণ</button>
+                <button className="btn-save" onClick={() => saveEdit(f.key)} disabled={saving}>
+                  {saving ? '...' : 'সংরক্ষণ'}
+                </button>
                 <button className="btn-cancel-edit" onClick={cancelEdit}>বাতিল</button>
               </div>
             </div>
@@ -146,7 +322,7 @@ export default function AccountSettingsPanel() {
           </div>
           <div className="ar-content">
             <div className="ar-bn">পাসওয়ার্ড পরিবর্তন করো</div>
-            <div className="ar-en">Change Password · Last changed 3 months ago</div>
+            <div className="ar-en">Change Password</div>
           </div>
           <svg className="ar-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -176,12 +352,6 @@ export default function AccountSettingsPanel() {
           on={toggles.showActive} onClick={() => flipToggle('showActive')}
           svg={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>}
         />
-        <ToggleRow
-          bn="পরিচিতদের সাজেশন দেখাও" en="Show to People You May Know"
-          desc="তোমার প্রোফাইল সাজেস্টেড লিস্টে দেখা যাবে"
-          on={toggles.followSuggest} onClick={() => flipToggle('followSuggest')}
-          svg={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>}
-        />
       </div>
 
       {/* ── Section 3: Post Privacy ── */}
@@ -209,32 +379,11 @@ export default function AccountSettingsPanel() {
           <select
             className="styled-select"
             value={postVisibility}
-            onChange={(e) => { setPostVisibility(e.target.value); markChanged(); }}
+            onChange={(e) => handlePostPrivacy(e.target.value)}
           >
             <option value="public">সবার জন্য / Public</option>
             <option value="friends">বন্ধুদের জন্য / Friends</option>
             <option value="only_me">শুধু আমার জন্য / Only Me</option>
-          </select>
-        </div>
-
-        <div className="dropdown-row">
-          <div className="dr-left">
-            <div className="dr-icon" style={{ background: '#fdf5f4' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2.2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-            </div>
-            <div>
-              <div className="dr-bn">কে আমাকে ট্যাগ করতে পারবে</div>
-              <div className="dr-en">Who Can Tag You</div>
-            </div>
-          </div>
-          <select
-            className="styled-select"
-            value={tagYou}
-            onChange={(e) => { setTagYou(e.target.value); markChanged(); }}
-          >
-            <option value="all">সবাই / Everyone</option>
-            <option value="friends">বন্ধুরা / Friends</option>
-            <option value="none">কেউ না / No One</option>
           </select>
         </div>
       </div>
@@ -282,7 +431,7 @@ export default function AccountSettingsPanel() {
         </div>
       </div>
 
-      {/* Save bar (shows when changes are pending) */}
+      {/* Save bar */}
       {hasChanges && (
         <div className="save-bar">
           <div className="save-bar-msg">তোমার পরিবর্তনগুলো <span>সংরক্ষিত হয়নি</span> — এখনই সংরক্ষণ করো</div>
@@ -295,11 +444,143 @@ export default function AccountSettingsPanel() {
           </div>
         </div>
       )}
+
+      {/* ── Password Change Modal ── */}
+      {showPasswordModal && (
+        <div className="modal-overlay" onClick={() => !changingPassword && setShowPasswordModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title">
+              🔒 পাসওয়ার্ড পরিবর্তন করো
+            </h3>
+            <div className="modal-section">
+              <label className="modal-label">
+                বর্তমান পাসওয়ার্ড *
+              </label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={e => setCurrentPassword(e.target.value)}
+                placeholder="তোমার বর্তমান পাসওয়ার্ড লিখুন"
+                className="modal-input"
+              />
+            </div>
+            <div className="modal-section">
+              <label className="modal-label">
+                নতুন পাসওয়ার্ড *
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                placeholder="কমপক্ষে ৮ ক্যারেক্টার"
+                className="modal-input"
+              />
+            </div>
+            <div className="modal-section-last">
+              <label className="modal-label">
+                পাসওয়ার্ড নিশ্চিত করো
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="আবার পাসওয়ার্ড লিখুন"
+                className="modal-input"
+              />
+            </div>
+            <div className="modal-actions">
+              <button
+                onClick={() => !changingPassword && setShowPasswordModal(false)}
+                disabled={changingPassword}
+                className="modal-btn-cancel"
+              >
+                বাতিল
+              </button>
+              <button
+                onClick={submitPasswordChange}
+                disabled={changingPassword || !currentPassword || !newPassword || !confirmPassword}
+                className="modal-btn-primary"
+              >
+                {changingPassword ? 'পরিবর্তন হচ্ছে...' : 'পাসওয়ার্ড পরিবর্তন করো'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Deactivate Confirmation Modal ── */}
+      {showDeactivateModal && (
+        <div className="modal-overlay" onClick={() => !deactivating && setShowDeactivateModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title-danger">
+              ⚠️ অ্যাকাউন্ট নিষ্ক্রিয় করবেন?
+            </h3>
+            <p className="modal-desc">
+              নিষ্ক্রিয় করলে তোমার প্রোফাইল অন্যদের কাছে দেখা যাবে না। তুমি পরে আবার লগইন করে সক্রিয় করতে পারবে।
+            </p>
+            <div className="modal-actions">
+              <button
+                onClick={() => !deactivating && setShowDeactivateModal(false)}
+                disabled={deactivating}
+                className="modal-btn-cancel"
+              >
+                বাতিল
+              </button>
+              <button
+                onClick={confirmDeactivate}
+                disabled={deactivating}
+                className="modal-btn-danger"
+              >
+                {deactivating ? 'নিষ্ক্রিয় হচ্ছে...' : 'হ্যাঁ, নিষ্ক্রিয় করো'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Confirmation Modal ── */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={() => !deleting && setShowDeleteModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title-danger">
+              🗑️ অ্যাকাউন্ট স্থায়ীভাবে মুছে ফেলবেন?
+            </h3>
+            <p className="modal-desc-short">
+              এই কাজটি অপরিবর্তনীয়। সমস্ত পোস্ট, বার্তা এবং ডেটা চিরতরে মুছে যাবে।
+            </p>
+            <p className="modal-desc-bold">
+              নিশ্চিত করতে <span className="modal-danger-text">DELETE</span> টাইপ করুন:
+            </p>
+            <input
+              type="text"
+              value={deleteConfirmText}
+              onChange={e => setDeleteConfirmText(e.target.value)}
+              placeholder="DELETE"
+              className="modal-input-with-margin"
+            />
+            <div className="modal-actions">
+              <button
+                onClick={() => !deleting && setShowDeleteModal(false)}
+                disabled={deleting}
+                className="modal-btn-cancel"
+              >
+                বাতিল
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting || deleteConfirmText !== 'DELETE'}
+                className="modal-btn-danger"
+              >
+                {deleting ? 'মুছে ফেলা হচ্ছে...' : 'স্থায়ীভাবে মুছে ফেলো'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-/* Small helper for a toggle row */
 function ToggleRow({ bn, en, desc, on, onClick, svg }) {
   return (
     <div className="toggle-row">

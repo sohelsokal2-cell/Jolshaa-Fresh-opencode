@@ -1,0 +1,11 @@
+import React, { useEffect, useState } from 'react';
+import { createCheckIn, fetchCheckIns } from '../../lib/checkinsApi';
+import './ProfileSections.css';
+
+export default function CheckInsTab({ userId, isOwnProfile }) {
+  const [items, setItems] = useState([]); const [adding, setAdding] = useState(false); const [form, setForm] = useState({ name: '', area: '', date: new Date().toISOString().slice(0, 10) });
+  const load = async () => { try { setItems(await fetchCheckIns(userId)); } catch (err) { console.error('Failed to load check-ins:', err); } };
+  useEffect(() => { load(); }, [userId]);
+  const save = async e => { e.preventDefault(); if (!form.name.trim()) return; try { await createCheckIn(userId, form.name, form.area, form.date); setForm({ name: '', area: '', date: new Date().toISOString().slice(0, 10) }); setAdding(false); load(); } catch (err) { console.error('Failed to create check-in:', err); } };
+  return <div className="profile-section-main"><div className="section-head"><h2>চেক-ইন / Check-ins</h2>{isOwnProfile && <button className="section-action" onClick={() => setAdding(!adding)}>+ চেক-ইন যোগ করো / Add Check-in</button>}</div><div className="section-tabs"><button className="section-tab active">সাম্প্রতিক / Recent</button></div>{adding && <form className="checkin-form" onSubmit={save}><input required placeholder="অবস্থানের নাম / Location name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /><input placeholder="এলাকা / শহর / Area / city" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })} /><label>কবে গিয়েছিলে / Visited on<input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} /></label><button className="section-action" type="submit">সংরক্ষণ করো / Save</button></form>}{items.length === 0 ? <div className="section-empty">এখনো কোনো চেক-ইন নেই / No check-ins yet</div> : <div className="checkin-grid">{items.map(item => <div className="checkin-card" key={item.id}><div className="checkin-icon">📍</div><div><h3>{item.location_name}</h3><small>{item.location_area || 'বাংলাদেশ / Bangladesh'}</small><small>কবে গিয়েছিলে / Visited on {new Date(item.visited_at).toLocaleDateString()}</small></div></div>)}</div>}</div>;
+}

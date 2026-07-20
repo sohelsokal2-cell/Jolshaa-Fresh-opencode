@@ -710,6 +710,82 @@
   font-weight: 500;
 }
 
+/* ===== FIND FRIENDS ===== */
+.fp-find-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.fp-find-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-size: 14px;
+  font-family: var(--font-bn);
+  color: var(--text-dark);
+  background: var(--off-white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.fp-find-input::placeholder {
+  color: var(--text-xlight);
+}
+
+.fp-find-input:focus {
+  border-color: var(--teal-light);
+}
+
+.fp-find-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: var(--teal);
+  color: #fff;
+  font-size: 14px;
+  font-family: var(--font-bn);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.fp-find-btn:hover:not(:disabled) {
+  background: var(--teal-hover);
+}
+
+.fp-find-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fp-find-btn-clear {
+  background: var(--text-mid);
+}
+
+.fp-find-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.fp-find-hint-bn {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.fp-find-hint-en {
+  font-size: 11px;
+  color: var(--text-light);
+  font-family: var(--font-en);
+}
+
 /* ===== EMPTY STATE ===== */
 .fp-empty {
   display: flex;

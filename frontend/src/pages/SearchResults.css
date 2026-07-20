@@ -497,3 +497,45 @@ body { font-family: var(--font-bn); background: var(--off-white); color: var(--t
   .post-img-placeholder { aspect-ratio: 4/3; }
   .btn-add-friend .btn-af-en, .btn-follow .btn-follow-en { display: none; }
 }
+
+/* ════════════════════════════ SKELETON LOADING ════════════════════════════ */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+.skeleton-card { padding: 16px; }
+.skeleton-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.skeleton-circle {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.5s infinite;
+  flex-shrink: 0;
+}
+.skeleton-circle.sm { width: 36px; height: 36px; border-radius: 50%; }
+.skeleton-lines { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.skeleton-line {
+  height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.5s infinite;
+}
+.skeleton-line.w70 { width: 70%; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w50 { width: 50%; }
+.skeleton-line.w40 { width: 40%; }
+.skeleton-rows { display: flex; flex-direction: column; gap: 12px; }
+.skeleton-row { display: flex; align-items: center; gap: 10px; }
+.skeleton-lines.sm { gap: 4px; }
+.skeleton-lines.sm .skeleton-line { height: 10px; }
+
+/* ════════════════════════════ EMPTY STATE ════════════════════════════ */
+.empty-search-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 48px 24px; text-align: center;
+}
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.6; }
+.empty-title-bn { font-family: var(--font-bn); font-size: 18px; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; }
+.empty-title-en { font-family: var(--font-en); font-size: 13px; color: var(--text-light); margin-bottom: 12px; }
+.empty-desc-bn { font-family: var(--font-bn); font-size: 13px; color: var(--text-light); max-width: 400px; margin-bottom: 4px; }
+.empty-desc-en { font-family: var(--font-en); font-size: 11px; color: var(--text-xlight); max-width: 400px; }
